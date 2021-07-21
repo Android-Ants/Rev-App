@@ -2,9 +2,7 @@
     <string name="app_name">GalleryApp</string>
     <string name="title_home">Home</string>
     <string name="title_favourite">Favourites</string>
-    <string name="title_settings">Settings</string>
-    <string name="title_slide_show">Slide Show</string>
-    <string name="title_recently">Recent</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_settings">Drive Settings</string>
+    <string name="title_handpicked_folders">Handpicked Folders</string>
+    <string name="title_seen">Seen List</string>
 </resources>
