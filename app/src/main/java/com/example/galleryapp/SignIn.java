@@ -1,12 +1,12 @@
 package com.example.galleryapp;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.galleryapp.databinding.ActivitySignInBinding;
 import com.google.android.gms.auth.api.Auth;
@@ -16,11 +16,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.Scopes;
-import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.Scope;
-import com.google.android.gms.drive.DriveContents;
-import com.google.android.gms.drive.DriveId;
-import com.google.android.gms.drive.events.DriveEventService;
 
 public class SignIn extends AppCompatActivity implements View.OnClickListener{
 
