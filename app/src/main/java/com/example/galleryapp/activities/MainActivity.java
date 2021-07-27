@@ -1,4 +1,4 @@
-package com.example.galleryapp;
+package com.example.galleryapp.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -6,12 +6,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import com.example.galleryapp.R;
 import com.example.galleryapp.databinding.ActivityMainBinding;
 import com.example.galleryapp.fragments.FavoritesFragment;
 import com.example.galleryapp.fragments.HomeFragment;
 import com.example.galleryapp.fragments.RecentFragment;
 import com.example.galleryapp.fragments.SettingsFragment;
-import com.example.galleryapp.fragments.SlideShowFragment;
+import com.example.galleryapp.fragments.FoldersFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.jetbrains.annotations.NotNull;
@@ -53,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.navigation_slide_show:
                         getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.fragment_container, new SlideShowFragment())
+                                .replace(R.id.fragment_container, new FoldersFragment())
                                 .commit();
                         break;
                     case R.id.navigation_setting:

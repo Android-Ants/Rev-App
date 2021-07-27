@@ -10,10 +10,10 @@ import android.view.ViewGroup;
 
 import com.example.galleryapp.R;
 
-public class SlideShowFragment extends Fragment {
+public class FoldersFragment extends Fragment {
 
 
-    public SlideShowFragment() {
+    public FoldersFragment() {
         // Required empty public constructor
     }
 

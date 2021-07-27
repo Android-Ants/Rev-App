@@ -1,4 +1,4 @@
-package com.example.galleryapp;
+package com.example.galleryapp.trial;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +8,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.galleryapp.activities.MainActivity;
+import com.example.galleryapp.R;
 import com.example.galleryapp.databinding.ActivitySignInBinding;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;

@@ -1,4 +1,4 @@
-package com.example.galleryapp.trial;
+package com.example.galleryapp.sign_in;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;

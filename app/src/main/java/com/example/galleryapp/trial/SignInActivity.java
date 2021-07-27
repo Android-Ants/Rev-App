@@ -1,4 +1,4 @@
-package com.example.galleryapp;
+package com.example.galleryapp.trial;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
