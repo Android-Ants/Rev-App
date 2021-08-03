@@ -1,8 +1,10 @@
 package com.example.galleryapp.sign_in;
 
+import androidx.annotation.MainThread;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,13 +17,17 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.galleryapp.ApiCalls;
 import com.example.galleryapp.R;
+import com.example.galleryapp.activities.MainActivity;
+import com.example.galleryapp.classes.File;
 import com.example.galleryapp.databinding.ActivitySecondScreenBinding;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class SecondScreen extends AppCompatActivity implements View.OnClickListener {
@@ -74,10 +80,17 @@ public class SecondScreen extends AppCompatActivity implements View.OnClickListe
                 Log.d(TAG,response);
                 try {
                     JSONObject jsonObject = new JSONObject(response);
-                    editor.putString("bearer token" ,jsonObject.get("access_token").toString() );
+                    editor.putString("bearer token" ,jsonObject.get("access_token").toString());
                     editor.putString("refresh token" ,jsonObject.get("refresh_token").toString());
                     editor.commit();
-                    get_files_id();
+
+                    Intent intent = new Intent(SecondScreen.this,MainActivity.class);
+                    startActivity(intent);
+                    finish();
+//                    ApiCalls apiCalls = new ApiCalls(SecondScreen.this);
+//                    List<File> fileList =  apiCalls.get_files_list();
+//                    Log.d(TAG,String.valueOf(fileList.size()));
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -99,47 +112,13 @@ public class SecondScreen extends AppCompatActivity implements View.OnClickListe
 
                 Map<String,String> map = new HashMap<String, String>();
                 map.put("code",code);
-                map.put("client_id","841525552075-lmtdplark7r3m4t69pocukvjs6bgeeau.apps.googleusercontent.com");
-                map.put("redirect_uri", "urn:ietf:wg:oauth:2.0:oob");
+                map.put("client_id",getString(R.string.client_id));
+                map.put("redirect_uri", getString(R.string.redirect_uri));
                 map.put("grant_type", "authorization_code");
                 return map;
             }
         };
         queue.add(request);
-
-    }
-
-    public void get_files_id ()
-    {
-
-        RequestQueue queue = Volley.newRequestQueue(this);
-
-        StringRequest request = new StringRequest(Request.Method.GET, "https://www.googleapis.com/drive/v3/files", new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-
-                Log.d(TAG,response);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-
-
-            }
-        })
-        {
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-
-                Map<String,String> map = new HashMap<String, String>();
-                map.put("Authorization","Bearer " + sharedPreferences.getString("bearer token",""));
-                return map;
-            }
-        };
-        queue.add(request);
-
 
     }
 
