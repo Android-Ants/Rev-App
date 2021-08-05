@@ -7,10 +7,8 @@ import android.widget.Toast;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.galleryapp.classes.File;
-import com.example.galleryapp.classes.FileResponse;
-
-import java.util.List;
+import com.example.galleryapp.classes.ChildFolderResponse;
+import com.example.galleryapp.classes.FolderResponse;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -23,13 +21,15 @@ public class FileRepository {
     private static final String BASE_URL = "https://www.googleapis.com/";
 
     private GetFileInterface getFileInterface;
-    private MutableLiveData<FileResponse> mutableLiveData;
+    private MutableLiveData<FolderResponse> mutableLiveData;
+    private MutableLiveData<ChildFolderResponse> childMutableData;
     private Context context;
 
     public FileRepository( Context context )
     {
         this.context = context;
         mutableLiveData = new MutableLiveData<>();
+        childMutableData = new MutableLiveData<>();
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
@@ -41,9 +41,9 @@ public class FileRepository {
     public void get_file ( String token )
     {
         Toast.makeText(context, "hhhh", Toast.LENGTH_SHORT).show();
-        getFileInterface.get_File_List(token).enqueue(new Callback<FileResponse>() {
+        getFileInterface.get_File_List(token).enqueue(new Callback<FolderResponse>() {
             @Override
-            public void onResponse(Call<FileResponse> call, Response<FileResponse> response) {
+            public void onResponse(Call<FolderResponse> call, Response<FolderResponse> response) {
                 if (response.body() != null) {
                    mutableLiveData.postValue(response.body());
                     Log.d("hhhhhhhhhhhhhh",response.toString());
@@ -51,14 +51,14 @@ public class FileRepository {
             }
 
             @Override
-            public void onFailure(Call<FileResponse> call, Throwable t) {
+            public void onFailure(Call<FolderResponse> call, Throwable t) {
                 mutableLiveData.postValue(null);
                 Log.d("hhhhhhhhhhh","failed" + t.toString());
             }
         });
     }
 
-    public LiveData<FileResponse> getFileLiveData() {
+    public LiveData<FolderResponse> getFileLiveData() {
         return mutableLiveData;
     }
 
@@ -66,6 +66,29 @@ public class FileRepository {
     {
         ApiCalls apiCalls = new ApiCalls(context);
         apiCalls.get_bearer_token();
+    }
+
+    public void get_child_folder( String token , String fileId )
+    {
+        getFileInterface.get_child_folder(token,fileId).enqueue(new Callback<ChildFolderResponse>() {
+            @Override
+            public void onResponse(Call<ChildFolderResponse> call, Response<ChildFolderResponse> response) {
+                if (response.body() != null) {
+                    childMutableData.postValue(response.body());
+                    Log.d("hhhhhhhhhhhhhh",response.toString());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ChildFolderResponse> call, Throwable t) {
+                childMutableData.postValue(null);
+                Log.d("hhhhhhhhhhh","failed" + t.toString());
+            }
+        });
+    }
+
+    public LiveData<ChildFolderResponse> getChildFileLiveData() {
+        return childMutableData;
     }
 
 }

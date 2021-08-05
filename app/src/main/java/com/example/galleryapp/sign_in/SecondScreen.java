@@ -1,6 +1,5 @@
 package com.example.galleryapp.sign_in;
 
-import androidx.annotation.MainThread;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,17 +16,14 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.galleryapp.ApiCalls;
 import com.example.galleryapp.R;
 import com.example.galleryapp.activities.MainActivity;
-import com.example.galleryapp.classes.File;
 import com.example.galleryapp.databinding.ActivitySecondScreenBinding;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class SecondScreen extends AppCompatActivity implements View.OnClickListener {

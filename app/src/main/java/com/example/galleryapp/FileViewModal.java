@@ -3,7 +3,6 @@ package com.example.galleryapp;
 import android.app.Application;
 import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -11,17 +10,16 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.galleryapp.classes.File;
-import com.example.galleryapp.classes.FileResponse;
+import com.example.galleryapp.classes.ChildFolderResponse;
+import com.example.galleryapp.classes.FolderResponse;
 
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
 
 public class FileViewModal extends AndroidViewModel {
 
     private FileRepository fileRepository;
-    private LiveData<FileResponse> listLiveData;
+    private LiveData<FolderResponse> listLiveData;
+    private LiveData<ChildFolderResponse> childFolderResponseLiveData;
     private Context context;
 
     public FileViewModal(@NonNull @NotNull Application application , Context context) {
@@ -34,15 +32,32 @@ public class FileViewModal extends AndroidViewModel {
         Log.d("hhhhhhhhh","in view modal");
         fileRepository.get_file(token);
     }
-    public void init ()
+    public void init_folder()
     {
         fileRepository = new FileRepository(context);
         listLiveData = fileRepository.getFileLiveData();
     }
 
-    public LiveData<FileResponse> getListLiveData ()
+    public LiveData<FolderResponse> getListLiveData ()
     {
         return listLiveData;
+    }
+
+    public void init_child_folder ()
+    {
+        fileRepository = new FileRepository(context);
+        childFolderResponseLiveData = fileRepository.getChildFileLiveData();
+    }
+
+    public void get_child_folder_list( String token , String fieldId  )
+    {
+        Log.d("hhhhhhhhh","in view modal");
+        fileRepository.get_child_folder(token,fieldId);
+    }
+
+    public LiveData<ChildFolderResponse> getChildFolderResponseLiveData ()
+    {
+        return childFolderResponseLiveData;
     }
 
     public void get_bearer_token()

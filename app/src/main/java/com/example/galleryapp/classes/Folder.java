@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-public class File implements Serializable {
+public class Folder implements Serializable {
 
     @SerializedName("kind")
     private String kind;
@@ -15,12 +15,12 @@ public class File implements Serializable {
     @SerializedName("mimeType")
     private String mimeType;
 
-    public File ()
+    public Folder()
     {
 
     }
 
-    public File(String kind, String id, String name, String mimeType) {
+    public Folder(String kind, String id, String name, String mimeType) {
         this.kind = kind;
         this.id = id;
         this.name = name;

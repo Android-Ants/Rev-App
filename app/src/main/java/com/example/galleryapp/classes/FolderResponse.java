@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 import java.util.List;
 
-public class FileResponse implements Serializable {
+public class FolderResponse implements Serializable {
 
     @SerializedName("kind")
     private String kind;
@@ -14,18 +14,18 @@ public class FileResponse implements Serializable {
     @SerializedName("incompleteSearch")
     private Boolean incompleteSearch;
     @SerializedName("files")
-    private List<File> fileList;
+    private List<Folder> folderList;
 
-    public FileResponse ()
+    public FolderResponse()
     {
 
     }
 
-    public FileResponse(String kind, String nextPageToken, Boolean incompleteSearch, List<File> fileList) {
+    public FolderResponse(String kind, String nextPageToken, Boolean incompleteSearch, List<Folder> folderList) {
         this.kind = kind;
         this.nextPageToken = nextPageToken;
         this.incompleteSearch = incompleteSearch;
-        this.fileList = fileList;
+        this.folderList = folderList;
     }
 
     public String getKind() {
@@ -52,11 +52,11 @@ public class FileResponse implements Serializable {
         this.incompleteSearch = incompleteSearch;
     }
 
-    public List<File> getFileList() {
-        return fileList;
+    public List<Folder> getFileList() {
+        return folderList;
     }
 
-    public void setFileList(List<File> fileList) {
-        this.fileList = fileList;
+    public void setFileList(List<Folder> folderList) {
+        this.folderList = folderList;
     }
 }

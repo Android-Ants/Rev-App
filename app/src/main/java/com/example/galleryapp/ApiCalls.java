@@ -11,11 +11,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.galleryapp.classes.File;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.example.galleryapp.classes.Folder;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,7 +29,7 @@ public class ApiCalls {
     private SharedPreferences.Editor editor;
     private String TAG = "Drive";
     private RequestQueue queue;
-    private List<File> fileList = new ArrayList<>();
+    private List<Folder> folderList = new ArrayList<>();
 
     public ApiCalls( Context context )
     {
@@ -42,7 +38,7 @@ public class ApiCalls {
         queue = Volley.newRequestQueue(context);
     }
 
-    public List<File> get_files_list ()
+    public List<Folder> get_files_list ()
     {
         StringRequest request = new StringRequest(Request.Method.GET, "https://www.googleapis.com/drive/v3/files", new Response.Listener<String>() {
             @Override
@@ -54,10 +50,10 @@ public class ApiCalls {
 
                     for ( int i =0 ; i < jsonArray.length();i++ )
                     {
-                        File file = new File(jsonArray.getJSONObject(i).get("kind").toString(),
+                        Folder folder = new Folder(jsonArray.getJSONObject(i).get("kind").toString(),
                                 jsonArray.getJSONObject(i).get("id").toString(),jsonArray.getJSONObject(i).get("name").toString(),
                                 jsonArray.getJSONObject(i).get("mimeType").toString()) ;
-                        fileList.add(file);
+                        folderList.add(folder);
                     }
 
 
@@ -85,7 +81,7 @@ public class ApiCalls {
             }
         };
         queue.add(request);
-        return fileList;
+        return folderList;
     }
 
     public void get_bearer_token ()
