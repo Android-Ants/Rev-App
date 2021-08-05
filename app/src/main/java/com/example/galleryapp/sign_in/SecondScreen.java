@@ -9,6 +9,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -36,12 +39,19 @@ public class SecondScreen extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         binding = ActivitySecondScreenBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         binding.signIn.setOnClickListener(this::onClick);
 
         sharedPreferences = getSharedPreferences("Drive",MODE_PRIVATE);
         editor = sharedPreferences.edit();
+
+//        Paper.init(this);
+//        String code = Paper.book().read(SignInStateModel.code);
+//        if(code!=null){
+//            get_bearer_token(code);
+//        }
     }
 
     @Override
@@ -57,7 +67,9 @@ public class SecondScreen extends AppCompatActivity implements View.OnClickListe
                 }
                 else
                 {
-                    get_bearer_token(binding.editText.getText().toString());
+                    String code = binding.editText.getText().toString();
+//                    Paper.book().write(SignInStateModel.code,code);
+                    get_bearer_token(code);
                 }
 
                 break;
@@ -70,6 +82,8 @@ public class SecondScreen extends AppCompatActivity implements View.OnClickListe
         RequestQueue queue = Volley.newRequestQueue(this);
 
         StringRequest request = new StringRequest(Request.Method.POST, "https://accounts.google.com/o/oauth2/token", new Response.Listener<String>() {
+
+
             @Override
             public void onResponse(String response) {
 

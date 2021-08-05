@@ -1,8 +1,8 @@
 package com.example.galleryapp.activities;
 
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
-
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -18,16 +17,17 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import com.example.galleryapp.R;
 import com.example.galleryapp.classes.FireBaseCount;
 import com.example.galleryapp.classes.Folder;
 import com.example.galleryapp.databinding.ActivityMainBinding;
 import com.example.galleryapp.fragments.FavoritesFragment;
+import com.example.galleryapp.fragments.FoldersFragment;
 import com.example.galleryapp.fragments.HomeFragment;
 import com.example.galleryapp.fragments.RecentFragment;
 import com.example.galleryapp.fragments.SettingsFragment;
-import com.example.galleryapp.fragments.FoldersFragment;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -53,16 +53,17 @@ public class MainActivity extends AppCompatActivity {
     private FireBaseCount fireBaseCount = new FireBaseCount();
     private ProgressDialog progressDialog;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
-        fetchingAllPhotos();
+      
+        //fetchingAllPhotos();
 
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, new FoldersFragment(this,getLayoutInflater(),this.getApplication()))
+                .replace(R.id.fragment_container, new HomeFragment(MainActivity.this))
                 .commit();
 
       binding.bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
@@ -82,10 +83,10 @@ public class MainActivity extends AppCompatActivity {
                       break;
                   case R.id.navigation_home:
                       getSupportFragmentManager().beginTransaction()
-                              .replace(R.id.fragment_container, new HomeFragment())
+                              .replace(R.id.fragment_container, new HomeFragment(MainActivity.this))
                               .commit();
                       break;
-                  case R.id.navigation_slide_show:
+                  case R.id.navigation_files:
                       getSupportFragmentManager().beginTransaction()
                               .replace(R.id.fragment_container, new FoldersFragment(MainActivity.this,getLayoutInflater(),getApplication()))
                               .commit();
@@ -101,7 +102,10 @@ public class MainActivity extends AppCompatActivity {
           }
       });
 
+
+
     }
+
 
     private void fetchingAllPhotos() {
 
@@ -252,3 +256,40 @@ public class MainActivity extends AppCompatActivity {
         queue.add(request);
     }
 }
+
+    //public static void startForImageDisplay()
+
+}
+
+
+
+// the usage of randomize
+
+//    ArrayList<ModelImage> fake = new ArrayList<>();
+//        fake.add(new ModelImage("123","fake1","path1"));
+//                fake.add(new ModelImage("124","fake2"));
+//                fake.add(new ModelImage("125","fake3"));
+//                fake.add(new ModelImage("126","fake4"));
+//                fake.add(new ModelImage("127","fake5"));
+//                fake.add(new ModelImage("128","fake6"));
+//                fake.add(new ModelImage("1274","fake7"));
+//
+//        Randomize obj = new Randomize(fake);
+//        obj.randomize();
+//        for(ModelImage str : fake){
+//            System.out.println(str.getName());
+//        }
+//
+//        ArrayList<ModelImage> randomList = obj.getRandomized();
+//        for(ModelImage str : randomList){
+//            System.out.println(str.getName());
+//        }
+//        ArrayList<ModelImage> randomList2 = obj.getRandomized(fake);
+//        for(ModelImage str : randomList2){
+//            System.out.println(str.getName());
+//        }
+//        ArrayList<ModelImage> randomList3 = obj.getPrevRandomized();
+//        for(ModelImage str : randomList3){
+//            System.out.println(str.getName());
+//        }
+

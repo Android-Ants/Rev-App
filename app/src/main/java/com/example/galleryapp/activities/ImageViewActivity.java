@@ -1,55 +1,31 @@
-package com.example.galleryapp.fragments;
+package com.example.galleryapp.activities;
 
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.example.galleryapp.activities.ImageViewActivity;
-import com.example.galleryapp.adapters.ImagesRvAdapter;
-import com.example.galleryapp.databinding.FragmentHomeBinding;
+import com.example.galleryapp.adapters.SingleImageRvAdapter;
+import com.example.galleryapp.databinding.ActivityImageViewBinding;
 import com.example.galleryapp.models.ModelImage;
 
 import java.util.ArrayList;
 
+public class ImageViewActivity extends AppCompatActivity {
 
-public class HomeFragment extends Fragment {
-
-
-
-    private FragmentHomeBinding binding;
-    private ImagesRvAdapter adapter;
-    private static Context context;
-
-    private static ArrayList<ModelImage> data;
-
-    public HomeFragment ()
-    {
-
-    }
-
-    public HomeFragment (Context context)
-    {
-        this.context = context;
-    }
-
-
+    SingleImageRvAdapter adapter;
+    ArrayList<ModelImage> data;
+    ActivityImageViewBinding binding;
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        binding = ActivityImageViewBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
+        int position = getIntent().getIntExtra("position",0);
 
-
-        // trial images
-        //all the frontend as well as the adapters done
-        //TODO: data from drive needed to be replaced here
+        // using just dummy data for layout check
         data = new ArrayList<>();
         data.add(new ModelImage("https://picsum.photos/id/0/200/200"));
         data.add(new ModelImage("https://picsum.photos/id/1/200/200"));
@@ -73,25 +49,13 @@ public class HomeFragment extends Fragment {
         data.add(new ModelImage("https://picsum.photos/id/19/200/200"));
         data.add(new ModelImage("https://picsum.photos/id/20/200/200"));
 
-//        Randomize obj = new Randomize();
-//        ArrayList<ModelImage> randomData = obj.getRandomized(data);
 
-        adapter = new ImagesRvAdapter(context,data);
+        adapter = new SingleImageRvAdapter(this,data);
+        LinearLayoutManager manager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,false);
+        binding.singleImgRecyclerview.setLayoutManager(manager);
+        binding.singleImgRecyclerview.setAdapter(adapter);
+        //binding.singleImgRecyclerview.findViewByPosition(position);
+
+
     }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-        binding = FragmentHomeBinding.inflate(inflater,container,false);
-        binding.imageRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
-        binding.imageRecycler.setAdapter(adapter);
-        return binding.getRoot();
-    }
-
-    public static void singleView(int i) {
-        Intent intent = new Intent(context, ImageViewActivity.class);
-        intent.putExtra("position",i);
-        context.startActivity(intent);
-    }
-
 }
