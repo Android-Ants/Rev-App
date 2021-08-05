@@ -12,8 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.GalleryApp">
-        <activity
-            android:name=".activities.ImageViewActivity"
+        <activity android:name=".activities.Trialsd"></activity>
+        <activity android:name=".activities.ImageViewActivity"
             android:exported="true" />
         <activity android:name=".sign_in.SecondScreen" />
         <activity android:name=".sign_in.FirstScreen">
