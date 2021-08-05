@@ -15,7 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.galleryapp.FileRecyclerAdapter;
+import com.example.galleryapp.adapters.FileRecyclerAdapter;
 import com.example.galleryapp.FileViewModal;
 import com.example.galleryapp.classes.Folder;
 import com.example.galleryapp.classes.FolderResponse;
