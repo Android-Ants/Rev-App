@@ -1,22 +1,3 @@
-/*
-______________Documentation_________________
-
-object ---
-1:
-Randomize obj = new Randomize(ArrayList<ModelImage> arr);
-obj.randomize();                                         -- to randomize arr
-ArrayList<ModelImage> arrRand = obj.getRandomized();     -- to get a randomized list of data of arr
-ArrayList<ModelImage> arrRand = obj.getPrevRandomized(); -- to get previously randomized list
-
-2:
-Randomize obj = new Randomize();
-ArrayList<ModelImage> arrRand = obj.getRandomized(ArrayList<ModelImage> data); -- to get randomized list data
-ArrayList<ModelImage> arrRand = obj.getPrevRandomized();                       -- to get previously randomized
-
-*/
-
-
-
 package com.example.galleryapp;
 
 import com.example.galleryapp.models.ModelImage;

@@ -8,6 +8,16 @@ public class ModelImage {
 
     private String filepath;
 
+    private String Url;
+
+    public String getUrl() {
+        return Url;
+    }
+
+    public void setUrl(String url) {
+        Url = url;
+    }
+
     public String getId() {
         return id;
     }
@@ -43,4 +53,7 @@ public class ModelImage {
         this.name = name;
     }
 
+    public ModelImage(String Url){
+        this.Url = Url;
+    }
 }

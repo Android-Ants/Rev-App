@@ -1,14 +1,13 @@
 package com.example.galleryapp.sign_in;
 
-import androidx.annotation.MainThread;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -17,17 +16,14 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.galleryapp.ApiCalls;
 import com.example.galleryapp.R;
 import com.example.galleryapp.activities.MainActivity;
-import com.example.galleryapp.classes.File;
 import com.example.galleryapp.databinding.ActivitySecondScreenBinding;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class SecondScreen extends AppCompatActivity implements View.OnClickListener {
@@ -40,12 +36,19 @@ public class SecondScreen extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         binding = ActivitySecondScreenBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         binding.signIn.setOnClickListener(this::onClick);
 
         sharedPreferences = getSharedPreferences("Drive",MODE_PRIVATE);
         editor = sharedPreferences.edit();
+
+//        Paper.init(this);
+//        String code = Paper.book().read(SignInStateModel.code);
+//        if(code!=null){
+//            get_bearer_token(code);
+//        }
     }
 
     @Override
@@ -61,7 +64,9 @@ public class SecondScreen extends AppCompatActivity implements View.OnClickListe
                 }
                 else
                 {
-                    get_bearer_token(binding.editText.getText().toString());
+                    String code = binding.editText.getText().toString();
+//                    Paper.book().write(SignInStateModel.code,code);
+                    get_bearer_token(code);
                 }
 
                 break;
@@ -74,6 +79,8 @@ public class SecondScreen extends AppCompatActivity implements View.OnClickListe
         RequestQueue queue = Volley.newRequestQueue(this);
 
         StringRequest request = new StringRequest(Request.Method.POST, "https://accounts.google.com/o/oauth2/token", new Response.Listener<String>() {
+
+
             @Override
             public void onResponse(String response) {
 

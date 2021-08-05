@@ -13,7 +13,6 @@ import com.example.galleryapp.fragments.FoldersFragment;
 import com.example.galleryapp.fragments.HomeFragment;
 import com.example.galleryapp.fragments.RecentFragment;
 import com.example.galleryapp.fragments.SettingsFragment;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
 import org.jetbrains.annotations.NotNull;
@@ -22,15 +21,16 @@ public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-//        getSupportFragmentManager().beginTransaction()
-//                .replace(R.id.fragment_container, new FoldersFragment(this,getLayoutInflater(),this.getApplication()))
-//                .commit();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, new HomeFragment(MainActivity.this))
+                .commit();
 
       binding.bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
           @Override
@@ -49,10 +49,10 @@ public class MainActivity extends AppCompatActivity {
                       break;
                   case R.id.navigation_home:
                       getSupportFragmentManager().beginTransaction()
-                              .replace(R.id.fragment_container, new HomeFragment())
+                              .replace(R.id.fragment_container, new HomeFragment(MainActivity.this))
                               .commit();
                       break;
-                  case R.id.navigation_slide_show:
+                  case R.id.navigation_files:
                       getSupportFragmentManager().beginTransaction()
                               .replace(R.id.fragment_container, new FoldersFragment(MainActivity.this,getLayoutInflater(),getApplication()))
                               .commit();
@@ -71,6 +71,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+    //public static void startForImageDisplay()
 
 }
 

@@ -5,31 +5,27 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Toast;
-
-import com.example.galleryapp.FileRecyclerAdapter;
 import com.example.galleryapp.FileViewModal;
-import com.example.galleryapp.R;
+import com.example.galleryapp.adapters.FileRecyclerAdapter;
 import com.example.galleryapp.classes.File;
 import com.example.galleryapp.classes.FileResponse;
-import com.example.galleryapp.databinding.FragmentProfileBinding;
+import com.example.galleryapp.databinding.FragmentFoldersBinding;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class FoldersFragment extends Fragment {
 
-    private FragmentProfileBinding binding;
+    private FragmentFoldersBinding binding;
     private Context context;
     private Application application;
     private FileViewModal fileViewModal;
@@ -43,7 +39,7 @@ public class FoldersFragment extends Fragment {
 
     public FoldersFragment(Context context , LayoutInflater layoutInflater , Application application)
     {
-        binding = FragmentProfileBinding.inflate(layoutInflater);
+        binding = FragmentFoldersBinding.inflate(layoutInflater);
         this.context = context;
         this.application = application;
     }
