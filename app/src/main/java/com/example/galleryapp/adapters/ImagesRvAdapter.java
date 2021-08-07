@@ -43,7 +43,7 @@ public class ImagesRvAdapter extends RecyclerView.Adapter<ImagesRvAdapter.ImageH
     }
 
     @Override
-    public void onBindViewHolder(@NonNull @NotNull ImagesRvAdapter.ImageHolder holder, @SuppressLint("RecyclerView") final int position) {
+    public void onBindViewHolder(@NonNull @NotNull ImagesRvAdapter.ImageHolder holder, @SuppressLint("RecyclerView") int position) {
         resumePosition = position*3 + 1;
         RequestOptions options = new RequestOptions()
                 .centerCrop()
@@ -51,25 +51,31 @@ public class ImagesRvAdapter extends RecyclerView.Adapter<ImagesRvAdapter.ImageH
                 .error(R.mipmap.ic_launcher);
 
         Glide.with(context).load(data.get(resumePosition-1).getUrl()).apply(options).into(binding.imageView0);
-        Glide.with(context).load(data.get(resumePosition).getUrl()).apply(options).into(binding.imageView1);
-        Glide.with(context).load(data.get(resumePosition+1).getUrl()).apply(options).into(binding.imageView2);
+        if(!(resumePosition>=data.size()))
+        {
+            Glide.with(context).load(data.get(resumePosition).getUrl()).apply(options).into(binding.imageView1);
+        }
+        if(!(resumePosition+1>=data.size()))
+        {
+            Glide.with(context).load(data.get(resumePosition + 1).getUrl()).apply(options).into(binding.imageView2);
+        }
 
         binding.imageView0.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                HomeFragment.singleView(position-1);
+                HomeFragment.singleView(position*3-1);
             }
         });
         binding.imageView1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                HomeFragment.singleView(position);
+                HomeFragment.singleView(position*3);
             }
         });
         binding.imageView2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                HomeFragment.singleView(position+1);
+                HomeFragment.singleView(position*3+1);
             }
         });
 

@@ -27,19 +27,38 @@ public class ImageViewActivity extends AppCompatActivity {
 
         // using just dummy data for layout check
         data = new ArrayList<>();
-
+        data.add(new ModelImage("https://picsum.photos/id/0/200/200"));
+        data.add(new ModelImage("https://picsum.photos/id/1/200/200"));
+        data.add(new ModelImage("https://picsum.photos/id/2/200/200"));
+        data.add(new ModelImage("https://picsum.photos/id/3/200/200"));
+        data.add(new ModelImage("https://picsum.photos/id/4/200/200"));
+        data.add(new ModelImage("https://picsum.photos/id/5/200/200"));
+        data.add(new ModelImage("https://picsum.photos/id/6/200/200"));
+        data.add(new ModelImage("https://picsum.photos/id/7/200/200"));
+        data.add(new ModelImage("https://picsum.photos/id/8/200/200"));
+        data.add(new ModelImage("https://picsum.photos/id/9/200/200"));
+        data.add(new ModelImage("https://picsum.photos/id/10/200/200"));
+        data.add(new ModelImage("https://picsum.photos/id/11/200/200"));
+        data.add(new ModelImage("https://picsum.photos/id/12/200/200"));
+        data.add(new ModelImage("https://picsum.photos/id/13/200/200"));
+        data.add(new ModelImage("https://picsum.photos/id/14/200/200"));
+        data.add(new ModelImage("https://picsum.photos/id/15/200/200"));
+        data.add(new ModelImage("https://picsum.photos/id/16/200/200"));
+        data.add(new ModelImage("https://picsum.photos/id/17/200/200"));
+        data.add(new ModelImage("https://picsum.photos/id/18/200/200"));
+        data.add(new ModelImage("https://picsum.photos/id/19/200/200"));
+        data.add(new ModelImage("https://picsum.photos/id/20/800/1200"));
 
 
         adapter = new SingleImageRvAdapter(this,data);
 
         binding.singleImgViewPager.setAdapter(adapter);
+        binding.singleImgViewPager.setCurrentItem(position+1);
 
-        binding.singleImgViewPager.setCurrentItem(position);
         binding.singleImgViewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 super.onPageScrolled(position, positionOffset, positionOffsetPixels);
-                binding.singleImgViewPager.setCurrentItem(position);
             }
 
             @Override

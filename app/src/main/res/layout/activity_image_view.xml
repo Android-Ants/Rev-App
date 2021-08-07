@@ -13,7 +13,6 @@
         android:layout_height="0sp"
         android:translationZ="12sp"
         android:background="@color/black_primary"
-        app:layout_constraintDimensionRatio="h,7:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -33,16 +32,15 @@
             android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="192dp"
-            android:layout_marginRight="192dp"
             android:padding="9sp"
             android:text="Last_Seen"
             android:textColor="@color/grey_200"
             android:textSize="32sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintHorizontal_bias="0.2" />
 
         <ImageView
             android:id="@+id/likeButton"
@@ -55,12 +53,13 @@
             app:layout_constraintDimensionRatio="h,1:1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/singleImg_viewPager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:orientation="horizontal"
         android:layoutDirection="inherit"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -76,12 +75,11 @@
         android:drawableLeft="@drawable/ic_outline_seen_24"
         android:text="Count"
         android:textColor="@color/grey_200"
-        android:layout_marginEnd="32dp"
-        android:layout_marginRight="32dp"
-        android:layout_marginBottom="32dp"
+        android:layout_marginEnd="28dp"
+        android:layout_marginBottom="28dp"
         app:cornerRadius="30sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-         />
+        android:layout_marginRight="28dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -14,9 +14,11 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="Nav">
-        <item name="colorPrimary">@color/BNavSel_yellow</item>
-        <item name="colorPrimaryVariant">@color/black_primary</item>
+    <style name="Nav" parent="Theme.AppCompat.Light">
+        <item name="colorPrimaryVariant">@color/grey_200</item>
         <item name="colorOnPrimary">@color/grey_200</item>
+
+        <item name="colorPrimary">@color/BNavSel_yellow</item>
+        <item name="android:textColorSecondary">@color/grey_200</item>
     </style>
 </resources>

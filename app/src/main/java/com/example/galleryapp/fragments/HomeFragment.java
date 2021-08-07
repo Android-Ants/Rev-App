@@ -71,7 +71,7 @@ public class HomeFragment extends Fragment {
         data.add(new ModelImage("https://picsum.photos/id/17/200/200"));
         data.add(new ModelImage("https://picsum.photos/id/18/200/200"));
         data.add(new ModelImage("https://picsum.photos/id/19/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/20/200/200"));
+        data.add(new ModelImage("https://picsum.photos/id/20/800/1200"));
 
 //        Randomize obj = new Randomize();
 //        ArrayList<ModelImage> randomData = obj.getRandomized(data);
