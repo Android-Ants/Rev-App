@@ -23,9 +23,6 @@
         android:background="@color/black_primary"
         app:itemIconSize="26dp"
         app:labelVisibilityMode="unlabeled"
-        app:itemIconTint="@color/grey_200"
-        app:itemRippleColor="@color/BNavSel_yellow"
-        app:itemTextColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

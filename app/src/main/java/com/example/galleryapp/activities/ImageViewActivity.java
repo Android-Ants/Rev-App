@@ -3,7 +3,7 @@ package com.example.galleryapp.activities;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.galleryapp.adapters.SingleImageRvAdapter;
 import com.example.galleryapp.databinding.ActivityImageViewBinding;
@@ -27,34 +27,31 @@ public class ImageViewActivity extends AppCompatActivity {
 
         // using just dummy data for layout check
         data = new ArrayList<>();
-        data.add(new ModelImage("https://picsum.photos/id/0/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/1/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/2/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/3/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/4/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/5/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/6/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/7/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/8/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/9/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/10/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/11/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/12/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/13/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/14/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/15/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/16/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/17/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/18/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/19/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/20/200/200"));
+
 
 
         adapter = new SingleImageRvAdapter(this,data);
-        LinearLayoutManager manager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,false);
-        binding.singleImgRecyclerview.setLayoutManager(manager);
-        binding.singleImgRecyclerview.setAdapter(adapter);
-        //binding.singleImgRecyclerview.findViewByPosition(position);
+
+        binding.singleImgViewPager.setAdapter(adapter);
+
+        binding.singleImgViewPager.setCurrentItem(position);
+        binding.singleImgViewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                super.onPageScrolled(position, positionOffset, positionOffsetPixels);
+                binding.singleImgViewPager.setCurrentItem(position);
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                super.onPageScrollStateChanged(state);
+            }
+        });
 
 
     }

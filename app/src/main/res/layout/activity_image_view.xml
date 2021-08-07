@@ -11,6 +11,7 @@
         android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
         android:layout_height="0sp"
+        android:translationZ="12sp"
         android:background="@color/black_primary"
         app:layout_constraintDimensionRatio="h,7:1"
         app:layout_constraintEnd_toEndOf="parent"
@@ -56,19 +57,16 @@
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/singleImg_recyclerview"
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/singleImg_viewPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/black_variant"
-        android:scrollbars="horizontal"
-        android:layout_marginTop="60sp"
+        android:orientation="horizontal"
+        android:layoutDirection="inherit"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
-        app:layout_constraintVertical_bias="0.0"
-        tools:listitem="@layout/rv_single_image"/>
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout"/>
 
     <Button
         android:id="@+id/seenCount"

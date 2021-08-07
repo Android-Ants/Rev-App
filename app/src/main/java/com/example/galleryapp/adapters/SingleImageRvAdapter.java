@@ -3,6 +3,7 @@ package com.example.galleryapp.adapters;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -34,6 +35,9 @@ public class SingleImageRvAdapter extends RecyclerView.Adapter<SingleImageRvAdap
     @Override
     public ImageHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         binding = RvSingleImageBinding.inflate(inflater);
+        RecyclerView.LayoutParams layoutParams =
+                (RecyclerView.LayoutParams) binding.getRoot().getLayoutParams();
+        System.out.println(layoutParams);
         return new ImageHolder(binding);
     }
 
@@ -43,7 +47,7 @@ public class SingleImageRvAdapter extends RecyclerView.Adapter<SingleImageRvAdap
                 .centerCrop()
                 .placeholder(R.mipmap.ic_launcher)
                 .error(R.mipmap.ic_launcher);
-        Glide.with(context).load(data.get(position).getUrl()).apply(options).into(binding.image);
+        Glide.with(context).load(data.get(position).getUrl()).apply(options).into(holder.imageView);
     }
 
     @Override
@@ -51,9 +55,13 @@ public class SingleImageRvAdapter extends RecyclerView.Adapter<SingleImageRvAdap
         return data.size();
     }
 
+    ImageView imageView;
     public static class ImageHolder extends RecyclerView.ViewHolder {
+        public ImageView imageView;
+
         public ImageHolder(@NonNull RvSingleImageBinding binding) {
             super(binding.getRoot());
+            imageView = binding.imageSingle;
         }
     }
 }

@@ -13,19 +13,11 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
-import com.example.galleryapp.adapters.FileRecyclerAdapter;
 import com.example.galleryapp.FileViewModal;
+import com.example.galleryapp.adapters.FileRecyclerAdapter;
 import com.example.galleryapp.classes.Folder;
 import com.example.galleryapp.classes.FolderResponse;
-import com.example.galleryapp.databinding.FragmentProfileBinding;
-import com.example.galleryapp.FileViewModal;
-import com.example.galleryapp.adapters.FileRecyclerAdapter;
-import com.example.galleryapp.classes.File;
-import com.example.galleryapp.classes.FileResponse;
 import com.example.galleryapp.databinding.FragmentFoldersBinding;
 
 import java.util.ArrayList;
