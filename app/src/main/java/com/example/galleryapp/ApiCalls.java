@@ -33,7 +33,8 @@ public class ApiCalls {
 
     public ApiCalls( Context context )
     {
-        sharedPreferences = context.getSharedPreferences("Drive", Context.MODE_PRIVATE);
+        this.context = context;
+        sharedPreferences = this.context.getSharedPreferences("Drive", Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
         queue = Volley.newRequestQueue(context);
     }
