@@ -15,6 +15,9 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.galleryapp.FileViewModal;
+import com.example.galleryapp.adapters.FilesChildRecyclerAdapter;
+import com.example.galleryapp.classes.ChildFolder;
+import com.example.galleryapp.classes.ChildFolderResponse;
 import com.example.galleryapp.adapters.FileRecyclerAdapter;
 import com.example.galleryapp.classes.Folder;
 import com.example.galleryapp.classes.FolderResponse;
@@ -23,7 +26,7 @@ import com.example.galleryapp.databinding.FragmentFoldersBinding;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FoldersFragment extends Fragment implements FileRecyclerAdapter.Get_child{
+public class FoldersFragment extends Fragment implements FileRecyclerAdapter.Get_child , FilesChildRecyclerAdapter.Get_child{
 
     private FragmentFoldersBinding binding;
     private Context context;
@@ -32,6 +35,8 @@ public class FoldersFragment extends Fragment implements FileRecyclerAdapter.Get
     private SharedPreferences sharedPreferences;
     private FileRecyclerAdapter fileRecyclerAdapter;
     private List<Folder> filesList = new ArrayList<>();
+    private List<ChildFolder> childFolderList = new ArrayList<>();
+    private FilesChildRecyclerAdapter filesChildRecyclerAdapter;
 
     public FoldersFragment() {
         // Required empty public constructor
@@ -90,7 +95,18 @@ public class FoldersFragment extends Fragment implements FileRecyclerAdapter.Get
             progressDialog.show();
 
             fileViewModal.init_child_folder();
-
+            filesChildRecyclerAdapter = new FilesChildRecyclerAdapter(context,childFolderList,this::child_list_next);
+            fileViewModal.get_child_folder_list("Bearer " + sharedPreferences.getString("bearer token",""),filesList.get(a).getId());
+            binding.recyclerView.setAdapter(filesChildRecyclerAdapter);
+            fileViewModal.getChildFolderResponseLiveData().observe(this, new Observer<ChildFolderResponse>() {
+                @Override
+                public void onChanged(ChildFolderResponse childFolderResponse) {
+                    childFolderList.clear();
+                    childFolderList.addAll(childFolderResponse.getItems());
+                    filesChildRecyclerAdapter.notifyDataSetChanged();
+                }
+            });
+            progressDialog.dismiss();
         }
 
     }
@@ -109,4 +125,8 @@ public class FoldersFragment extends Fragment implements FileRecyclerAdapter.Get
         }
     }
 
+    @Override
+    public void child_list_next(int b) {
+
+    }
 }

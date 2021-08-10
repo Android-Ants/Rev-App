@@ -13,14 +13,14 @@ public class ChildFolderResponse {
     @SerializedName("selfLink")
     private Boolean selfLink;
     @SerializedName("items")
-    private List<Folder> items;
+    private List<ChildFolder> items;
 
     public ChildFolderResponse ()
     {
 
     }
 
-    public ChildFolderResponse(String kind, String etag, Boolean selfLink, List<Folder> items) {
+    public ChildFolderResponse(String kind, String etag, Boolean selfLink, List<ChildFolder> items) {
         this.kind = kind;
         this.etag = etag;
         this.selfLink = selfLink;
@@ -51,11 +51,11 @@ public class ChildFolderResponse {
         this.selfLink = selfLink;
     }
 
-    public List<Folder> getItems() {
+    public List<ChildFolder> getItems() {
         return items;
     }
 
-    public void setItems(List<Folder> items) {
+    public void setItems(List<ChildFolder> items) {
         this.items = items;
     }
 }

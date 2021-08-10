@@ -55,6 +55,6 @@ public class FilesChildRecyclerAdapter extends RecyclerView.Adapter<FilesChildRe
     }
 
     public interface Get_child{
-        void child_list( int a );
+        void child_list_next( int b );
     }
 }

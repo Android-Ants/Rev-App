@@ -1,7 +1,8 @@
 package com.example.galleryapp.activities;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
-import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -10,9 +11,6 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -20,14 +18,17 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.galleryapp.ApiCalls;
 import com.example.galleryapp.R;
 import com.example.galleryapp.classes.FireBaseCount;
+import com.example.galleryapp.classes.Folder;
 import com.example.galleryapp.databinding.ActivityMainBinding;
 import com.example.galleryapp.fragments.FavoritesFragment;
-import com.example.galleryapp.fragments.FoldersFragment;
 import com.example.galleryapp.fragments.HomeFragment;
 import com.example.galleryapp.fragments.RecentFragment;
 import com.example.galleryapp.fragments.SettingsFragment;
+import com.example.galleryapp.fragments.FoldersFragment;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -50,65 +51,72 @@ public class MainActivity extends AppCompatActivity {
     private RequestQueue queue;
     private String TAG = "Drive";
     private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
     private FireBaseCount fireBaseCount = new FireBaseCount();
     private ProgressDialog progressDialog;
+    private ApiCalls apiCalls ;
 
-
-    @SuppressLint("ResourceAsColor")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        binding.bottomNavigationView.setItemHorizontalTranslationEnabled(true);
-        binding.bottomNavigationView.setSelectedItemId(R.id.navigation_home);
-        //fetchingAllPhotos();
+        apiCalls = new ApiCalls(MainActivity.this);
+        apiCalls.get_bearer_token();
+        sharedPreferences = getSharedPreferences("Drive", Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
 
+        if (sharedPreferences.getString("firstLogin","yes").equalsIgnoreCase("yes"))
+        {
+            editor.putString("firstLogin","no");
+            editor.commit();
+        }
+
+        if ( !sharedPreferences.getString("fetch","").equalsIgnoreCase("no") ) {
+            fetchingAllPhotos();
+            editor.putString("fetch","no");
+        }
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, new HomeFragment(MainActivity.this))
+                .replace(R.id.fragment_container, new FoldersFragment(this, getLayoutInflater(), this.getApplication()))
                 .commit();
 
-      binding.bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-          @Override
-          public boolean onNavigationItemSelected(@NonNull @NotNull MenuItem item) {
-              switch (item.getItemId()) {
+        binding.bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull @NotNull MenuItem item) {
+                switch (item.getItemId()) {
 
-                  case R.id.navigation_favourite:
-                      getSupportFragmentManager().beginTransaction()
-                              .replace(R.id.fragment_container, new FavoritesFragment())
-                              .commit();
-                      break;
-                  case R.id.navigation_recent:
-                      getSupportFragmentManager().beginTransaction()
-                              .replace(R.id.fragment_container, new RecentFragment())
-                              .commit();
-                      break;
-                  case R.id.navigation_home:
-                      getSupportFragmentManager().beginTransaction()
-                              .replace(R.id.fragment_container, new HomeFragment(MainActivity.this))
-                              .commit();
-                      break;
-                  case R.id.navigation_files:
-                      getSupportFragmentManager().beginTransaction()
-                              .replace(R.id.fragment_container, new FoldersFragment(MainActivity.this,getLayoutInflater(),getApplication()))
-                              .commit();
-                      break;
-                  case R.id.navigation_setting:
-                      getSupportFragmentManager().beginTransaction()
-                              .replace(R.id.fragment_container, new SettingsFragment())
-                              .commit();
-                      break;
-              }
-
-              return true;
-          }
-      });
-
-
+                    case R.id.navigation_favourite:
+                        getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.fragment_container, new FavoritesFragment())
+                                .commit();
+                        break;
+                    case R.id.navigation_recent:
+                        getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.fragment_container, new RecentFragment())
+                                .commit();
+                        break;
+                    case R.id.navigation_home:
+                        getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.fragment_container, new HomeFragment())
+                                .commit();
+                        break;
+                    case R.id.navigation_slide_show:
+                        getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.fragment_container, new FoldersFragment(MainActivity.this, getLayoutInflater(), getApplication()))
+                                .commit();
+                        break;
+                    case R.id.navigation_setting:
+                        getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.fragment_container, new SettingsFragment())
+                                .commit();
+                        break;
+                }
+                return true;
+            }
+        });
 
     }
-
 
     private void fetchingAllPhotos() {
 
@@ -118,73 +126,73 @@ public class MainActivity extends AppCompatActivity {
         progressDialog.show();
 
         queue = Volley.newRequestQueue(MainActivity.this);
-        sharedPreferences = getSharedPreferences("Drive", Context.MODE_PRIVATE);
         databaseReference = FirebaseDatabase.getInstance().getReference("Photos");
         pngFileSearch();
     }
 
-    private void uploadToFirebase( FireBaseCount fireBaseCount)
-    {
+    private void uploadToFirebase(FireBaseCount fireBaseCount) {
+
+        if (!sharedPreferences.getString("clear","").equalsIgnoreCase("done"))
+        {
+            databaseReference.removeValue();
+            editor.putString("clear","done");
+        }
         databaseReference.push().setValue(fireBaseCount);
     }
 
-    private void pngFileSearch()
-    {
+    private void pngFileSearch() {
         StringRequest request = new StringRequest(Request.Method.GET, "https://www.googleapis.com/drive/v3/files?fields=kind,incompleteSearch,nextPageToken, files(id, name,webContentLink)&q=mimeType='image/png'",
                 new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
+                    @Override
+                    public void onResponse(String response) {
 
-                Log.d(TAG,response);
-                try {
-                    JSONObject jsonObject = new JSONObject(response);
-                    JSONArray jsonArray = jsonObject.getJSONArray("files");
+                        Log.d(TAG, response);
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            JSONArray jsonArray = jsonObject.getJSONArray("files");
 
-                    for ( int i=0 ; i < jsonArray.length() ; i++ )
-                    {
-                        fireBaseCount.setId(jsonArray.getJSONObject(i).get("id").toString());
-                        fireBaseCount.setName(jsonArray.getJSONObject(i).get("name").toString());
-                        fireBaseCount.setUrl(jsonArray.getJSONObject(i).get("webContentLink").toString());
-                        list.add(fireBaseCount);
-                        uploadToFirebase(fireBaseCount);
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                fireBaseCount.setId(jsonArray.getJSONObject(i).get("id").toString());
+                                fireBaseCount.setName(jsonArray.getJSONObject(i).get("name").toString());
+                                fireBaseCount.setUrl(jsonArray.getJSONObject(i).get("webContentLink").toString());
+                                list.add(fireBaseCount);
+                                uploadToFirebase(fireBaseCount);
+                            }
+                            jpgFileSearch();
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
-                    jpgFileSearch();
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
+                }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d(TAG,"Error : " +error.toString());
+                Log.d(TAG, "Error : " + error.toString());
             }
-        })
-        {@Override
+        }) {
+            @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
 
-                Map<String,String> map = new HashMap<String, String>();
-                map.put("Authorization","Bearer " + sharedPreferences.getString("bearer token",""));
+                Map<String, String> map = new HashMap<String, String>();
+                map.put("Authorization", "Bearer " + sharedPreferences.getString("bearer token", ""));
                 return map;
             }
         };
         queue.add(request);
     }
 
-    private void jpgFileSearch()
-    {
+    private void jpgFileSearch() {
         StringRequest request = new StringRequest(Request.Method.GET, "https://www.googleapis.com/drive/v3/files?fields=kind,incompleteSearch,nextPageToken, files(id, name,webContentLink)&q=mimeType='image/jpg'",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
 
-                        Log.d(TAG,response);
+                        Log.d(TAG, response);
                         try {
                             JSONObject jsonObject = new JSONObject(response);
                             JSONArray jsonArray = jsonObject.getJSONArray("files");
 
-                            for ( int i=0 ; i < jsonArray.length() ; i++ )
-                            {
+                            for (int i = 0; i < jsonArray.length(); i++) {
                                 fireBaseCount.setId(jsonArray.getJSONObject(i).get("id").toString());
                                 fireBaseCount.setName(jsonArray.getJSONObject(i).get("name").toString());
                                 fireBaseCount.setUrl(jsonArray.getJSONObject(i).get("webContentLink").toString());
@@ -199,35 +207,32 @@ public class MainActivity extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d(TAG,"Error : " +error.toString());
+                Log.d(TAG, "Error : " + error.toString());
             }
-        })
-        {
+        }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
 
-                Map<String,String> map = new HashMap<String, String>();
-                map.put("Authorization","Bearer " + sharedPreferences.getString("bearer token",""));
+                Map<String, String> map = new HashMap<String, String>();
+                map.put("Authorization", "Bearer " + sharedPreferences.getString("bearer token", ""));
                 return map;
             }
         };
         queue.add(request);
     }
 
-    private void jpegFileSearch()
-    {
+    private void jpegFileSearch() {
         StringRequest request = new StringRequest(Request.Method.GET, "https://www.googleapis.com/drive/v3/files?fields=kind,incompleteSearch,nextPageToken, files(id, name,webContentLink)&q=mimeType='image/jpeg'",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
 
-                        Log.d(TAG,response);
+                        Log.d(TAG, response);
                         try {
                             JSONObject jsonObject = new JSONObject(response);
                             JSONArray jsonArray = jsonObject.getJSONArray("files");
 
-                            for ( int i=0 ; i < jsonArray.length() ; i++ )
-                            {
+                            for (int i = 0; i < jsonArray.length(); i++) {
                                 fireBaseCount.setId(jsonArray.getJSONObject(i).get("id").toString());
                                 fireBaseCount.setName(jsonArray.getJSONObject(i).get("name").toString());
                                 fireBaseCount.setUrl(jsonArray.getJSONObject(i).get("webContentLink").toString());
@@ -243,22 +248,24 @@ public class MainActivity extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d(TAG,"Error : " +error.toString());
+                Log.d(TAG, "Error : " + error.toString());
             }
-        })
-        {
-
+        }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
 
-                Map<String,String> map = new HashMap<String, String>();
-                map.put("Authorization","Bearer " + sharedPreferences.getString("bearer token",""));
+                Map<String, String> map = new HashMap<String, String>();
+                map.put("Authorization", "Bearer " + sharedPreferences.getString("bearer token", ""));
                 return map;
             }
         };
         queue.add(request);
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        editor.putString("fetch","yes");
+        editor.putString("clear","");
+    }
 }
-
-    //public static void startForImageDisplay()
-

@@ -1,14 +1,18 @@
 package com.example.galleryapp.sign_in;
 
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.galleryapp.R;
+import com.example.galleryapp.activities.MainActivity;
 import com.example.galleryapp.databinding.ActivityFirstScreenBinding;
 import com.example.galleryapp.models.SignInStateModel;
 
@@ -18,6 +22,7 @@ public class FirstScreen extends AppCompatActivity implements View.OnClickListen
 
     private ActivityFirstScreenBinding binding;
     private Boolean isDone = false;
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onResume() {
@@ -46,6 +51,16 @@ public class FirstScreen extends AppCompatActivity implements View.OnClickListen
         binding = ActivityFirstScreenBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         binding.signInButton.setOnClickListener(this::onClick);
+        sharedPreferences = getSharedPreferences("Drive", Context.MODE_PRIVATE);
+
+        Log.d("hhhhhhhhhh",sharedPreferences.getString("firstLogin","yes"));
+        if ( sharedPreferences.getString("firstLogin","yes").equalsIgnoreCase("no") )
+        {
+            Log.d("hhhhhhhhhh",sharedPreferences.getString("firstLogin",""));
+            Intent intent = new Intent( FirstScreen.this , MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
     }
 
     @Override
