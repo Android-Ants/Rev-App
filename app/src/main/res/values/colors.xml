@@ -10,6 +10,8 @@
     <color name="blue_200">#00D9FF</color>
     <color name="blue_primary">#F228A9FF</color>
     <color name="black_primary">#222222</color>
+    <color name="black_variant">#0E0E0E</color>
     <color name="BNavSel_yellow">#E2CC58</color>
-    <color name="gray_200">#C2C2C2</color>
+    <color name="grey_200">#C2C2C2</color>
+
 </resources>
