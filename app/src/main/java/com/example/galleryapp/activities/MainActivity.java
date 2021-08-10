@@ -73,6 +73,8 @@ public class MainActivity extends AppCompatActivity {
             editor.commit();
         }
 
+        Log.d("hhhhhhhhhh",sharedPreferences.getString("fetch",""));
+
         if ( !sharedPreferences.getString("fetch","").equalsIgnoreCase("no") ) {
             fetchingAllPhotos();
             editor.putString("fetch","no");
@@ -98,10 +100,10 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.navigation_home:
                         getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.fragment_container, new HomeFragment())
+                                .replace(R.id.fragment_container, new HomeFragment(MainActivity.this))
                                 .commit();
                         break;
-                    case R.id.navigation_slide_show:
+                    case R.id.navigation_files:
                         getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.fragment_container, new FoldersFragment(MainActivity.this, getLayoutInflater(), getApplication()))
                                 .commit();
@@ -136,6 +138,7 @@ public class MainActivity extends AppCompatActivity {
         {
             databaseReference.removeValue();
             editor.putString("clear","done");
+            editor.commit();
         }
         databaseReference.push().setValue(fireBaseCount);
     }
@@ -264,8 +267,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         editor.putString("fetch","yes");
         editor.putString("clear","");
+        editor.commit();
+        super.onDestroy();
     }
 }

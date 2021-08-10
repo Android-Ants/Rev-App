@@ -40,7 +40,6 @@ public class FileRepository {
 
     public void get_file ( String token )
     {
-        Toast.makeText(context, "hhhh", Toast.LENGTH_SHORT).show();
         getFileInterface.get_File_List(token).enqueue(new Callback<FolderResponse>() {
             @Override
             public void onResponse(Call<FolderResponse> call, Response<FolderResponse> response) {

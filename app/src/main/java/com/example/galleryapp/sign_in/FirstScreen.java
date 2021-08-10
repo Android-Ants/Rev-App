@@ -8,15 +8,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.galleryapp.R;
 import com.example.galleryapp.activities.MainActivity;
 import com.example.galleryapp.databinding.ActivityFirstScreenBinding;
-import com.example.galleryapp.models.SignInStateModel;
-
-import io.paperdb.Paper;
 
 public class FirstScreen extends AppCompatActivity implements View.OnClickListener {
 
@@ -40,14 +35,6 @@ public class FirstScreen extends AppCompatActivity implements View.OnClickListen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //TODO comment this before push
-        Paper.init(this);
-        String code = Paper.book().read(SignInStateModel.code);
-        if(code!=null){
-            Intent intent = new Intent(this,SecondScreen.class);
-            startActivity(intent);
-            finish();
-        }
         binding = ActivityFirstScreenBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         binding.signInButton.setOnClickListener(this::onClick);
