@@ -8,7 +8,7 @@
 
     <FrameLayout
         android:id="@+id/fragment_container"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0sp"
         app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
         app:layout_constraintEnd_toEndOf="parent"
@@ -20,12 +20,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:menu="@menu/bottomnav"
+        style="@style/Nav"
+        android:theme="@style/Nav"
         android:background="@color/black_primary"
         app:itemIconSize="26dp"
         app:labelVisibilityMode="unlabeled"
-        app:itemIconTint="@color/grey_200"
-        app:itemRippleColor="@color/BNavSel_yellow"
-        app:itemTextColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

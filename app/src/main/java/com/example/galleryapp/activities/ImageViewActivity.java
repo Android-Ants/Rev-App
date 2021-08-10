@@ -3,7 +3,7 @@ package com.example.galleryapp.activities;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.galleryapp.adapters.SingleImageRvAdapter;
 import com.example.galleryapp.databinding.ActivityImageViewBinding;
@@ -47,14 +47,30 @@ public class ImageViewActivity extends AppCompatActivity {
         data.add(new ModelImage("https://picsum.photos/id/17/200/200"));
         data.add(new ModelImage("https://picsum.photos/id/18/200/200"));
         data.add(new ModelImage("https://picsum.photos/id/19/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/20/200/200"));
+        data.add(new ModelImage("https://picsum.photos/id/20/800/1200"));
 
 
         adapter = new SingleImageRvAdapter(this,data);
-        LinearLayoutManager manager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,false);
-        binding.singleImgRecyclerview.setLayoutManager(manager);
-        binding.singleImgRecyclerview.setAdapter(adapter);
-        //binding.singleImgRecyclerview.findViewByPosition(position);
+
+        binding.singleImgViewPager.setAdapter(adapter);
+        binding.singleImgViewPager.setCurrentItem(position+1);
+
+        binding.singleImgViewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                super.onPageScrolled(position, positionOffset, positionOffsetPixels);
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                super.onPageScrollStateChanged(state);
+            }
+        });
 
 
     }

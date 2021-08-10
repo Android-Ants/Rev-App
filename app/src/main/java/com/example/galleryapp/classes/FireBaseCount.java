@@ -6,18 +6,21 @@ public class FireBaseCount {
     private String url = "";
     private String name = "";
     private int count = 0 ;
+    private boolean liked = false;
 
-    public FireBaseCount(String id, String url, int count) {
+    public FireBaseCount(String id, String url, int count,boolean liked) {
         this.id = id;
         this.url = url;
         this.count = count;
+        this.liked = liked;
     }
 
-    public FireBaseCount(String id, String url, String name, int count) {
+    public FireBaseCount(String id, String url, String name, int count,boolean liked) {
         this.id = id;
         this.url = url;
         this.name = name;
         this.count = count;
+        this.liked = liked;
     }
 
     public FireBaseCount ()
@@ -56,4 +59,8 @@ public class FireBaseCount {
     public void setCount(int count) {
         this.count = count;
     }
+
+    public boolean isLiked() { return liked; }
+
+    public void setLiked(boolean liked) { this.liked = liked; }
 }
