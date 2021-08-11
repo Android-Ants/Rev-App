@@ -21,14 +21,13 @@ import com.android.volley.toolbox.Volley;
 import com.example.galleryapp.ApiCalls;
 import com.example.galleryapp.R;
 import com.example.galleryapp.classes.FireBaseCount;
-import com.example.galleryapp.classes.Folder;
+import com.example.galleryapp.classes.ParentFireBase;
 import com.example.galleryapp.databinding.ActivityMainBinding;
 import com.example.galleryapp.fragments.FavoritesFragment;
 import com.example.galleryapp.fragments.HomeFragment;
 import com.example.galleryapp.fragments.RecentFragment;
 import com.example.galleryapp.fragments.SettingsFragment;
 import com.example.galleryapp.fragments.FoldersFragment;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -46,15 +45,16 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
-    private DatabaseReference databaseReference;
-    private List<FireBaseCount> list = new ArrayList<>();
+    private DatabaseReference databaseReference, databaseReference2;
+    private List<String> parentId = new ArrayList<>();
+    private List<FireBaseCount> fireBaseCounts = new ArrayList<>();
+    private ArrayList<FireBaseCount> baseCounts = new ArrayList<>();
     private RequestQueue queue;
-    private String TAG = "Drive";
+    private final String TAG = "Drive";
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
-    private FireBaseCount fireBaseCount = new FireBaseCount();
     private ProgressDialog progressDialog;
-    private ApiCalls apiCalls ;
+    private ApiCalls apiCalls;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,17 +67,16 @@ public class MainActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences("Drive", Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
 
-        if (sharedPreferences.getString("firstLogin","yes").equalsIgnoreCase("yes"))
-        {
-            editor.putString("firstLogin","no");
+        if (sharedPreferences.getString("firstLogin", "yes").equalsIgnoreCase("yes")) {
+            editor.putString("firstLogin", "no");
             editor.commit();
         }
 
-        Log.d("hhhhhhhhhh",sharedPreferences.getString("fetch",""));
+        Log.d("hhhhhhhhhh", sharedPreferences.getString("fetch", ""));
 
-        if ( !sharedPreferences.getString("fetch","").equalsIgnoreCase("no") ) {
+        if (!sharedPreferences.getString("fetch", "").equalsIgnoreCase("no")) {
             fetchingAllPhotos();
-            editor.putString("fetch","no");
+            editor.putString("fetch", "no");
         }
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, new FoldersFragment(this, getLayoutInflater(), this.getApplication()))
@@ -129,18 +128,22 @@ public class MainActivity extends AppCompatActivity {
 
         queue = Volley.newRequestQueue(MainActivity.this);
         databaseReference = FirebaseDatabase.getInstance().getReference("Photos");
+        databaseReference2 = FirebaseDatabase.getInstance().getReference("Parent");
         pngFileSearch();
     }
 
     private void uploadToFirebase(FireBaseCount fireBaseCount) {
 
-        if (!sharedPreferences.getString("clear","").equalsIgnoreCase("done"))
-        {
+        if (!sharedPreferences.getString("clear", "").equalsIgnoreCase("done")) {
             databaseReference.removeValue();
-            editor.putString("clear","done");
+            editor.putString("clear", "done");
             editor.commit();
         }
-        databaseReference.push().setValue(fireBaseCount);
+
+        databaseReference.child(fireBaseCount.getId()).setValue(fireBaseCount);
+        if (!parentId.contains(fireBaseCount.getParentsId()))
+            parentId.add(fireBaseCount.getParentsId());
+
     }
 
     private void pngFileSearch() {
@@ -154,16 +157,23 @@ public class MainActivity extends AppCompatActivity {
                             JSONArray jsonArray = jsonObject.getJSONArray("files");
 
                             for (int i = 0; i < jsonArray.length(); i++) {
+                                FireBaseCount fireBaseCount = new FireBaseCount();
                                 fireBaseCount.setId(jsonArray.getJSONObject(i).get("id").toString());
                                 fireBaseCount.setName(jsonArray.getJSONObject(i).get("name").toString());
                                 fireBaseCount.setUrl(jsonArray.getJSONObject(i).get("webContentLink").toString());
                                 try {
-                                    fireBaseCount.setParentsId(jsonArray.getJSONObject(i).get("parents").toString());
-                                }catch (JSONException e)
-                                {
-                                    fireBaseCount.setParentsId("Drive");
+                                    String str = jsonArray.getJSONObject(i).get("parents").toString();
+                                    str = str.replace("[", "");
+                                    str = str.replace("]", "");
+                                    str = str.replace("\\", "");
+                                    str = str.replace("\"", "");
+                                    fireBaseCount.setParentsId(str);
+                                } catch (JSONException e) {
+                                    fireBaseCount.setParentsId("drive");
                                 }
-                                list.add(fireBaseCount);
+                                baseCounts.add(fireBaseCount);
+                                Log.d("jjjjjjjjjjj",String.valueOf(0));
+                                Log.d("jjjjjjjjjj", baseCounts.get(0).getId());
                                 uploadToFirebase(fireBaseCount);
                             }
                             jpgFileSearch();
@@ -201,16 +211,21 @@ public class MainActivity extends AppCompatActivity {
                             JSONArray jsonArray = jsonObject.getJSONArray("files");
 
                             for (int i = 0; i < jsonArray.length(); i++) {
+                                FireBaseCount fireBaseCount = new FireBaseCount();
                                 fireBaseCount.setId(jsonArray.getJSONObject(i).get("id").toString());
                                 fireBaseCount.setName(jsonArray.getJSONObject(i).get("name").toString());
                                 fireBaseCount.setUrl(jsonArray.getJSONObject(i).get("webContentLink").toString());
                                 try {
-                                    fireBaseCount.setParentsId(jsonArray.getJSONObject(i).get("parents").toString());
-                                }catch (JSONException e)
-                                {
-                                    fireBaseCount.setParentsId("Drive");
+                                    String str = jsonArray.getJSONObject(i).get("parents").toString();
+                                    str = str.replace("[", "");
+                                    str = str.replace("]", "");
+                                    str = str.replace("\\", "");
+                                    str = str.replace("\"", "");
+                                    fireBaseCount.setParentsId(str);
+                                } catch (JSONException e) {
+                                    fireBaseCount.setParentsId("drive");
                                 }
-                                list.add(fireBaseCount);
+                                baseCounts.add(fireBaseCount);
                                 uploadToFirebase(fireBaseCount);
                             }
                             jpegFileSearch();
@@ -247,20 +262,27 @@ public class MainActivity extends AppCompatActivity {
                             JSONArray jsonArray = jsonObject.getJSONArray("files");
 
                             for (int i = 0; i < jsonArray.length(); i++) {
+                                FireBaseCount fireBaseCount = new FireBaseCount();
                                 fireBaseCount.setId(jsonArray.getJSONObject(i).get("id").toString());
                                 fireBaseCount.setName(jsonArray.getJSONObject(i).get("name").toString());
                                 fireBaseCount.setUrl(jsonArray.getJSONObject(i).get("webContentLink").toString());
                                 try {
-                                    fireBaseCount.setParentsId(jsonArray.getJSONObject(i).get("parents").toString());
-                                }catch (JSONException e)
-                                {
-                                    fireBaseCount.setParentsId("Drive");
+                                    String str = jsonArray.getJSONObject(i).get("parents").toString();
+                                    str = str.replace("[", "");
+                                    str = str.replace("]", "");
+                                    str = str.replace("\\", "");
+                                    str = str.replace("\"", "");
+                                    fireBaseCount.setParentsId(str);
+                                } catch (JSONException e) {
+                                    fireBaseCount.setParentsId("drive");
                                 }
-                                list.add(fireBaseCount);
+                                baseCounts.add(fireBaseCount);
+                                Log.d("jjjjjjjjjjj",String.valueOf(0));
+                                Log.d("jjjjjjjjjj", baseCounts.get(0).getId());
                                 uploadToFirebase(fireBaseCount);
                             }
-                            progressDialog.dismiss();
-                            Toast.makeText(MainActivity.this, "Profile fetching completed", Toast.LENGTH_SHORT).show();
+                            parents_profile_fetch();
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -282,10 +304,67 @@ public class MainActivity extends AppCompatActivity {
         queue.add(request);
     }
 
+    public void parents_profile_fetch() {
+        for (int i = 0; i < parentId.size(); i++) {
+            ParentFireBase parentFireBase = new ParentFireBase();
+            parentFireBase.setParentId(parentId.get(i));
+            get_parent_name(parentFireBase);
+            Log.d("jjjjjjjjjjj",String.valueOf(i));
+            Log.d("jjjjjjjjjj", baseCounts.get(i).getName());
+        }
+    }
+
+    public void get_parent_name(ParentFireBase parentFireBase) {
+        String url = "https://www.googleapis.com/drive/v3/files/" + parentFireBase.getParentId();
+        StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    parentFireBase.setName(jsonObject.get("name").toString());
+                    update_on_firebase(parentFireBase);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d(TAG, "Error : " + error.toString());
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+
+                Map<String, String> map = new HashMap<String, String>();
+                map.put("Authorization", "Bearer " + sharedPreferences.getString("bearer token", ""));
+                return map;
+            }
+        };
+        queue.add(request);
+    }
+
+    public void update_on_firebase(ParentFireBase parentFireBase) {
+        for (int i = 0; i < baseCounts.size(); i++) {
+            if (baseCounts.get(i).getParentsId().equalsIgnoreCase(parentFireBase.getParentId())) {
+                fireBaseCounts.add(baseCounts.get(i));
+            }
+        }
+        parentFireBase.setChilds(fireBaseCounts);
+        databaseReference2.child(parentFireBase.getParentId()).setValue(parentFireBase);
+        fireBaseCounts.clear();
+        if (parentFireBase.getParentId().equalsIgnoreCase(parentId.get(parentId.size() - 1))) {
+            progressDialog.dismiss();
+            Toast.makeText(MainActivity.this, "Profile fetching completed", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     @Override
     protected void onDestroy() {
-        editor.putString("fetch","yes");
-        editor.putString("clear","");
+        editor.putString("fetch", "yes");
+        editor.putString("clear", "");
         editor.commit();
         super.onDestroy();
     }

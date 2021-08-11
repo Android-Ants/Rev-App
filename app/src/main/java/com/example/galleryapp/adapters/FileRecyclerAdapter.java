@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.galleryapp.R;
 import com.example.galleryapp.classes.Folder;
+import com.example.galleryapp.classes.ParentFireBase;
 import com.example.galleryapp.databinding.RecyclerFileListBinding;
 
 import org.jetbrains.annotations.NotNull;
@@ -19,15 +20,15 @@ import java.util.List;
 
 public class FileRecyclerAdapter extends RecyclerView.Adapter<FileRecyclerAdapter.FileViewHolder> {
 
-    private List<Folder> folders = new ArrayList<>();
+    private List<ParentFireBase> parentFireBases = new ArrayList<>();
     private LayoutInflater layoutInflater;
     private RecyclerFileListBinding binding;
     private Get_child get_child;
 
-    public FileRecyclerAdapter (Context context , List<Folder> folders, Get_child get_child)
+    public FileRecyclerAdapter (Context context , List<ParentFireBase> parentFireBases, Get_child get_child)
     {
         layoutInflater = LayoutInflater.from(context);
-        this.folders = folders;
+        this.parentFireBases = parentFireBases;
         this.get_child = get_child;
     }
 
@@ -36,24 +37,29 @@ public class FileRecyclerAdapter extends RecyclerView.Adapter<FileRecyclerAdapte
     @Override
     public FileViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
         binding = RecyclerFileListBinding.inflate(layoutInflater);
-        return new FileViewHolder(binding );
+        return new FileViewHolder(binding);
     }
 
     @Override
     public void onBindViewHolder(@NonNull @NotNull FileRecyclerAdapter.FileViewHolder holder, int position) {
-        binding.textView.setText(folders.get(position).getName());
+        binding.folderName.setText(parentFireBases.get(position).getName());
+
+        if ( parentFireBases.get(position).getChilds().size() == 1 )
+            binding.numberOfPhotos.setText(String.valueOf(parentFireBases.get(position).getChilds().size()) + " photo");
+        else
+        binding.numberOfPhotos.setText(String.valueOf(parentFireBases.get(position).getChilds().size()) + " photos");
     }
 
     @Override
     public int getItemCount() {
-        return folders.size();
+        return parentFireBases.size();
     }
 
     public class FileViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         public FileViewHolder(@NonNull @NotNull RecyclerFileListBinding binding ) {
             super(binding.getRoot());
-            binding.textView.setOnClickListener(this::onClick);
+            //binding.textView.setOnClickListener(this::onClick);
         }
 
         @Override
