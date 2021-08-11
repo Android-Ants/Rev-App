@@ -144,11 +144,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void pngFileSearch() {
-        StringRequest request = new StringRequest(Request.Method.GET, "https://www.googleapis.com/drive/v3/files?fields=kind,incompleteSearch,nextPageToken, files(id, name,webContentLink)&q=mimeType='image/png'",
+        StringRequest request = new StringRequest(Request.Method.GET, "https://www.googleapis.com/drive/v3/files?fields=kind,incompleteSearch,nextPageToken, files(id, name,webContentLink,parents)&q=mimeType='image/png'",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-
                         Log.d(TAG, response);
                         try {
                             JSONObject jsonObject = new JSONObject(response);
@@ -158,6 +157,12 @@ public class MainActivity extends AppCompatActivity {
                                 fireBaseCount.setId(jsonArray.getJSONObject(i).get("id").toString());
                                 fireBaseCount.setName(jsonArray.getJSONObject(i).get("name").toString());
                                 fireBaseCount.setUrl(jsonArray.getJSONObject(i).get("webContentLink").toString());
+                                try {
+                                    fireBaseCount.setParentsId(jsonArray.getJSONObject(i).get("parents").toString());
+                                }catch (JSONException e)
+                                {
+                                    fireBaseCount.setParentsId("Drive");
+                                }
                                 list.add(fireBaseCount);
                                 uploadToFirebase(fireBaseCount);
                             }
@@ -185,7 +190,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void jpgFileSearch() {
-        StringRequest request = new StringRequest(Request.Method.GET, "https://www.googleapis.com/drive/v3/files?fields=kind,incompleteSearch,nextPageToken, files(id, name,webContentLink)&q=mimeType='image/jpg'",
+        StringRequest request = new StringRequest(Request.Method.GET, "https://www.googleapis.com/drive/v3/files?fields=kind,incompleteSearch,nextPageToken, files(id, name,webContentLink,parents)&q=mimeType='image/jpg'",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -199,6 +204,12 @@ public class MainActivity extends AppCompatActivity {
                                 fireBaseCount.setId(jsonArray.getJSONObject(i).get("id").toString());
                                 fireBaseCount.setName(jsonArray.getJSONObject(i).get("name").toString());
                                 fireBaseCount.setUrl(jsonArray.getJSONObject(i).get("webContentLink").toString());
+                                try {
+                                    fireBaseCount.setParentsId(jsonArray.getJSONObject(i).get("parents").toString());
+                                }catch (JSONException e)
+                                {
+                                    fireBaseCount.setParentsId("Drive");
+                                }
                                 list.add(fireBaseCount);
                                 uploadToFirebase(fireBaseCount);
                             }
@@ -225,7 +236,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void jpegFileSearch() {
-        StringRequest request = new StringRequest(Request.Method.GET, "https://www.googleapis.com/drive/v3/files?fields=kind,incompleteSearch,nextPageToken, files(id, name,webContentLink)&q=mimeType='image/jpeg'",
+        StringRequest request = new StringRequest(Request.Method.GET, "https://www.googleapis.com/drive/v3/files?fields=kind,incompleteSearch,nextPageToken, files(id, name,webContentLink,parents)&q=mimeType='image/jpeg'",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -239,6 +250,12 @@ public class MainActivity extends AppCompatActivity {
                                 fireBaseCount.setId(jsonArray.getJSONObject(i).get("id").toString());
                                 fireBaseCount.setName(jsonArray.getJSONObject(i).get("name").toString());
                                 fireBaseCount.setUrl(jsonArray.getJSONObject(i).get("webContentLink").toString());
+                                try {
+                                    fireBaseCount.setParentsId(jsonArray.getJSONObject(i).get("parents").toString());
+                                }catch (JSONException e)
+                                {
+                                    fireBaseCount.setParentsId("Drive");
+                                }
                                 list.add(fireBaseCount);
                                 uploadToFirebase(fireBaseCount);
                             }
