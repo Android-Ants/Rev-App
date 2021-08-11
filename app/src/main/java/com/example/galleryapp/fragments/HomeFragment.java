@@ -9,8 +9,11 @@ import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.example.galleryapp.ImagesViewModel;
+import com.example.galleryapp.Randomize;
 import com.example.galleryapp.activities.ImageViewActivity;
 import com.example.galleryapp.adapters.ImagesRvAdapter;
 import com.example.galleryapp.databinding.FragmentHomeBinding;
@@ -29,6 +32,9 @@ public class HomeFragment extends Fragment {
 
     private static ArrayList<ModelImage> data;
 
+    private ImagesViewModel imagesViewModel;
+
+    public static Randomize obj = new Randomize();
     public HomeFragment ()
     {
 
@@ -44,6 +50,9 @@ public class HomeFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        this.imagesViewModel = new ViewModelProvider(this).get(ImagesViewModel.class);
+        imagesViewModel.initializeModel();
 
 
 
@@ -68,15 +77,15 @@ public class HomeFragment extends Fragment {
         data.add(new ModelImage("https://picsum.photos/id/14/200/200"));
         data.add(new ModelImage("https://picsum.photos/id/15/200/200"));
         data.add(new ModelImage("https://picsum.photos/id/16/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/17/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/18/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/19/200/200"));
+        data.add(new ModelImage("https://picsum.photos/id/17/800/1200"));
+        data.add(new ModelImage("https://picsum.photos/id/18/800/1200"));
+        data.add(new ModelImage("https://picsum.photos/id/19/800/1200"));
         data.add(new ModelImage("https://picsum.photos/id/20/800/1200"));
 
-//        Randomize obj = new Randomize();
-//        ArrayList<ModelImage> randomData = obj.getRandomized(data);
 
-        adapter = new ImagesRvAdapter(context,data);
+        ArrayList<ModelImage> randomData = obj.getRandomized(data);
+
+        adapter = new ImagesRvAdapter(context,randomData);
     }
 
     @Override
@@ -91,6 +100,7 @@ public class HomeFragment extends Fragment {
     public static void singleView(int i) {
         Intent intent = new Intent(context, ImageViewActivity.class);
         intent.putExtra("position",i);
+
         context.startActivity(intent);
     }
 

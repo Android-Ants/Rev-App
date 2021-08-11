@@ -1,10 +1,14 @@
 package com.example.galleryapp.activities;
 
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.example.galleryapp.ImagesViewModel;
+import com.example.galleryapp.Randomize;
 import com.example.galleryapp.adapters.SingleImageRvAdapter;
 import com.example.galleryapp.databinding.ActivityImageViewBinding;
 import com.example.galleryapp.models.ModelImage;
@@ -16,6 +20,9 @@ public class ImageViewActivity extends AppCompatActivity {
     SingleImageRvAdapter adapter;
     ArrayList<ModelImage> data;
     ActivityImageViewBinding binding;
+    private ImagesViewModel viewModel;
+    public static int x;
+    public static String liked = "false";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,35 +32,30 @@ public class ImageViewActivity extends AppCompatActivity {
 
         int position = getIntent().getIntExtra("position",0);
 
-        // using just dummy data for layout check
-        data = new ArrayList<>();
-        data.add(new ModelImage("https://picsum.photos/id/0/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/1/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/2/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/3/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/4/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/5/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/6/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/7/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/8/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/9/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/10/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/11/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/12/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/13/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/14/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/15/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/16/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/17/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/18/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/19/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/20/800/1200"));
+        this.viewModel = new ViewModelProvider(this).get(ImagesViewModel.class);
 
+        data = Randomize.getPrevRandomized();
 
-        adapter = new SingleImageRvAdapter(this,data);
-
+        adapter = new SingleImageRvAdapter(ImageViewActivity.this,data);
         binding.singleImgViewPager.setAdapter(adapter);
-        binding.singleImgViewPager.setCurrentItem(position+1);
+        binding.singleImgViewPager.setCurrentItem(position);
+
+        // tracker for the image
+        x = position;
+
+//        if(data.get(x).getId()!=null)
+//        {
+//           liked = viewModel.getLikedStatus(data.get(x).getId());
+//        }
+//        else
+//        {
+//            data.get(x).setId(x+"photo");
+//            viewModel.setLikedStatus(data.get(x).getId(),"false");
+//            liked = "false";
+//        }
+//
+//        if(liked.equalsIgnoreCase("true"))
+//            binding.likeButton.setImageDrawable(getDrawable(R.drawable.ic_baseline_favorite_24));
 
         binding.singleImgViewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
@@ -64,6 +66,22 @@ public class ImageViewActivity extends AppCompatActivity {
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
+                x = position;
+//                viewModel.call(x+"photo");
+//                if(data.get(x).getId()!=null) {
+//                    liked = viewModel.getLikedStatus(data.get(x).getId());
+//                }
+//                else {
+//                    data.get(x).setId(x+"photo");
+//                    viewModel.setLikedStatus(data.get(x).getId(),"false");
+//                    liked = "false";
+//                }
+//
+//                if(liked.equalsIgnoreCase("true"))
+//                    binding.likeButton.setImageDrawable(getDrawable(R.drawable.ic_baseline_favorite_24));
+//                else
+//                    binding.likeButton.setImageDrawable(getDrawable(R.drawable.ic_baseline_favorite_border_24));
+
             }
 
             @Override
@@ -71,6 +89,28 @@ public class ImageViewActivity extends AppCompatActivity {
                 super.onPageScrollStateChanged(state);
             }
         });
+        binding.likeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.out.println(x);
+                liked = data.get(x).isLiked();
+//                if(liked.equalsIgnoreCase("true")) binding.likeButton.setImageDrawable(getDrawable(R.drawable.ic_baseline_favorite_border_24));
+//                else{
+//                    binding.likeButton.setImageDrawable(getDrawable(R.drawable.ic_baseline_favorite_24));
+//                    if(data.get(x).getId()!=null)
+//                    {
+//                        viewModel.setLikedStatus(data.get(x).getId(),"true");
+//                    }
+//                    else
+//                    {
+//                        data.get(x).setId(x+"photo");
+//                        viewModel.setLikedStatus(data.get(x).getId(),"true");
+//                        liked = "true";
+//                    }
+//                }
+            }
+        });
+
 
 
     }

@@ -47,7 +47,7 @@
             android:layout_width="0sp"
             android:layout_height="0sp"
             android:contentDescription="like"
-            android:padding="8sp"
+            android:padding="10sp"
             android:src="@drawable/ic_baseline_favorite_border_24"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="h,1:1"

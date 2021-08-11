@@ -1,8 +1,5 @@
 package com.example.galleryapp.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -10,6 +7,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -21,14 +21,12 @@ import com.android.volley.toolbox.Volley;
 import com.example.galleryapp.ApiCalls;
 import com.example.galleryapp.R;
 import com.example.galleryapp.classes.FireBaseCount;
-import com.example.galleryapp.classes.Folder;
 import com.example.galleryapp.databinding.ActivityMainBinding;
 import com.example.galleryapp.fragments.FavoritesFragment;
+import com.example.galleryapp.fragments.FoldersFragment;
 import com.example.galleryapp.fragments.HomeFragment;
 import com.example.galleryapp.fragments.RecentFragment;
 import com.example.galleryapp.fragments.SettingsFragment;
-import com.example.galleryapp.fragments.FoldersFragment;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -78,9 +76,9 @@ public class MainActivity extends AppCompatActivity {
             editor.putString("fetch","no");
         }
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, new FoldersFragment(this, getLayoutInflater(), this.getApplication()))
+                .replace(R.id.fragment_container, new HomeFragment(MainActivity.this))
                 .commit();
-
+        binding.bottomNavigationView.setSelectedItemId(R.id.navigation_home);
         binding.bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull @NotNull MenuItem item) {
@@ -98,10 +96,10 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.navigation_home:
                         getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.fragment_container, new HomeFragment())
+                                .replace(R.id.fragment_container, new HomeFragment(MainActivity.this))
                                 .commit();
                         break;
-                    case R.id.navigation_slide_show:
+                    case R.id.navigation_files:
                         getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.fragment_container, new FoldersFragment(MainActivity.this, getLayoutInflater(), getApplication()))
                                 .commit();
@@ -126,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
         progressDialog.show();
 
         queue = Volley.newRequestQueue(MainActivity.this);
-        databaseReference = FirebaseDatabase.getInstance().getReference("Photos");
+        this.databaseReference = FirebaseDatabase.getInstance().getReference("Photos"+"Tarun");
         pngFileSearch();
     }
 
@@ -136,12 +134,13 @@ public class MainActivity extends AppCompatActivity {
         {
             databaseReference.removeValue();
             editor.putString("clear","done");
+            editor.commit();
         }
-        databaseReference.push().setValue(fireBaseCount);
+        databaseReference.child(fireBaseCount.getId()).setValue(fireBaseCount);
     }
 
     private void pngFileSearch() {
-        StringRequest request = new StringRequest(Request.Method.GET, "https://www.googleapis.com/drive/v3/files?fields=kind,incompleteSearch,nextPageToken, files(id, name,webContentLink)&q=mimeType='image/png'",
+        StringRequest request = new StringRequest(Request.Method.GET, "https://www.googleapis.com/drive/v3/files?fields=kind,incompleteSearch,nextPageToken, files(id, name,webViewLink)&q=mimeType='image/png'",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -154,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 fireBaseCount.setId(jsonArray.getJSONObject(i).get("id").toString());
                                 fireBaseCount.setName(jsonArray.getJSONObject(i).get("name").toString());
-                                fireBaseCount.setUrl(jsonArray.getJSONObject(i).get("webContentLink").toString());
+                                fireBaseCount.setUrl(jsonArray.getJSONObject(i).get("webViewLink").toString());
                                 list.add(fireBaseCount);
                                 uploadToFirebase(fireBaseCount);
                             }
@@ -182,7 +181,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void jpgFileSearch() {
-        StringRequest request = new StringRequest(Request.Method.GET, "https://www.googleapis.com/drive/v3/files?fields=kind,incompleteSearch,nextPageToken, files(id, name,webContentLink)&q=mimeType='image/jpg'",
+        StringRequest request = new StringRequest(Request.Method.GET, "https://www.googleapis.com/drive/v3/files?fields=kind,incompleteSearch,nextPageToken, files(id, name,webViewLink)&q=mimeType='image/jpg'",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -195,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 fireBaseCount.setId(jsonArray.getJSONObject(i).get("id").toString());
                                 fireBaseCount.setName(jsonArray.getJSONObject(i).get("name").toString());
-                                fireBaseCount.setUrl(jsonArray.getJSONObject(i).get("webContentLink").toString());
+                                fireBaseCount.setUrl(jsonArray.getJSONObject(i).get("webViewLink").toString());
                                 list.add(fireBaseCount);
                                 uploadToFirebase(fireBaseCount);
                             }
@@ -222,7 +221,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void jpegFileSearch() {
-        StringRequest request = new StringRequest(Request.Method.GET, "https://www.googleapis.com/drive/v3/files?fields=kind,incompleteSearch,nextPageToken, files(id, name,webContentLink)&q=mimeType='image/jpeg'",
+        StringRequest request = new StringRequest(Request.Method.GET, "https://www.googleapis.com/drive/v3/files?fields=kind,incompleteSearch,nextPageToken, files(id, name,webViewLink)&q=mimeType='image/jpeg'",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -235,7 +234,7 @@ public class MainActivity extends AppCompatActivity {
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 fireBaseCount.setId(jsonArray.getJSONObject(i).get("id").toString());
                                 fireBaseCount.setName(jsonArray.getJSONObject(i).get("name").toString());
-                                fireBaseCount.setUrl(jsonArray.getJSONObject(i).get("webContentLink").toString());
+                                fireBaseCount.setUrl(jsonArray.getJSONObject(i).get("webViewLink").toString());
                                 list.add(fireBaseCount);
                                 uploadToFirebase(fireBaseCount);
                             }
@@ -264,8 +263,11 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+
         super.onDestroy();
+
         editor.putString("fetch","yes");
         editor.putString("clear","");
+        editor.commit();
     }
 }

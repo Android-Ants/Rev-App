@@ -16,19 +16,15 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.galleryapp.ApiCalls;
 import com.example.galleryapp.R;
 import com.example.galleryapp.activities.MainActivity;
 import com.example.galleryapp.databinding.ActivitySecondScreenBinding;
-import com.example.galleryapp.models.SignInStateModel;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import io.paperdb.Paper;
 
 public class SecondScreen extends AppCompatActivity implements View.OnClickListener {
 
@@ -47,16 +43,9 @@ public class SecondScreen extends AppCompatActivity implements View.OnClickListe
 
         sharedPreferences = getSharedPreferences("Drive",MODE_PRIVATE);
         editor = sharedPreferences.edit();
-//TODO comment this out before commit
-        Paper.init(this);
-        String code = Paper.book().read(SignInStateModel.code);
-        if(code!=null){
-            ApiCalls obj = new ApiCalls(SecondScreen.this);
-            obj.get_bearer_token();
-            startActivity(new Intent(this, MainActivity.class));
-            finish();
+
             //ApiCalls.get_bearer_token();
-        }
+
     }
 
     @Override
@@ -73,7 +62,7 @@ public class SecondScreen extends AppCompatActivity implements View.OnClickListe
                 else
                 {
                     String code = binding.editText.getText().toString();
-                    Paper.book().write(SignInStateModel.code,code);
+
                     get_bearer_token(code);
                 }
 
@@ -102,10 +91,6 @@ public class SecondScreen extends AppCompatActivity implements View.OnClickListe
                     Intent intent = new Intent(SecondScreen.this,MainActivity.class);
                     startActivity(intent);
                     finish();
-//                    ApiCalls apiCalls = new ApiCalls(SecondScreen.this);
-//                    List<File> fileList =  apiCalls.get_files_list();
-//                    Log.d(TAG,String.valueOf(fileList.size()));
-
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

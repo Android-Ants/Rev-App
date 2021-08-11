@@ -50,7 +50,7 @@ public class ImagesRvAdapter extends RecyclerView.Adapter<ImagesRvAdapter.ImageH
                 .placeholder(R.mipmap.ic_launcher)
                 .error(R.mipmap.ic_launcher);
 
-        Glide.with(context).load(data.get(resumePosition-1).getUrl()).apply(options).into(binding.imageView0);
+        Glide.with(context).load(data.get(resumePosition-1).getUrl().replace("&export=download","").replace("","")).apply(options).into(binding.imageView0);
         if(!(resumePosition>=data.size()))
         {
             Glide.with(context).load(data.get(resumePosition).getUrl()).apply(options).into(binding.imageView1);
@@ -63,19 +63,19 @@ public class ImagesRvAdapter extends RecyclerView.Adapter<ImagesRvAdapter.ImageH
         binding.imageView0.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                HomeFragment.singleView(position*3-1);
+                HomeFragment.singleView(position*3);
             }
         });
         binding.imageView1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                HomeFragment.singleView(position*3);
+                HomeFragment.singleView(position*3+1);
             }
         });
         binding.imageView2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                HomeFragment.singleView(position*3+1);
+                HomeFragment.singleView(position*3+2);
             }
         });
 
