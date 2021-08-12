@@ -48,7 +48,7 @@ public class ApiCalls {
                 try {
                     JSONObject jsonObject = new JSONObject(response);
                     JSONArray jsonArray = jsonObject.getJSONArray("files");
-
+                    editor.putInt("jsonLength",jsonArray.length());
                     for ( int i =0 ; i < jsonArray.length();i++ )
                     {
                         Folder folder = new Folder(jsonArray.getJSONObject(i).get("kind").toString(),

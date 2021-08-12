@@ -1,8 +1,5 @@
 package com.example.galleryapp.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -10,6 +7,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -19,15 +20,22 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.galleryapp.ApiCalls;
+import com.example.galleryapp.App;
+import com.example.galleryapp.ImagesViewModel;
 import com.example.galleryapp.R;
 import com.example.galleryapp.classes.FireBaseCount;
+
 import com.example.galleryapp.classes.ParentFireBase;
+
 import com.example.galleryapp.databinding.ActivityMainBinding;
 import com.example.galleryapp.fragments.FavoritesFragment;
+import com.example.galleryapp.fragments.FoldersFragment;
 import com.example.galleryapp.fragments.HomeFragment;
 import com.example.galleryapp.fragments.RecentFragment;
 import com.example.galleryapp.fragments.SettingsFragment;
+
 import com.example.galleryapp.fragments.FoldersFragment;
+
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -54,13 +62,21 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
     private ProgressDialog progressDialog;
-    private ApiCalls apiCalls;
+
+    private ApiCalls apiCalls ;
+    private ImagesViewModel imagesViewModel;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        App.setContext(MainActivity.this);
+
+        this.imagesViewModel = new ViewModelProvider(this).get(ImagesViewModel.class);
+        imagesViewModel.initializeModel();
 
         apiCalls = new ApiCalls(MainActivity.this);
         apiCalls.get_bearer_token();
@@ -72,16 +88,15 @@ public class MainActivity extends AppCompatActivity {
             editor.commit();
         }
 
+
         Log.d("hhhhhhhhhh", sharedPreferences.getString("fetch", ""));
 
         if (!sharedPreferences.getString("fetch", "").equalsIgnoreCase("no")) {
+
             fetchingAllPhotos();
             editor.putString("fetch", "no");
         }
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, new FoldersFragment(this, getLayoutInflater(), this.getApplication()))
-                .commit();
-
+        binding.bottomNavigationView.setSelectedItemId(R.id.navigation_home);
         binding.bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull @NotNull MenuItem item) {
@@ -89,28 +104,34 @@ public class MainActivity extends AppCompatActivity {
 
                     case R.id.navigation_favourite:
                         getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.fragment_container, new FavoritesFragment())
+                                .replace(R.id.fragment_container, new FavoritesFragment(MainActivity.this))
                                 .commit();
+                        editor.putInt("FragmentId",R.id.navigation_favourite).commit();
                         break;
                     case R.id.navigation_recent:
                         getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.fragment_container, new RecentFragment())
                                 .commit();
+
+                        editor.putInt("FragmentId",R.id.navigation_recent).commit();
                         break;
                     case R.id.navigation_home:
                         getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.fragment_container, new HomeFragment(MainActivity.this))
                                 .commit();
+                        editor.putInt("FragmentId",R.id.navigation_home).commit();
                         break;
                     case R.id.navigation_files:
                         getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.fragment_container, new FoldersFragment(MainActivity.this, getLayoutInflater(), getApplication()))
                                 .commit();
+                        editor.putInt("FragmentId",R.id.navigation_files).commit();
                         break;
                     case R.id.navigation_setting:
                         getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.fragment_container, new SettingsFragment(MainActivity.this,parentId.size()))
                                 .commit();
+                        editor.putInt("FragmentId",R.id.navigation_setting).commit();
                         break;
                 }
                 return true;
@@ -127,8 +148,10 @@ public class MainActivity extends AppCompatActivity {
         progressDialog.show();
 
         queue = Volley.newRequestQueue(MainActivity.this);
+
         databaseReference = FirebaseDatabase.getInstance().getReference("Photos");
         databaseReference2 = FirebaseDatabase.getInstance().getReference("Parent");
+
         pngFileSearch();
     }
 
@@ -140,6 +163,7 @@ public class MainActivity extends AppCompatActivity {
             editor.commit();
         }
 
+
         databaseReference.child(fireBaseCount.getId()).setValue(fireBaseCount);
         if (!parentId.contains(fireBaseCount.getParentsId()))
             parentId.add(fireBaseCount.getParentsId());
@@ -147,7 +171,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void pngFileSearch() {
+
         StringRequest request = new StringRequest(Request.Method.GET, "https://www.googleapis.com/drive/v3/files?fields=kind,incompleteSearch,nextPageToken, files(id, name,webContentLink,parents)&q=mimeType='image/png'",
+
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -160,6 +186,7 @@ public class MainActivity extends AppCompatActivity {
                                 FireBaseCount fireBaseCount = new FireBaseCount();
                                 fireBaseCount.setId(jsonArray.getJSONObject(i).get("id").toString());
                                 fireBaseCount.setName(jsonArray.getJSONObject(i).get("name").toString());
+
                                 fireBaseCount.setUrl(jsonArray.getJSONObject(i).get("webContentLink").toString());
                                 try {
                                     String str = jsonArray.getJSONObject(i).get("parents").toString();
@@ -171,9 +198,14 @@ public class MainActivity extends AppCompatActivity {
                                 } catch (JSONException e) {
                                     fireBaseCount.setParentsId("drive");
                                 }
+
                                 baseCounts.add(fireBaseCount);
                                 Log.d("jjjjjjjjjjj",String.valueOf(0));
                                 Log.d("jjjjjjjjjj", baseCounts.get(0).getId());
+
+
+                                list.add(fireBaseCount);
+
                                 uploadToFirebase(fireBaseCount);
                             }
                             jpgFileSearch();
@@ -200,7 +232,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void jpgFileSearch() {
+
         StringRequest request = new StringRequest(Request.Method.GET, "https://www.googleapis.com/drive/v3/files?fields=kind,incompleteSearch,nextPageToken, files(id, name,webContentLink,parents)&q=mimeType='image/jpg'",
+
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -214,6 +248,7 @@ public class MainActivity extends AppCompatActivity {
                                 FireBaseCount fireBaseCount = new FireBaseCount();
                                 fireBaseCount.setId(jsonArray.getJSONObject(i).get("id").toString());
                                 fireBaseCount.setName(jsonArray.getJSONObject(i).get("name").toString());
+
                                 fireBaseCount.setUrl(jsonArray.getJSONObject(i).get("webContentLink").toString());
                                 try {
                                     String str = jsonArray.getJSONObject(i).get("parents").toString();
@@ -225,7 +260,12 @@ public class MainActivity extends AppCompatActivity {
                                 } catch (JSONException e) {
                                     fireBaseCount.setParentsId("drive");
                                 }
+
                                 baseCounts.add(fireBaseCount);
+
+
+                                list.add(fireBaseCount);
+
                                 uploadToFirebase(fireBaseCount);
                             }
                             jpegFileSearch();
@@ -251,7 +291,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void jpegFileSearch() {
+
         StringRequest request = new StringRequest(Request.Method.GET, "https://www.googleapis.com/drive/v3/files?fields=kind,incompleteSearch,nextPageToken, files(id, name,webContentLink,parents)&q=mimeType='image/jpeg'",
+
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -265,6 +307,7 @@ public class MainActivity extends AppCompatActivity {
                                 FireBaseCount fireBaseCount = new FireBaseCount();
                                 fireBaseCount.setId(jsonArray.getJSONObject(i).get("id").toString());
                                 fireBaseCount.setName(jsonArray.getJSONObject(i).get("name").toString());
+
                                 fireBaseCount.setUrl(jsonArray.getJSONObject(i).get("webContentLink").toString());
                                 try {
                                     String str = jsonArray.getJSONObject(i).get("parents").toString();
@@ -276,14 +319,24 @@ public class MainActivity extends AppCompatActivity {
                                 } catch (JSONException e) {
                                     fireBaseCount.setParentsId("drive");
                                 }
+
+
+                                list.add(fireBaseCount);
                                 baseCounts.add(fireBaseCount);
                                 Log.d("jjjjjjjjjjj",String.valueOf(0));
                                 Log.d("jjjjjjjjjj", baseCounts.get(0).getId());
                                 uploadToFirebase(fireBaseCount);
                             }
                             parents_profile_fetch();
+                            progressDialog.dismiss();
+                            Toast.makeText(MainActivity.this, "Profile fetching completed", Toast.LENGTH_SHORT).show();
 
-                        } catch (JSONException e) {
+                            Thread.sleep(1000);
+                            getSupportFragmentManager().beginTransaction()
+                                    .replace(R.id.fragment_container, new HomeFragment(MainActivity.this))
+                                    .commit();
+                        } catch (JSONException | InterruptedException e) {
+
                             e.printStackTrace();
                         }
                     }
@@ -362,10 +415,45 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        switch (sharedPreferences.getInt("FragmentId",0)){
+            case R.id.navigation_favourite:
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new FavoritesFragment(MainActivity.this))
+                        .commit();
+                break;
+            case R.id.navigation_recent:
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new RecentFragment())
+                        .commit();
+                break;
+            case R.id.navigation_home:
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new HomeFragment(MainActivity.this))
+                        .commit();
+                break;
+            case R.id.navigation_files:
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new FoldersFragment(MainActivity.this, getLayoutInflater(), getApplication()))
+                        .commit();
+                break;
+            case R.id.navigation_setting:
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new SettingsFragment())
+                        .commit();
+                break;
+        }
+    }
+
+    @Override
     protected void onDestroy() {
-        editor.putString("fetch", "yes");
-        editor.putString("clear", "");
-        editor.commit();
+
         super.onDestroy();
+        editor.putString("fetch","yes");
+        editor.putString("clear","");
+        editor.putInt("FragmentId",0);
+        editor.commit();
+  
     }
 }

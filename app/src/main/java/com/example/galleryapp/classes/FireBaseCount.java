@@ -6,22 +6,28 @@ public class FireBaseCount {
     private String parentsId;
     private String url = "";
     private String name = "";
-    private int count = 0 ;
-    private boolean liked = false;
+    private String liked = "false";
+    private String count = "0";
+    private String lastSeen = "";
 
-    public FireBaseCount(String id, String url, int count,boolean liked) {
-        this.id = id;
-        this.url = url;
-        this.count = count;
-        this.liked = liked;
-    }
-
-    public FireBaseCount(String id, String url, String name, int count,boolean liked) {
+    public FireBaseCount(String id, String url, String name, String liked, String count, String lastSeen) {
         this.id = id;
         this.url = url;
         this.name = name;
-        this.count = count;
         this.liked = liked;
+        this.count = count;
+        this.lastSeen = lastSeen;
+    }
+
+    public FireBaseCount(String url, String id) {
+        this.id = id;
+        this.url = url;
+    }
+
+    public FireBaseCount(String id, String url, String name) {
+        this.id = id;
+        this.url = url;
+        this.name = name;
     }
 
     public FireBaseCount ()
@@ -61,15 +67,27 @@ public class FireBaseCount {
         this.url = url;
     }
 
-    public int getCount() {
+    public String getLiked() {
+        return liked;
+    }
+
+    public void setLiked(String liked) {
+        this.liked = liked;
+    }
+
+    public String getCount() {
         return count;
     }
 
-    public void setCount(int count) {
+    public void setCount(String count) {
         this.count = count;
     }
 
-    public boolean isLiked() { return liked; }
+    public String getLastSeen() {
+        return lastSeen;
+    }
 
-    public void setLiked(boolean liked) { this.liked = liked; }
+    public void setLastSeen(String lastSeen) {
+        this.lastSeen = lastSeen;
+    }
 }
