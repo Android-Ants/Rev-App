@@ -1,7 +1,6 @@
 package com.example.galleryapp.fragments;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +13,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.galleryapp.ImagesViewModel;
 import com.example.galleryapp.Randomize;
-import com.example.galleryapp.activities.ImageViewActivity;
 import com.example.galleryapp.adapters.ImagesRvAdapter;
 import com.example.galleryapp.databinding.FragmentHomeBinding;
 import com.example.galleryapp.models.ModelImage;
@@ -53,34 +51,8 @@ public class HomeFragment extends Fragment {
 
         this.imagesViewModel = new ViewModelProvider(this).get(ImagesViewModel.class);
         imagesViewModel.initializeModel();
-
-
-
-        // trial images
-        //all the frontend as well as the adapters done
-        //TODO: data from drive needed to be replaced here
-        data = new ArrayList<>();
-        data.add(new ModelImage("https://picsum.photos/id/0/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/1/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/2/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/3/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/4/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/5/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/6/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/7/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/8/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/9/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/10/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/11/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/12/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/13/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/14/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/15/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/16/200/200"));
-        data.add(new ModelImage("https://picsum.photos/id/17/800/1200"));
-        data.add(new ModelImage("https://picsum.photos/id/18/800/1200"));
-        data.add(new ModelImage("https://picsum.photos/id/19/800/1200"));
-        data.add(new ModelImage("https://picsum.photos/id/20/800/1200"));
+        imagesViewModel.fetchingLikedImages();
+        data = new ArrayList<>(imagesViewModel.getImagesList());
 
 
         ArrayList<ModelImage> randomData = obj.getRandomized(data);
@@ -97,11 +69,35 @@ public class HomeFragment extends Fragment {
         return binding.getRoot();
     }
 
-    public static void singleView(int i) {
-        Intent intent = new Intent(context, ImageViewActivity.class);
-        intent.putExtra("position",i);
-
-        context.startActivity(intent);
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
     }
-
 }
+
+
+
+// trial images
+//        data = new ArrayList<>();
+//        data.add(new ModelImage("https://picsum.photos/id/0/200/200"));
+//        data.add(new ModelImage("https://picsum.photos/id/1/200/200"));
+//        data.add(new ModelImage("https://picsum.photos/id/2/200/200"));
+//        data.add(new ModelImage("https://picsum.photos/id/3/200/200"));
+//        data.add(new ModelImage("https://picsum.photos/id/4/200/200"));
+//        data.add(new ModelImage("https://picsum.photos/id/5/200/200"));
+//        data.add(new ModelImage("https://picsum.photos/id/6/200/200"));
+//        data.add(new ModelImage("https://picsum.photos/id/7/200/200"));
+//        data.add(new ModelImage("https://picsum.photos/id/8/200/200"));
+//        data.add(new ModelImage("https://picsum.photos/id/9/200/200"));
+//        data.add(new ModelImage("https://picsum.photos/id/10/200/200"));
+//        data.add(new ModelImage("https://picsum.photos/id/11/200/200"));
+//        data.add(new ModelImage("https://picsum.photos/id/12/200/200"));
+//        data.add(new ModelImage("https://picsum.photos/id/13/200/200"));
+//        data.add(new ModelImage("https://picsum.photos/id/14/200/200"));
+//        data.add(new ModelImage("https://picsum.photos/id/15/200/200"));
+//        data.add(new ModelImage("https://picsum.photos/id/16/200/200"));
+//        data.add(new ModelImage("https://picsum.photos/id/17/800/1200"));
+//        data.add(new ModelImage("https://picsum.photos/id/18/800/1200"));
+//        data.add(new ModelImage("https://picsum.photos/id/19/800/1200"));
+//        data.add(new ModelImage("https://picsum.photos/id/20/800/1200"));
+//

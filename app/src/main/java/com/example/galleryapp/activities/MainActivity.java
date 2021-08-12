@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -19,6 +20,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.galleryapp.ApiCalls;
+import com.example.galleryapp.App;
+import com.example.galleryapp.ImagesViewModel;
 import com.example.galleryapp.R;
 import com.example.galleryapp.classes.FireBaseCount;
 import com.example.galleryapp.databinding.ActivityMainBinding;
@@ -53,12 +56,19 @@ public class MainActivity extends AppCompatActivity {
     private FireBaseCount fireBaseCount = new FireBaseCount();
     private ProgressDialog progressDialog;
     private ApiCalls apiCalls ;
+    private ImagesViewModel imagesViewModel;
+    private Context context = MainActivity.this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        App.setContext(MainActivity.this);
+
+        this.imagesViewModel = new ViewModelProvider(this).get(ImagesViewModel.class);
+        imagesViewModel.initializeModel();
 
         apiCalls = new ApiCalls(MainActivity.this);
         apiCalls.get_bearer_token();
@@ -71,13 +81,10 @@ public class MainActivity extends AppCompatActivity {
             editor.commit();
         }
 
-        if ( !sharedPreferences.getString("fetch","").equalsIgnoreCase("no") ) {
+        if ( !sharedPreferences.getString("fetch","").equalsIgnoreCase("yes") ) {
             fetchingAllPhotos();
             editor.putString("fetch","no");
         }
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, new HomeFragment(MainActivity.this))
-                .commit();
         binding.bottomNavigationView.setSelectedItemId(R.id.navigation_home);
         binding.bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
@@ -86,28 +93,34 @@ public class MainActivity extends AppCompatActivity {
 
                     case R.id.navigation_favourite:
                         getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.fragment_container, new FavoritesFragment())
+                                .replace(R.id.fragment_container, new FavoritesFragment(MainActivity.this))
                                 .commit();
+                        editor.putInt("FragmentId",R.id.navigation_favourite).commit();
                         break;
                     case R.id.navigation_recent:
                         getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.fragment_container, new RecentFragment())
                                 .commit();
+
+                        editor.putInt("FragmentId",R.id.navigation_recent).commit();
                         break;
                     case R.id.navigation_home:
                         getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.fragment_container, new HomeFragment(MainActivity.this))
                                 .commit();
+                        editor.putInt("FragmentId",R.id.navigation_home).commit();
                         break;
                     case R.id.navigation_files:
                         getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.fragment_container, new FoldersFragment(MainActivity.this, getLayoutInflater(), getApplication()))
                                 .commit();
+                        editor.putInt("FragmentId",R.id.navigation_files).commit();
                         break;
                     case R.id.navigation_setting:
                         getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.fragment_container, new SettingsFragment())
                                 .commit();
+                        editor.putInt("FragmentId",R.id.navigation_setting).commit();
                         break;
                 }
                 return true;
@@ -240,7 +253,12 @@ public class MainActivity extends AppCompatActivity {
                             }
                             progressDialog.dismiss();
                             Toast.makeText(MainActivity.this, "Profile fetching completed", Toast.LENGTH_SHORT).show();
-                        } catch (JSONException e) {
+
+                            Thread.sleep(1000);
+                            getSupportFragmentManager().beginTransaction()
+                                    .replace(R.id.fragment_container, new HomeFragment(MainActivity.this))
+                                    .commit();
+                        } catch (JSONException | InterruptedException e) {
                             e.printStackTrace();
                         }
                     }
@@ -262,12 +280,45 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        switch (sharedPreferences.getInt("FragmentId",0)){
+            case R.id.navigation_favourite:
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new FavoritesFragment(MainActivity.this))
+                        .commit();
+                break;
+            case R.id.navigation_recent:
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new RecentFragment())
+                        .commit();
+                break;
+            case R.id.navigation_home:
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new HomeFragment(MainActivity.this))
+                        .commit();
+                break;
+            case R.id.navigation_files:
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new FoldersFragment(MainActivity.this, getLayoutInflater(), getApplication()))
+                        .commit();
+                break;
+            case R.id.navigation_setting:
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new SettingsFragment())
+                        .commit();
+                break;
+        }
+    }
+
+    @Override
     protected void onDestroy() {
 
         super.onDestroy();
 
         editor.putString("fetch","yes");
         editor.putString("clear","");
+        editor.putInt("FragmentId",0);
         editor.commit();
     }
 }

@@ -2,6 +2,7 @@ package com.example.galleryapp.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.galleryapp.R;
+import com.example.galleryapp.activities.ImageViewActivity;
 import com.example.galleryapp.databinding.RvImagesBinding;
-import com.example.galleryapp.fragments.HomeFragment;
 import com.example.galleryapp.models.ModelImage;
 
 import org.jetbrains.annotations.NotNull;
@@ -22,13 +23,14 @@ import java.util.ArrayList;
 
 public class ImagesRvAdapter extends RecyclerView.Adapter<ImagesRvAdapter.ImageHolder> {
 
-    private Context context;
+    private static Context context;
+    private static ImageViewActivity activity;
     private ArrayList<ModelImage> data  =  new ArrayList<>();
     LayoutInflater inflater;
     RvImagesBinding binding;
     private static int resumePosition;
 
-    public ImagesRvAdapter(Context context,ArrayList<ModelImage> data)
+    public ImagesRvAdapter(Context context, ArrayList<ModelImage> data)
     {
         this.data = data;
         this.context = context;
@@ -47,10 +49,9 @@ public class ImagesRvAdapter extends RecyclerView.Adapter<ImagesRvAdapter.ImageH
         resumePosition = position*3 + 1;
         RequestOptions options = new RequestOptions()
                 .centerCrop()
-                .placeholder(R.mipmap.ic_launcher)
-                .error(R.mipmap.ic_launcher);
+                .placeholder(R.mipmap.ic_launcher);
 
-        Glide.with(context).load(data.get(resumePosition-1).getUrl().replace("&export=download","").replace("","")).apply(options).into(binding.imageView0);
+        Glide.with(context).load(data.get(resumePosition-1).getUrl()).apply(options).into(binding.imageView0);
         if(!(resumePosition>=data.size()))
         {
             Glide.with(context).load(data.get(resumePosition).getUrl()).apply(options).into(binding.imageView1);
@@ -63,19 +64,19 @@ public class ImagesRvAdapter extends RecyclerView.Adapter<ImagesRvAdapter.ImageH
         binding.imageView0.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                HomeFragment.singleView(position*3);
+                singleView(position*3);
             }
         });
         binding.imageView1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                HomeFragment.singleView(position*3+1);
+                singleView(position*3+1);
             }
         });
         binding.imageView2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                HomeFragment.singleView(position*3+2);
+                singleView(position*3+2);
             }
         });
 
@@ -95,6 +96,12 @@ public class ImagesRvAdapter extends RecyclerView.Adapter<ImagesRvAdapter.ImageH
         return count;
     }
 
+    public static void singleView(int i) {
+        Intent intent = new Intent(context, ImageViewActivity.class);
+        intent.putExtra("position",i);
+        context.startActivity(intent);
+        //activity.finish();
+    }
 
     public class ImageHolder extends RecyclerView.ViewHolder {
         public ImageHolder(@NonNull RvImagesBinding binding) {

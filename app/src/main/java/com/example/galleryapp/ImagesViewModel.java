@@ -19,23 +19,22 @@ public class ImagesViewModel extends ViewModel {
 
     final private FirebaseDatabase database = FirebaseDatabase.getInstance();
     final private DatabaseReference reference = database.getReference().child("Photos"+"Tarun");
-    private List<ModelImage> images =  new ArrayList<>();
-    private static List<ModelImage> imageList =  new ArrayList<>();
-    private static String imageLiked;
+    final private DatabaseReference referenceLiked = database.getReference().child("Photos"+"Tarun"+"Liked");
+    private static List<ModelImage> images =  new ArrayList<>();
+    private static List<ModelImage> imagesLiked =  new ArrayList<>();
+    private static String likedStatus;
+    public static String count;
     private static boolean exist = false;
 
     public void initializeModel()
     {
-        clearList();
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                //images.clear();
-                int i=0;
+                images.clear();
                 for (DataSnapshot snapshot1: snapshot.getChildren())
                 {
                     images.add(snapshot1.getValue(ModelImage.class));
-                    addToImagesList(snapshot1.getValue(ModelImage.class));
                 }
             }
 
@@ -46,33 +45,16 @@ public class ImagesViewModel extends ViewModel {
         });
     }
 
-    private void clearList(){
-        imageList.clear();
-    }
-    private void addToImagesList(ModelImage d){
-        this.imageList.add(d);
-    }
-
-
-    public List<ModelImage> getImagesList()
+    public void fetchingLikedImages()
     {
-        return this.imageList;
-    }
-
-    public void setLikedStatus(String id,String status)
-    {
-        Map<String,Object> like = new HashMap<>();
-        like.put(id,status);
-        imageLiked = status;
-        reference.child(id).updateChildren(like);
-    }
-
-    public String getLikedStatus(String id)
-    {
-        reference.child(id).addValueEventListener(new ValueEventListener() {
+        reference.orderByChild("liked").equalTo("true").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                imageLiked = snapshot.getValue(ModelImage.class).isLiked();
+                imagesLiked.clear();
+                for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                    imagesLiked.add(snapshot1.getValue(ModelImage.class));
+                    System.out.println(snapshot1.getValue(ModelImage.class).getName());
+                }
             }
 
             @Override
@@ -80,8 +62,40 @@ public class ImagesViewModel extends ViewModel {
 
             }
         });
-        return imageLiked;
     }
+
+
+    public List<ModelImage> getImagesList()
+    {
+        System.out.println(images);
+        return images;
+    }
+
+    public void addLiked(ModelImage img){
+        imagesLiked.add(img);
+    }
+
+    public void removeLiked(ModelImage img){
+        imagesLiked.remove(img);
+    }
+
+    public List<ModelImage> getLikedList()
+    {
+        System.out.println(imagesLiked);
+        return imagesLiked;
+    }
+
+
+
+    public void setLikedStatus(String id,String status)
+    {
+        Map<String,Object> like = new HashMap<>();
+        like.put("liked",status);
+        likedStatus = status;
+        reference.child(id).updateChildren(like);
+    }
+
+
     public void call(String id)
     {
         reference.child(id);
@@ -104,5 +118,12 @@ public class ImagesViewModel extends ViewModel {
     public boolean isExist(){
         System.out.println(exist+"");
         return exist;
+    }
+
+    public void updateCount(String id, String count) {
+        Map<String,Object> countMap = new HashMap<>();
+        countMap.put("count",count);
+        this.count = count;
+        reference.child(id).updateChildren(countMap);
     }
 }
