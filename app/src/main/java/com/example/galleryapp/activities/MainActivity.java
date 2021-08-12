@@ -24,18 +24,13 @@ import com.example.galleryapp.App;
 import com.example.galleryapp.ImagesViewModel;
 import com.example.galleryapp.R;
 import com.example.galleryapp.classes.FireBaseCount;
-
 import com.example.galleryapp.classes.ParentFireBase;
-
 import com.example.galleryapp.databinding.ActivityMainBinding;
 import com.example.galleryapp.fragments.FavoritesFragment;
 import com.example.galleryapp.fragments.FoldersFragment;
 import com.example.galleryapp.fragments.HomeFragment;
 import com.example.galleryapp.fragments.RecentFragment;
 import com.example.galleryapp.fragments.SettingsFragment;
-
-import com.example.galleryapp.fragments.FoldersFragment;
-
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -204,7 +199,6 @@ public class MainActivity extends AppCompatActivity {
                                 Log.d("jjjjjjjjjj", baseCounts.get(0).getId());
 
 
-                                list.add(fireBaseCount);
 
                                 uploadToFirebase(fireBaseCount);
                             }
@@ -264,8 +258,6 @@ public class MainActivity extends AppCompatActivity {
                                 baseCounts.add(fireBaseCount);
 
 
-                                list.add(fireBaseCount);
-
                                 uploadToFirebase(fireBaseCount);
                             }
                             jpegFileSearch();
@@ -321,7 +313,6 @@ public class MainActivity extends AppCompatActivity {
                                 }
 
 
-                                list.add(fireBaseCount);
                                 baseCounts.add(fireBaseCount);
                                 Log.d("jjjjjjjjjjj",String.valueOf(0));
                                 Log.d("jjjjjjjjjj", baseCounts.get(0).getId());
