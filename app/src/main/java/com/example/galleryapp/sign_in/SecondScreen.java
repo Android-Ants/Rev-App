@@ -43,6 +43,7 @@ public class SecondScreen extends AppCompatActivity implements View.OnClickListe
 
         sharedPreferences = getSharedPreferences("Drive", MODE_PRIVATE);
         editor = sharedPreferences.edit();
+
     }
 
 
@@ -57,6 +58,7 @@ public class SecondScreen extends AppCompatActivity implements View.OnClickListe
                     binding.editText.setError("Enter the code");
                 } else {
                     String code = binding.editText.getText().toString();
+
                     get_bearer_token(code);
                 }
                 break;
@@ -83,10 +85,6 @@ public class SecondScreen extends AppCompatActivity implements View.OnClickListe
                     Intent intent = new Intent(SecondScreen.this, MainActivity.class);
                     startActivity(intent);
                     finish();
-//                    ApiCalls apiCalls = new ApiCalls(SecondScreen.this);
-//                    List<File> fileList =  apiCalls.get_files_list();
-//                    Log.d(TAG,String.valueOf(fileList.size()));
-
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

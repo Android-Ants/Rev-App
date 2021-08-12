@@ -1,42 +1,73 @@
 package com.example.galleryapp.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
-import com.example.galleryapp.R;
+import com.example.galleryapp.ImagesViewModel;
+import com.example.galleryapp.Randomize;
+import com.example.galleryapp.adapters.ImagesRvAdapter;
+import com.example.galleryapp.databinding.FragmentFavoritesBinding;
+import com.example.galleryapp.models.ModelImage;
+
+import java.util.ArrayList;
 
 
 public class FavoritesFragment extends Fragment {
 
-    ImageView imageView;
+    private Context context;
+    FragmentFavoritesBinding binding;
+    ImagesViewModel viewModel;
+    ArrayList<ModelImage> data;
+    private ImagesRvAdapter imagesRvAdapter;
 
     public FavoritesFragment() {
         // Required empty public constructor
+    }
+
+    public FavoritesFragment(Context context) {
+        this.context = context;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        this.viewModel = new ViewModelProvider(this).get(ImagesViewModel.class);
+        viewModel.fetchingLikedImages();
+        data = new ArrayList<>(viewModel.getLikedList());
+
+        Randomize obj = new Randomize();
+        ArrayList<ModelImage> randomData = obj.getRandomized(data);
+        imagesRvAdapter = new ImagesRvAdapter(context, randomData);
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_favorites,container,false);
-        imageView = view.findViewById(R.id.trial_image);
-        RequestOptions options = new RequestOptions()
-                .centerCrop()
-                .placeholder(R.mipmap.ic_launcher)
-                .error(R.mipmap.ic_launcher);
-        Glide.with(this).load("https://picsum.photos/id/13/200/200").into(imageView);
-        return view;
+        binding = FragmentFavoritesBinding.inflate(inflater,container,false);
+        binding.favouritesRv.setLayoutManager(new LinearLayoutManager(context));
+        binding.favouritesRv.setAdapter(imagesRvAdapter);
+        return binding.getRoot();
     }
+
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        data.clear();
+//        ArrayList<ModelImage> refresh = new ArrayList<>(viewModel.getLikedList());
+//        for (ModelImage i: refresh) {
+//            data.add(i);
+//        }
+//        Randomize obj = new Randomize(data);
+//        obj.randomize();
+//        imagesRvAdapter.notifyDataSetChanged();
+//    }
 }
