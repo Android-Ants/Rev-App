@@ -1,9 +1,7 @@
 package com.example.galleryapp.fragments;
 
 import android.app.Application;
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,17 +10,10 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.example.galleryapp.FileViewModal;
 import com.example.galleryapp.adapters.FilesChildRecyclerAdapter;
-import com.example.galleryapp.classes.ChildFolder;
-import com.example.galleryapp.classes.ChildFolderResponse;
 import com.example.galleryapp.adapters.FileRecyclerAdapter;
-import com.example.galleryapp.classes.Folder;
-import com.example.galleryapp.classes.FolderResponse;
 import com.example.galleryapp.classes.ParentFireBase;
 import com.example.galleryapp.databinding.FragmentFoldersBinding;
 import com.google.firebase.database.ChildEventListener;
@@ -36,7 +27,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FoldersFragment extends Fragment implements FileRecyclerAdapter.Get_child , FilesChildRecyclerAdapter.Get_child{
+public class FoldersFragment extends Fragment implements FileRecyclerAdapter.On_Click_Listener_getChild, FilesChildRecyclerAdapter.Get_child{
 
     private FragmentFoldersBinding binding;
     private Context context;
@@ -126,7 +117,7 @@ public class FoldersFragment extends Fragment implements FileRecyclerAdapter.Get
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        fileRecyclerAdapter = new FileRecyclerAdapter(context,parentFireBases , this::child_list);
+        fileRecyclerAdapter = new FileRecyclerAdapter(context,parentFireBases , this,"folder");
         binding.recyclerView.setAdapter(fileRecyclerAdapter);
         return binding.getRoot();
     }

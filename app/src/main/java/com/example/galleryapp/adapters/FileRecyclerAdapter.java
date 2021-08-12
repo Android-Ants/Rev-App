@@ -9,7 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.galleryapp.R;
-import com.example.galleryapp.classes.Folder;
 import com.example.galleryapp.classes.ParentFireBase;
 import com.example.galleryapp.databinding.RecyclerFileListBinding;
 
@@ -23,13 +22,24 @@ public class FileRecyclerAdapter extends RecyclerView.Adapter<FileRecyclerAdapte
     private List<ParentFireBase> parentFireBases = new ArrayList<>();
     private LayoutInflater layoutInflater;
     private RecyclerFileListBinding binding;
-    private Get_child get_child;
+    private On_Click_Listener_getChild onClickListener;
+    private On_Click_Listener_Radio_Button on_click_listener_radio_button;
+    private String fragment;
 
-    public FileRecyclerAdapter (Context context , List<ParentFireBase> parentFireBases, Get_child get_child)
+    public FileRecyclerAdapter (Context context , List<ParentFireBase> parentFireBases, On_Click_Listener_getChild onClickListener, String fragment)
     {
         layoutInflater = LayoutInflater.from(context);
         this.parentFireBases = parentFireBases;
-        this.get_child = get_child;
+        this.onClickListener = onClickListener;
+        this.fragment = fragment;
+    }
+
+    public FileRecyclerAdapter (Context context , List<ParentFireBase> parentFireBases, On_Click_Listener_Radio_Button onClickListener, String fragment)
+    {
+        layoutInflater = LayoutInflater.from(context);
+        this.parentFireBases = parentFireBases;
+        this.on_click_listener_radio_button = onClickListener;
+        this.fragment = fragment;
     }
 
     @NonNull
@@ -48,6 +58,12 @@ public class FileRecyclerAdapter extends RecyclerView.Adapter<FileRecyclerAdapte
             binding.numberOfPhotos.setText(String.valueOf(parentFireBases.get(position).getChilds().size()) + " photo");
         else
         binding.numberOfPhotos.setText(String.valueOf(parentFireBases.get(position).getChilds().size()) + " photos");
+
+        if ( fragment.equalsIgnoreCase("settings") )
+        {
+            binding.radio.setVisibility(View.VISIBLE);
+        }
+
     }
 
     @Override
@@ -60,18 +76,44 @@ public class FileRecyclerAdapter extends RecyclerView.Adapter<FileRecyclerAdapte
         public FileViewHolder(@NonNull @NotNull RecyclerFileListBinding binding ) {
             super(binding.getRoot());
             //binding.textView.setOnClickListener(this::onClick);
+            binding.radio.setOnClickListener(this::onClick);
         }
 
         @Override
         public void onClick(View v) {
+
+            if ( fragment.equalsIgnoreCase("folder") )
             if ( v.getId() == R.id.textView )
             {
-                get_child.child_list(getAdapterPosition());
+                onClickListener.child_list(getAdapterPosition());
             }
+
+            if ( fragment.equalsIgnoreCase("settings") )
+                if (v.getId() == R.id.radio)
+                {
+                    if ( binding.radio.isChecked() )
+                    {
+                        binding.radio.setChecked(false);
+                    }
+                    else
+                    {
+                        binding.radio.setChecked(true);
+                    }
+                    on_click_listener_radio_button.radio_button_clicked(getAdapterPosition(), binding.radio.isChecked());
+                }
+
         }
     }
 
-    public interface Get_child{
+    public interface On_Click_Listener_getChild {
+
         void child_list( int a );
+
+    }
+
+    public interface On_Click_Listener_Radio_Button{
+
+        void radio_button_clicked( int a , Boolean checked);
+
     }
 }

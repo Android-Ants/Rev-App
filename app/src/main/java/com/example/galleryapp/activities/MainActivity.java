@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.navigation_setting:
                         getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.fragment_container, new SettingsFragment())
+                                .replace(R.id.fragment_container, new SettingsFragment(MainActivity.this,parentId.size()))
                                 .commit();
                         break;
                 }
