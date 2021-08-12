@@ -3,6 +3,7 @@ package com.example.galleryapp.classes;
 public class FireBaseCount {
 
     private String id;
+    private String parentsId;
     private String url = "";
     private String name = "";
     private String liked = "false";
@@ -32,6 +33,14 @@ public class FireBaseCount {
     public FireBaseCount ()
     {
 
+    }
+
+    public String getParentsId() {
+        return parentsId;
+    }
+
+    public void setParentsId(String parentsId) {
+        this.parentsId = parentsId;
     }
 
     public String getName() {

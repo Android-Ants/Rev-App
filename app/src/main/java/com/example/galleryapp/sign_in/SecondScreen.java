@@ -41,12 +41,11 @@ public class SecondScreen extends AppCompatActivity implements View.OnClickListe
         setContentView(binding.getRoot());
         binding.signIn.setOnClickListener(this::onClick);
 
-        sharedPreferences = getSharedPreferences("Drive",MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences("Drive", MODE_PRIVATE);
         editor = sharedPreferences.edit();
 
-            //ApiCalls.get_bearer_token();
-
     }
+
 
     @Override
     public void onClick(View v) {
@@ -55,24 +54,19 @@ public class SecondScreen extends AppCompatActivity implements View.OnClickListe
 
             case R.id.sign_in:
 
-                if (binding.editText.getText().toString().isEmpty())
-                {
+                if (binding.editText.getText().toString().isEmpty()) {
                     binding.editText.setError("Enter the code");
-                }
-                else
-                {
+                } else {
                     String code = binding.editText.getText().toString();
 
                     get_bearer_token(code);
                 }
-
                 break;
 
         }
     }
 
-    public void get_bearer_token( String code )
-    {
+    public void get_bearer_token(String code) {
         RequestQueue queue = Volley.newRequestQueue(this);
 
         StringRequest request = new StringRequest(Request.Method.POST, "https://accounts.google.com/o/oauth2/token", new Response.Listener<String>() {
@@ -81,14 +75,14 @@ public class SecondScreen extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onResponse(String response) {
 
-                Log.d(TAG,response);
+                Log.d(TAG, response);
                 try {
                     JSONObject jsonObject = new JSONObject(response);
-                    editor.putString("bearer token" ,jsonObject.get("access_token").toString());
-                    editor.putString("refresh token" ,jsonObject.get("refresh_token").toString());
+                    editor.putString("bearer token", jsonObject.get("access_token").toString());
+                    editor.putString("refresh token", jsonObject.get("refresh_token").toString());
                     editor.commit();
 
-                    Intent intent = new Intent(SecondScreen.this,MainActivity.class);
+                    Intent intent = new Intent(SecondScreen.this, MainActivity.class);
                     startActivity(intent);
                     finish();
                 } catch (JSONException e) {
@@ -100,19 +94,17 @@ public class SecondScreen extends AppCompatActivity implements View.OnClickListe
             public void onErrorResponse(VolleyError error) {
 
 
-
             }
-        })
-        {
+        }) {
 
             @Nullable
             @org.jetbrains.annotations.Nullable
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
 
-                Map<String,String> map = new HashMap<String, String>();
-                map.put("code",code);
-                map.put("client_id",getString(R.string.client_id));
+                Map<String, String> map = new HashMap<String, String>();
+                map.put("code", code);
+                map.put("client_id", getString(R.string.client_id));
                 map.put("redirect_uri", getString(R.string.redirect_uri));
                 map.put("grant_type", "authorization_code");
                 return map;

@@ -8,9 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.galleryapp.R;
 import com.example.galleryapp.activities.MainActivity;
 import com.example.galleryapp.databinding.ActivityFirstScreenBinding;
