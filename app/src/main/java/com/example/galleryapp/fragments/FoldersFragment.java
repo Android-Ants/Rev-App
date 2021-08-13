@@ -116,9 +116,9 @@ public class FoldersFragment extends Fragment implements FileRecyclerAdapter.On_
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        binding.recyclerView.setLayoutManager(new LinearLayoutManager(context));
         fileRecyclerAdapter = new FileRecyclerAdapter(context,parentFireBases , this,"folder");
         binding.recyclerView.setAdapter(fileRecyclerAdapter);
+        binding.recyclerView.setLayoutManager(new LinearLayoutManager(context));
         return binding.getRoot();
     }
 
