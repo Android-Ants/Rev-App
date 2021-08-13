@@ -14,16 +14,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GalleryApp">
         <activity android:name=".activities.Trialsd">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity android:name=".activities.ImageViewActivity"
             android:exported="true" />
         <activity android:name=".sign_in.SecondScreen" />
         <activity android:name=".sign_in.FirstScreen">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity android:name=".trial.SignInActivity"></activity>
         <activity android:name=".activities.MainActivity">
