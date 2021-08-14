@@ -1,39 +1,68 @@
 package com.example.galleryapp.fragments;
 
+import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.bumptech.glide.Glide;
-import com.example.galleryapp.R;
+import com.example.galleryapp.ImagesViewModel;
+import com.example.galleryapp.adapters.ImagesRvAdapter;
+import com.example.galleryapp.classes.FireBaseCount;
 import com.example.galleryapp.databinding.FragmentRecentBinding;
+
+import java.util.ArrayList;
 
 
 public class RecentFragment extends Fragment {
 
     FragmentRecentBinding fragmentRecentBinding;
+    ImagesViewModel viewModel;
+    Context context;
+    ArrayList<FireBaseCount> data;
+    private ImagesRvAdapter imagesRvAdapter;
+
+    public RecentFragment(Context context) {
+        this.context = context;
+    }
 
     public RecentFragment ()
     {
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        this.viewModel = new ViewModelProvider(this).get(ImagesViewModel.class);
+        viewModel.initializingDb(context);
+        viewModel.initializeArrangement((ArrayList<FireBaseCount>) viewModel.getImagesList());
+        data = (ArrayList<FireBaseCount>) viewModel.getArrangedCount();
+
+        imagesRvAdapter = new ImagesRvAdapter(context,data);
+
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         fragmentRecentBinding = FragmentRecentBinding.inflate(inflater,container,false);
+        fragmentRecentBinding.recentRv.setLayoutManager(new LinearLayoutManager(context));
+        fragmentRecentBinding.recentRv.setAdapter(imagesRvAdapter);
 
-        Glide.with(fragmentRecentBinding.imageView1).asBitmap()
-                .load("https://drive.google.com/uc?id=15zhGEns0_U3KeI6UuxejFzGmRUOq_ATR&export=download")
-                .into(fragmentRecentBinding.imageView1);
-        Glide.with(fragmentRecentBinding.imageView2)
-                .asBitmap()
-                .load("https://drive.google.com/file/d/1_SWc5X9Xw_qlItmrDZKLc8loc8_YReLQ/view")
-                .into(fragmentRecentBinding.imageView2);
+        viewModel.initializeArrangement((ArrayList<FireBaseCount>) viewModel.getImagesList());
+        data = (ArrayList<FireBaseCount>) viewModel.getArrangedCount();
 
-        return inflater.inflate(R.layout.fragment_recent, container, false);
+        imagesRvAdapter.notifyDataSetChanged();
+
+        return fragmentRecentBinding.getRoot();
     }
 }

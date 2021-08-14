@@ -13,8 +13,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.example.galleryapp.ImagesViewModel;
 import com.example.galleryapp.Randomize;
 import com.example.galleryapp.adapters.ImagesRvAdapter;
+import com.example.galleryapp.classes.FireBaseCount;
 import com.example.galleryapp.databinding.FragmentFavoritesBinding;
-import com.example.galleryapp.models.ModelImage;
 
 import java.util.ArrayList;
 
@@ -24,7 +24,9 @@ public class FavoritesFragment extends Fragment {
     private Context context;
     FragmentFavoritesBinding binding;
     ImagesViewModel viewModel;
-    ArrayList<ModelImage> data;
+    ArrayList<FireBaseCount> data;
+    ArrayList<FireBaseCount> raw = new ArrayList<>();
+    ArrayList<String> Ids;
     private ImagesRvAdapter imagesRvAdapter;
 
     public FavoritesFragment() {
@@ -40,12 +42,22 @@ public class FavoritesFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         this.viewModel = new ViewModelProvider(this).get(ImagesViewModel.class);
-        viewModel.fetchingLikedImages();
-        data = new ArrayList<>(viewModel.getLikedList());
+        viewModel.initializingDb(context);
+        data = (ArrayList<FireBaseCount>) viewModel.getImagesList();
+        Ids = new ArrayList<>(viewModel.getLikedListIds());
+        if(raw!=null)
+        raw.clear();
+        if(data!=null)
+        for (FireBaseCount f: data) {
+            if(Ids.contains(f.getId()))
+                raw.add(f);
+        }
+        if(raw!=null){
+            Randomize obj = new Randomize();
+            ArrayList<FireBaseCount> randomData = obj.getRandomized(raw);
 
-        Randomize obj = new Randomize();
-        ArrayList<ModelImage> randomData = obj.getRandomized(data);
-        imagesRvAdapter = new ImagesRvAdapter(context, randomData);
+            imagesRvAdapter = new ImagesRvAdapter(context, randomData);
+        }
 
     }
 

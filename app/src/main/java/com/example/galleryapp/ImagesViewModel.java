@@ -1,9 +1,15 @@
 package com.example.galleryapp;
 
+import android.content.Context;
+import android.os.Build;
+
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.galleryapp.models.ModelImage;
+import com.example.galleryapp.classes.FireBaseCount;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -11,90 +17,59 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
+
+import io.paperdb.Paper;
 
 public class ImagesViewModel extends ViewModel {
 
     final private FirebaseDatabase database = FirebaseDatabase.getInstance();
     final private DatabaseReference reference = database.getReference().child("Photos"+"Tarun");
     final private DatabaseReference referenceLiked = database.getReference().child("Photos"+"Tarun"+"Liked");
-    private static List<ModelImage> images =  new ArrayList<>();
-    private static List<ModelImage> imagesLiked =  new ArrayList<>();
+    private static List<FireBaseCount> images;
+    private static List<FireBaseCount> imagesLiked;
     private static String likedStatus;
     public static String count;
     private static boolean exist = false;
+    private MutableLiveData<List<FireBaseCount>> imagesList;
+    private FileRepository fileRepository;
+    private List<String> imagesLikedId;
+    private static ArrayList<FireBaseCount> arrangedCount;
 
-    public void initializeModel()
-    {
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                images.clear();
-                for (DataSnapshot snapshot1: snapshot.getChildren())
-                {
-                    images.add(snapshot1.getValue(ModelImage.class));
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+    public void initializingDb(Context context){
+        fileRepository = new FileRepository(context);
+        imagesList = fileRepository.get_images();
+        imagesLikedId = fileRepository.get_images_liked();
     }
 
-    public void fetchingLikedImages()
-    {
-        reference.orderByChild("liked").equalTo("true").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                imagesLiked.clear();
-                for (DataSnapshot snapshot1 : snapshot.getChildren()) {
-                    imagesLiked.add(snapshot1.getValue(ModelImage.class));
-                    System.out.println(snapshot1.getValue(ModelImage.class).getName());
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+    public LiveData<List<FireBaseCount>> getAllImages(){
+        return imagesList;
     }
 
 
-    public List<ModelImage> getImagesList()
+
+    public List<FireBaseCount> getImagesList()
     {
-        System.out.println(images);
+        images = new ArrayList<>(Objects.requireNonNull(imagesList.getValue())) ;
         return images;
     }
 
-    public void addLiked(ModelImage img){
-        imagesLiked.add(img);
+    public void addLiked(FireBaseCount img){
+        Paper.book("Liked").write(img.getId(),"true");
+        imagesLikedId.add(img.getId());
     }
 
-    public void removeLiked(ModelImage img){
-        imagesLiked.remove(img);
+    public void removeLiked(FireBaseCount img){
+        Paper.book("Liked").delete(img.getId());
+        imagesLikedId.remove(img.getId());
     }
 
-    public List<ModelImage> getLikedList()
+    public List<String> getLikedListIds()
     {
         System.out.println(imagesLiked);
-        return imagesLiked;
+        return imagesLikedId;
     }
-
-
-
-    public void setLikedStatus(String id,String status)
-    {
-        Map<String,Object> like = new HashMap<>();
-        like.put("liked",status);
-        likedStatus = status;
-        reference.child(id).updateChildren(like);
-    }
-
 
     public void call(String id)
     {
@@ -120,10 +95,34 @@ public class ImagesViewModel extends ViewModel {
         return exist;
     }
 
-    public void updateCount(String id, String count) {
-        Map<String,Object> countMap = new HashMap<>();
-        countMap.put("count",count);
-        this.count = count;
-        reference.child(id).updateChildren(countMap);
+    public void updateCount(FireBaseCount f, String count) {
+        Paper.book("Counts").write(f.getId(),count);
+        images.get(images.indexOf(f)).setCount(count);
+        ImagesViewModel.count = count;
+    }
+
+    public String getCount(String id){
+        count = Paper.book("Counts").read(id);
+        if(count==null)return 0+"";
+        return count;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public void initializeArrangement(ArrayList<FireBaseCount> fireBaseCounts){
+        ArrayList r = new ArrayList();
+        for (FireBaseCount f: fireBaseCounts) {
+            f.setCount(getCount(f.getId()));
+            r.add(f);
+        }
+        r.sort(new CountSorter());
+        setArrangedCount(r);
+    }
+
+    public void setArrangedCount(ArrayList<FireBaseCount> fireBaseCounts){
+        arrangedCount = new ArrayList<>(fireBaseCounts);
+    }
+
+    public ArrayList<FireBaseCount> getArrangedCount() {
+        return arrangedCount;
     }
 }

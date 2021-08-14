@@ -8,16 +8,18 @@ import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.galleryapp.ImagesViewModel;
 import com.example.galleryapp.Randomize;
 import com.example.galleryapp.adapters.ImagesRvAdapter;
+import com.example.galleryapp.classes.FireBaseCount;
 import com.example.galleryapp.databinding.FragmentHomeBinding;
-import com.example.galleryapp.models.ModelImage;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class HomeFragment extends Fragment {
@@ -28,7 +30,7 @@ public class HomeFragment extends Fragment {
     private ImagesRvAdapter adapter;
     private static Context context;
 
-    private static ArrayList<ModelImage> data;
+    private static List<FireBaseCount> data;
 
     private ImagesViewModel imagesViewModel;
 
@@ -50,12 +52,18 @@ public class HomeFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         this.imagesViewModel = new ViewModelProvider(this).get(ImagesViewModel.class);
-        imagesViewModel.initializeModel();
-        imagesViewModel.fetchingLikedImages();
-        data = new ArrayList<>(imagesViewModel.getImagesList());
+        imagesViewModel.initializingDb(context);
+        //data = new ArrayList<>(imagesViewModel.getImagesList());
+        imagesViewModel.getAllImages().observe(this, new Observer<List<FireBaseCount>>() {
+            @Override
+            public void onChanged(List<FireBaseCount> fireBaseCounts) {
+                data = new ArrayList<>(fireBaseCounts);
+            }
+        });
 
-
-        ArrayList<ModelImage> randomData = obj.getRandomized(data);
+        ArrayList<FireBaseCount> randomData = new ArrayList<>();
+        if(data!=null)
+                    randomData = obj.getRandomized((ArrayList<FireBaseCount>) data);
 
         adapter = new ImagesRvAdapter(context,randomData);
     }
