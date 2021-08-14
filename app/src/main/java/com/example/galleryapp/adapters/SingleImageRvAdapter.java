@@ -14,7 +14,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.galleryapp.R;
 import com.example.galleryapp.databinding.RvSingleImageBinding;
-import com.example.galleryapp.models.ModelImage;
+import com.example.galleryapp.classes.FireBaseCount;
 
 import java.util.ArrayList;
 
@@ -23,11 +23,11 @@ public class SingleImageRvAdapter extends RecyclerView.Adapter<SingleImageRvAdap
 
 
     Context context;
-    ArrayList<ModelImage> data;
+    ArrayList<FireBaseCount> data;
     RvSingleImageBinding binding;
     LayoutInflater inflater;
 
-    public SingleImageRvAdapter(Context context, ArrayList<ModelImage> data) {
+    public SingleImageRvAdapter(Context context, ArrayList<FireBaseCount> data) {
         this.context = context;
         this.data = data;
     }

@@ -1,24 +1,24 @@
 package com.example.galleryapp;
 
-import com.example.galleryapp.models.ModelImage;
+import com.example.galleryapp.classes.FireBaseCount;
 
 import java.util.ArrayList;
 
 public class Randomize {
 
-    private static ArrayList<ModelImage> rawList = new ArrayList<>();
-    private static ArrayList<ModelImage> randomizedList = new ArrayList<>();
+    private static ArrayList<FireBaseCount> rawList = new ArrayList<>();
+    private static ArrayList<FireBaseCount> randomizedList = new ArrayList<>();
 
     public  Randomize(){
 
     }
 
-    public Randomize(ArrayList<ModelImage> rawList) {
+    public Randomize(ArrayList<FireBaseCount> rawList) {
         this.rawList = rawList;
     }
 
-    public static ArrayList<ModelImage> getRandomized(){
-        ArrayList<ModelImage> processingList = new ArrayList<>();
+    public static ArrayList<FireBaseCount> getRandomized(){
+        ArrayList<FireBaseCount> processingList = new ArrayList<>();
         randomizedList.clear();
         processingList.addAll(rawList);
         while(processingList.size()!=0)
@@ -30,10 +30,9 @@ public class Randomize {
         return randomizedList;
     }
 
-    public static ArrayList<ModelImage> getRandomized(ArrayList<ModelImage> input){
-        ArrayList<ModelImage> processingList2 = new ArrayList<>();
+    public static ArrayList<FireBaseCount> getRandomized(ArrayList<FireBaseCount> input){
+        ArrayList<FireBaseCount> processingList2 = new ArrayList<>(input);
         randomizedList.clear();
-        processingList2 .addAll(input);
         while(processingList2.size()!=0)
         {
             int index = (int) (Math.random()*processingList2.size());
@@ -44,7 +43,7 @@ public class Randomize {
     }
 
     public static void randomize(){
-        ArrayList<ModelImage> newArr = new ArrayList<ModelImage>(rawList);
+        ArrayList<FireBaseCount> newArr = new ArrayList<FireBaseCount>(rawList);
         rawList.clear();
         randomizedList.clear();
         while(newArr.size()!=0)
@@ -56,7 +55,7 @@ public class Randomize {
         }
     }
 
-    public static ArrayList<ModelImage> getPrevRandomized(){
+    public static ArrayList<FireBaseCount> getPrevRandomized(){
         return randomizedList;
     }
 

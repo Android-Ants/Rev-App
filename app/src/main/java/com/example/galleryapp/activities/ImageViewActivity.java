@@ -1,5 +1,7 @@
 package com.example.galleryapp.activities;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 
@@ -11,16 +13,20 @@ import com.example.galleryapp.ImagesViewModel;
 import com.example.galleryapp.R;
 import com.example.galleryapp.Randomize;
 import com.example.galleryapp.adapters.SingleImageRvAdapter;
+import com.example.galleryapp.classes.FireBaseCount;
 import com.example.galleryapp.databinding.ActivityImageViewBinding;
-import com.example.galleryapp.models.ModelImage;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import io.paperdb.Paper;
 
 public class ImageViewActivity extends AppCompatActivity {
 
     SingleImageRvAdapter adapter;
-    ArrayList<ModelImage> data;
+    ArrayList<FireBaseCount> data;
     ActivityImageViewBinding binding;
+    SharedPreferences sharedPreferences;
     private ImagesViewModel viewModel;
     public static int x;
     public static String liked = "false";
@@ -31,12 +37,22 @@ public class ImageViewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityImageViewBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        Paper.init(this);
+
+        sharedPreferences = getSharedPreferences("Drive", Context.MODE_PRIVATE);
 
         int position = getIntent().getIntExtra("position",0);
 
         this.viewModel = new ViewModelProvider(this).get(ImagesViewModel.class);
+        viewModel.initializingDb(this);
+        List<String> s = viewModel.getLikedListIds();
+        if(sharedPreferences.getInt("FragmentId",0)==R.id.navigation_recent)
+        {
+            data = viewModel.getArrangedCount();
+        }else{
+            data = Randomize.getPrevRandomized();
+        }
 
-        data = Randomize.getPrevRandomized();
 
         adapter = new SingleImageRvAdapter(ImageViewActivity.this,data);
         binding.singleImgViewPager.setAdapter(adapter);
@@ -53,15 +69,17 @@ public class ImageViewActivity extends AppCompatActivity {
 
         if(data.get(x).getId()!=null)
         {
-            liked = data.get(x).isLiked();
-            count = Integer.parseInt(data.get(x).getCount());
+            liked = data.get(x).getLiked();
+            String scount =viewModel.getCount(data.get(x).getId());
+            if(scount!=null)
+            count = Integer.parseInt(scount);
+            else count = 0;
         }
 
         binding.seenCount.setText(count+"");
+        binding.textView2.setText(data.get(x).getName());
 
-
-        liked = data.get(x).isLiked();
-        if(liked.equals("true"))
+        if(s.contains(data.get(x).getId()))
             binding.likeButton.setImageDrawable(getDrawable(R.drawable.ic_baseline_favorite_24));
 
         binding.singleImgViewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
@@ -78,12 +96,16 @@ public class ImageViewActivity extends AppCompatActivity {
                 super.onPageSelected(position);
 
                 x = position;
+                binding.textView2.setText(data.get(x).getName());
                 if(data.get(x).getId()!=null) {
-                    liked = data.get(x).isLiked();
-                    count = Integer.parseInt(data.get(x).getCount());
+                    liked = data.get(x).getLiked();
+                    String scount =viewModel.getCount(data.get(x).getId());
+                    if(scount!=null)
+                        count = Integer.parseInt(scount);
+                    else count = 0;
                 }
                 binding.seenCount.setText(count+"");
-                if(liked.equalsIgnoreCase("true"))
+                if(s.contains(data.get(x).getId()))
                     binding.likeButton.setImageDrawable(getDrawable(R.drawable.ic_baseline_favorite_24));
                 else
                     binding.likeButton.setImageDrawable(getDrawable(R.drawable.ic_baseline_favorite_border_24));
@@ -95,12 +117,22 @@ public class ImageViewActivity extends AppCompatActivity {
                 super.onPageScrollStateChanged(state);
             }
         });
+        binding.seenCount.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                count = 0;
+                viewModel.updateCount(data.get(x),count+"");
+                data.get(x).setCount(count+"");
+                binding.seenCount.setText(count+"");
+                return true;
+            }
+        });
         binding.seenCount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 count = Integer.parseInt(data.get(x).getCount());
                 count++;
-                viewModel.updateCount(data.get(x).getId(),count+"");
+                viewModel.updateCount(data.get(x),count+"");
                 data.get(x).setCount(count+"");
                 binding.seenCount.setText(count+"");
             }
@@ -109,22 +141,22 @@ public class ImageViewActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 System.out.println(x+"dddd");
-                liked = data.get(x).isLiked();
+                liked = data.get(x).getLiked();
                 System.out.println(liked);
-                if(liked.equalsIgnoreCase("true"))
+                if(s.contains(data.get(x).getId()))
                 {
-                    viewModel.setLikedStatus(data.get(x).getId(),"false");
+                    //viewModel.setLikedStatus(data.get(x).getId(),"false");
                     data.get(x).setLiked("false");
                     binding.likeButton.setImageDrawable(getDrawable(R.drawable.ic_baseline_favorite_border_24));
                     viewModel.removeLiked(data.get(x));
                 }
                 else{
                     binding.likeButton.setImageDrawable(getDrawable(R.drawable.ic_baseline_favorite_24));
-                    viewModel.setLikedStatus(data.get(x).getId(),"true");
+                    //iewModel.setLikedStatus(data.get(x).getId(),"true");
                     data.get(x).setLiked("true");
                     viewModel.addLiked(data.get(x));
                 }
-                liked = data.get(x).isLiked();
+                liked = data.get(x).getLiked();
                 System.out.println(liked);
             }
         });

@@ -8,6 +8,9 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.galleryapp.classes.ChildFolderResponse;
 import com.example.galleryapp.classes.FolderResponse;
+import com.example.galleryapp.classes.FireBaseCount;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -87,6 +90,17 @@ public class FileRepository {
 
     public LiveData<ChildFolderResponse> getChildFileLiveData() {
         return childMutableData;
+    }
+
+    public MutableLiveData<List<FireBaseCount>> get_images() {
+        MutableLiveData<List<FireBaseCount>> images = new MutableLiveData<>();
+        images.setValue(PaperDb.returnAll());
+        return images;
+    }
+
+    public List<String> get_images_liked() {
+        List<String> images = PaperDb.returnLiked();
+        return images;
     }
 
 }
