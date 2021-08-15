@@ -3,34 +3,25 @@ package com.example.galleryapp.fragments;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.galleryapp.FetchData;
 import com.example.galleryapp.ImagesViewModel;
 import com.example.galleryapp.PaperDb;
 import com.example.galleryapp.R;
 import com.example.galleryapp.adapters.FileRecyclerAdapter;
-import com.example.galleryapp.classes.CheckBlocked;
 import com.example.galleryapp.classes.ParentFireBase;
 import com.example.galleryapp.databinding.FragmentSettingsBinding;
 import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +40,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener, 
     private FileRecyclerAdapter fileRecyclerAdapter;
     private ImagesViewModel imagesViewModel;
 
+
     public SettingsFragment() {
         // Required empty public constructor
     }
@@ -64,44 +56,24 @@ public class SettingsFragment extends Fragment implements View.OnClickListener, 
         super.onCreate(savedInstanceState);
         imagesViewModel = new ViewModelProvider(this).get(ImagesViewModel.class);
 
-        childEventListener = new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
 
-                ParentFireBase parentFireBase = snapshot.getValue(ParentFireBase.class);
-                parentFireBases.add(parentFireBase);
-                fileRecyclerAdapter.notifyDataSetChanged();
-                binding.numberOfFolders.setText(String.valueOf(parentFireBases.size()) + " folders");
-            }
+        final ArrayList<String> foldersId = new ArrayList<>(Paper.book("Folders").getAllKeys());
 
-            @Override
-            public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+        parentFireBases.clear();
+        for (int i = 0; i < foldersId.size(); i++) {
+            ParentFireBase folderCheck = Paper.book("Folders").read(foldersId.get(i));
+            parentFireBases.add(folderCheck);
+        }
 
-            }
 
-            @Override
-            public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
 
-            }
-
-            @Override
-            public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
-            }
-        };
-        databaseReference.addChildEventListener(childEventListener);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         binding = FragmentSettingsBinding.inflate(inflater);
-        binding.numberOfFolders.setText(String.valueOf(folders_number) + " folders");
+        binding.nFolders.setText(parentFireBases.size() + " folders");
         binding.image.setOnClickListener(this::onClick);
 
         fileRecyclerAdapter = new FileRecyclerAdapter(context, parentFireBases, this, "settings");
