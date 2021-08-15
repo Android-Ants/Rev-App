@@ -26,9 +26,8 @@ public class PaperDb {
     public static List<FireBaseCount> returnAll(Context context) {
         imagesList.clear();
         full.clear();
-
         SharedPreferences sharedPreferences = context.getSharedPreferences("Drive", Context.MODE_PRIVATE);
-
+        System.out.println(foldersId);
         for (int i = 0; i < foldersId.size(); i++) {
             ParentFireBase folderCheck = Paper.book("Folders").read(foldersId.get(i));
             List<FireBaseCount> imagesByFolder = folderCheck.getChilds();

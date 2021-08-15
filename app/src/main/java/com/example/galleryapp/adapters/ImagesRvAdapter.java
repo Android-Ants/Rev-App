@@ -56,6 +56,7 @@ public class ImagesRvAdapter extends RecyclerView.Adapter<ImagesRvAdapter.ImageH
                 .error(R.drawable.ic_launcher_background);
 
 
+
         Glide.with(context)
                 .asBitmap()
                 .load(data.get(resumePosition - 1).getUrl())
@@ -69,6 +70,7 @@ public class ImagesRvAdapter extends RecyclerView.Adapter<ImagesRvAdapter.ImageH
                     .apply(options)
                     .into(holder.imageView1);
             Log.d("ImageUrl", data.get(resumePosition).getUrl());
+
         }
         if (!(resumePosition + 1 >= data.size())) {
             Glide.with(context)

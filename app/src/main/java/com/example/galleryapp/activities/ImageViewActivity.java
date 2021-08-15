@@ -1,10 +1,13 @@
 package com.example.galleryapp.activities;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
@@ -120,10 +123,30 @@ public class ImageViewActivity extends AppCompatActivity {
         binding.seenCount.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                count = 0;
-                viewModel.updateCount(data.get(x),count+"");
-                data.get(x).setCount(count+"");
-                binding.seenCount.setText(count+"");
+                String msg = "";
+                if(count>0){
+                    msg = "Do you want to reset count?";
+
+                    AlertDialog.Builder alert = new AlertDialog.Builder(ImageViewActivity.this)
+                            .setTitle("Confirmation Message")
+                            .setMessage(msg)
+                            .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    count = 0;
+                                    viewModel.updateCount(data.get(x),count+"");
+                                    data.get(x).setCount(count+"");
+                                    binding.seenCount.setText(count+"");
+                                }
+                            }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Toast.makeText(ImageViewActivity.this, "Count on this image : "+count
+                                            , Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                    alert.show();
+                }
                 return true;
             }
         });

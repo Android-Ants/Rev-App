@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
@@ -15,7 +14,6 @@ import com.example.galleryapp.PaperDb;
 import com.example.galleryapp.R;
 import com.example.galleryapp.classes.CheckBlocked;
 import com.example.galleryapp.classes.ParentFireBase;
-import com.example.galleryapp.databinding.RecyclerFileListBinding;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -116,7 +114,6 @@ public class FileRecyclerAdapter extends RecyclerView.Adapter<FileRecyclerAdapte
     }
 
     public interface On_Click_Listener_Radio_Button {
-
         void radio_button_clicked(int a, Boolean checked);
 
     }
