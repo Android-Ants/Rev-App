@@ -15,8 +15,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.galleryapp.PaperDb;
 import com.example.galleryapp.R;
 import com.example.galleryapp.adapters.FileRecyclerAdapter;
+import com.example.galleryapp.classes.CheckBlocked;
 import com.example.galleryapp.classes.ParentFireBase;
 import com.example.galleryapp.databinding.FragmentSettingsBinding;
 import com.google.firebase.database.ChildEventListener;
@@ -30,7 +32,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SettingsFragment extends Fragment implements View.OnClickListener , FileRecyclerAdapter.On_Click_Listener_Radio_Button {
+import io.paperdb.Paper;
+
+public class SettingsFragment extends Fragment implements View.OnClickListener, FileRecyclerAdapter.On_Click_Listener_Radio_Button {
 
     private FragmentSettingsBinding binding;
     private Context context;
@@ -45,8 +49,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener ,
         // Required empty public constructor
     }
 
-    public SettingsFragment ( Context context , int number_folders )
-    {
+    public SettingsFragment(Context context, int number_folders) {
         this.context = context;
         databaseReference = FirebaseDatabase.getInstance().getReference("Parent");
         this.folders_number = number_folders;
@@ -63,6 +66,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener ,
                 ParentFireBase parentFireBase = snapshot.getValue(ParentFireBase.class);
                 parentFireBases.add(parentFireBase);
                 fileRecyclerAdapter.notifyDataSetChanged();
+                binding.numberOfFolders.setText(String.valueOf(parentFireBases.size()) + " folders");
             }
 
             @Override
@@ -95,7 +99,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener ,
         binding.numberOfFolders.setText(String.valueOf(folders_number) + " folders");
         binding.image.setOnClickListener(this::onClick);
 
-        fileRecyclerAdapter = new FileRecyclerAdapter(context,parentFireBases,this,"settings");
+        fileRecyclerAdapter = new FileRecyclerAdapter(context, parentFireBases, this, "settings");
         binding.recyclerView.setAdapter(fileRecyclerAdapter);
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(context));
         return binding.getRoot();
@@ -104,17 +108,14 @@ public class SettingsFragment extends Fragment implements View.OnClickListener ,
     @Override
     public void onClick(View v) {
 
-        switch( v.getId() )
-        {
-            case R.id.image :
+        switch (v.getId()) {
+            case R.id.image:
 
-                if ( open )
-                {
+                if (open) {
                     open = false;
                     binding.image.setImageResource(R.drawable.ic_baseline_arrow_drop_down_24);
                     binding.recyclerView.setVisibility(View.GONE);
-                }
-                else{
+                } else {
                     open = true;
                     binding.image.setImageResource(R.drawable.ic_baseline_arrow_drop_up_24);
                     binding.recyclerView.setVisibility(View.VISIBLE);
@@ -129,21 +130,18 @@ public class SettingsFragment extends Fragment implements View.OnClickListener ,
     @Override
     public void radio_button_clicked(int a, Boolean checked) {
 
-        String Message = "" ;
+        String Message = "";
         Boolean block;
 
-        if (checked)
-        {
-           Message = "Are you to unblock this folder ?";
-           block = false;
-        }
-        else
-        {
+        if (checked) {
+            Message = "Are you to unblock this folder ?";
+            block = false;
+        } else {
             Message = "Are you to block this folder ?";
             block = true;
         }
 
-        AlertDialog.Builder alert =  new AlertDialog.Builder(context)
+        AlertDialog.Builder alert = new AlertDialog.Builder(context)
                 .setTitle("Confirmation Message")
                 .setMessage(Message)
                 .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
@@ -153,6 +151,8 @@ public class SettingsFragment extends Fragment implements View.OnClickListener ,
                         ParentFireBase parentFireBase = parentFireBases.get(a);
                         parentFireBase.setBlocked(block);
                         databaseReference.child(parentFireBase.getParentId()).setValue(parentFireBase);
+
+                        PaperDb.change_block_status(parentFireBase.getParentId(), context);
 
                     }
                 })

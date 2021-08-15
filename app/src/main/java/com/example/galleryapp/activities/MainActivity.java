@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences.Editor editor;
     private ProgressDialog progressDialog;
 
-    private ApiCalls apiCalls ;
+    private ApiCalls apiCalls;
     private ImagesViewModel imagesViewModel;
 
 
@@ -72,13 +72,13 @@ public class MainActivity extends AppCompatActivity {
 
         App.setContext(MainActivity.this);
 
-        Paper.init(MainActivity.this);
+        Paper.init(getApplicationContext());
 
         this.imagesViewModel = new ViewModelProvider(this).get(ImagesViewModel.class);
 
         apiCalls = new ApiCalls(MainActivity.this);
         apiCalls.get_bearer_token();
-        sharedPreferences = getSharedPreferences("Drive", Context.MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences("Drive", MODE_PRIVATE);
         editor = sharedPreferences.edit();
 
         if (sharedPreferences.getString("firstLogin", "yes").equalsIgnoreCase("yes")) {
@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
         if (!sharedPreferences.getString("fetch", "").equalsIgnoreCase("no")) {
 
             fetchingAllPhotos();
-            Paper.book().write("images",baseCounts);
+            Paper.book().write("images", baseCounts);
             editor.putString("fetch", "no");
         }
         binding.bottomNavigationView.setSelectedItemId(R.id.navigation_home);
@@ -105,32 +105,32 @@ public class MainActivity extends AppCompatActivity {
                         getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.fragment_container, new FavoritesFragment(MainActivity.this))
                                 .commit();
-                        editor.putInt("FragmentId",R.id.navigation_favourite).commit();
+                        editor.putInt("FragmentId", R.id.navigation_favourite).commit();
                         break;
                     case R.id.navigation_recent:
                         getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.fragment_container, new RecentFragment(MainActivity.this))
                                 .commit();
 
-                        editor.putInt("FragmentId",R.id.navigation_recent).commit();
+                        editor.putInt("FragmentId", R.id.navigation_recent).commit();
                         break;
                     case R.id.navigation_home:
                         getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.fragment_container, new HomeFragment(MainActivity.this))
                                 .commit();
-                        editor.putInt("FragmentId",R.id.navigation_home).commit();
+                        editor.putInt("FragmentId", R.id.navigation_home).commit();
                         break;
                     case R.id.navigation_files:
                         getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.fragment_container, new FoldersFragment(MainActivity.this, getLayoutInflater(), getApplication()))
                                 .commit();
-                        editor.putInt("FragmentId",R.id.navigation_files).commit();
+                        editor.putInt("FragmentId", R.id.navigation_files).commit();
                         break;
                     case R.id.navigation_setting:
                         getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.fragment_container, new SettingsFragment(MainActivity.this,parentId.size()))
+                                .replace(R.id.fragment_container, new SettingsFragment(MainActivity.this, parentId.size()))
                                 .commit();
-                        editor.putInt("FragmentId",R.id.navigation_setting).commit();
+                        editor.putInt("FragmentId", R.id.navigation_setting).commit();
                         break;
                 }
                 return true;
@@ -199,9 +199,8 @@ public class MainActivity extends AppCompatActivity {
                                 }
 
                                 baseCounts.add(fireBaseCount);
-                                Log.d("jjjjjjjjjjj",String.valueOf(0));
+                                Log.d("jjjjjjjjjjj", String.valueOf(0));
                                 Log.d("jjjjjjjjjj", baseCounts.get(0).getId());
-
 
 
                                 uploadToFirebase(fireBaseCount);
@@ -316,14 +315,14 @@ public class MainActivity extends AppCompatActivity {
                                     fireBaseCount.setParentsId("drive");
                                 }
                                 baseCounts.add(fireBaseCount);
-                                Log.d("jjjjjjjjjjj",String.valueOf(0));
+                                Log.d("jjjjjjjjjjj", String.valueOf(0));
                                 Log.d("jjjjjjjjjj", baseCounts.get(0).getId());
                                 uploadToFirebase(fireBaseCount);
                             }
                             parents_profile_fetch();
                             progressDialog.dismiss();
-                            for (FireBaseCount f:baseCounts) {
-                                Paper.book("ImagesAll").write(f.getId(),f);
+                            for (FireBaseCount f : baseCounts) {
+                                Paper.book("ImagesAll").write(f.getId(), f);
                             }
                             //Paper.book("ImagesAll").write("images",baseCounts);
                             Toast.makeText(MainActivity.this, "Profile fetching completed", Toast.LENGTH_SHORT).show();
@@ -359,7 +358,7 @@ public class MainActivity extends AppCompatActivity {
             ParentFireBase parentFireBase = new ParentFireBase();
             parentFireBase.setParentId(parentId.get(i));
             get_parent_name(parentFireBase);
-            Log.d("jjjjjjjjjjj",String.valueOf(i));
+            Log.d("jjjjjjjjjjj", String.valueOf(i));
             Log.d("jjjjjjjjjj", baseCounts.get(i).getName());
         }
     }
@@ -403,7 +402,11 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         parentFireBase.setChilds(fireBaseCounts);
-        Paper.book("Folders").write(parentFireBase.getParentId(),parentFireBase);
+            Paper.book("Folders").write(parentFireBase.getParentId(), parentFireBase);
+        if (!sharedPreferences.contains(parentFireBase.getParentId())) {
+            editor.putBoolean(parentFireBase.getParentId(), parentFireBase.getBlocked());
+            editor.commit();
+        }
         databaseReference2.child(parentFireBase.getParentId()).setValue(parentFireBase);
         fireBaseCounts.clear();
         if (parentFireBase.getParentId().equalsIgnoreCase(parentId.get(parentId.size() - 1))) {
@@ -415,8 +418,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        int FragmentId = sharedPreferences.getInt("FragmentId",0);
-        switch (FragmentId){
+        int FragmentId = sharedPreferences.getInt("FragmentId", 0);
+        switch (FragmentId) {
             case R.id.navigation_favourite:
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, new FavoritesFragment(MainActivity.this))
@@ -443,7 +446,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.navigation_setting:
                 getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, new SettingsFragment(MainActivity.this,parentId.size()))
+                        .replace(R.id.fragment_container, new SettingsFragment(MainActivity.this, parentId.size()))
                         .commit();
                 binding.bottomNavigationView.setSelectedItemId(FragmentId);
                 break;
@@ -454,10 +457,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
 
         super.onDestroy();
-        editor.putString("fetch","yes");
-        editor.putString("clear","");
-        editor.putInt("FragmentId",0);
+        editor.putString("fetch", "yes");
+        editor.putString("clear", "");
+        editor.putInt("FragmentId", 0);
         editor.commit();
-  
+
     }
 }
