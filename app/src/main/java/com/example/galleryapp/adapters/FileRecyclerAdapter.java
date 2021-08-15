@@ -3,6 +3,8 @@ package com.example.galleryapp.adapters;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.galleryapp.PaperDb;
 import com.example.galleryapp.R;
-import com.example.galleryapp.classes.CheckBlocked;
+import com.example.galleryapp.activities.ChildImagesActivity;
 import com.example.galleryapp.classes.ParentFireBase;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -94,6 +96,7 @@ public class FileRecyclerAdapter extends RecyclerView.Adapter<FileRecyclerAdapte
             folderName = itemView.findViewById(R.id.folder_name);
             number_of_photos = itemView.findViewById(R.id.number_of_photos);
             radioButton = itemView.findViewById(R.id.radio);
+            radioButton.setHighlightColor(Color.parseColor("#E2CC58"));
             radioButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -149,10 +152,13 @@ public class FileRecyclerAdapter extends RecyclerView.Adapter<FileRecyclerAdapte
         @Override
         public void onClick(View v) {
 
-            if (fragment.equalsIgnoreCase("folder"))
-                if (v.getId() == R.id.textView) {
-                    onClickListener.child_list(getAdapterPosition());
-                }
+            if (fragment.equalsIgnoreCase("folder")) {
+                Intent intent = new Intent(context, ChildImagesActivity.class);
+                intent.putExtra("FolderId",parentFireBases.get(getAdapterPosition()).getParentId());
+                context.startActivity(intent);
+                onClickListener.child_list(getAdapterPosition());
+            }
+
 
             if (fragment.equalsIgnoreCase("settings"))
                 if (v.getId() == R.id.radio) {
