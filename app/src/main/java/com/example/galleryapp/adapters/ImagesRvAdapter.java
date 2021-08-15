@@ -57,6 +57,7 @@ public class ImagesRvAdapter extends RecyclerView.Adapter<ImagesRvAdapter.ImageH
                 .error(R.drawable.ic_launcher_background);
 
 
+
         Glide.with(context).load(data.get(resumePosition-1).getUrl()).apply(options).into(binding.imageView0);
         Log.d("imagesssssssssssssss",""+LoadImageFromWebOperations(data.get(resumePosition-1).getUrl()));
         if(!(resumePosition>=data.size()))
