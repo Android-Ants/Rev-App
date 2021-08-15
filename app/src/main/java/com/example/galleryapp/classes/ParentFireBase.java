@@ -1,9 +1,10 @@
 package com.example.galleryapp.classes;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ParentFireBase{
+public class ParentFireBase implements Serializable {
 
     private String parentId ;
     private List<FireBaseCount> childs = new ArrayList<>();

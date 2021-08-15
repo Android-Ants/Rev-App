@@ -91,9 +91,13 @@ public class FileRecyclerAdapter extends RecyclerView.Adapter<FileRecyclerAdapte
 
         public FileViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
-            //binding.textView.setOnClickListener(this::onClick);
-
             folderName = itemView.findViewById(R.id.folder_name);
+
+            if (fragment.equalsIgnoreCase("folder"))
+            {
+                folderName.setOnClickListener(this::onClick);
+            }
+
             number_of_photos = itemView.findViewById(R.id.number_of_photos);
             radioButton = itemView.findViewById(R.id.radio);
             radioButton.setHighlightColor(Color.parseColor("#E2CC58"));
@@ -153,9 +157,6 @@ public class FileRecyclerAdapter extends RecyclerView.Adapter<FileRecyclerAdapte
         public void onClick(View v) {
 
             if (fragment.equalsIgnoreCase("folder")) {
-                Intent intent = new Intent(context, ChildImagesActivity.class);
-                intent.putExtra("FolderId",parentFireBases.get(getAdapterPosition()).getParentId());
-                context.startActivity(intent);
                 onClickListener.child_list(getAdapterPosition());
             }
 

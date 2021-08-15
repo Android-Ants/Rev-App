@@ -21,8 +21,8 @@ public class ChildImagesActivity extends AppCompatActivity {
 
     private ParentFireBase folder;
     private ImagesRvAdapter adapter;
-    private List<FireBaseCount> files;
-    private ArrayList<FireBaseCount> data;
+    private List<FireBaseCount> files = new ArrayList<>();
+    private ArrayList<FireBaseCount> data = new ArrayList<>();
     ActivityChildImagesBinding binding;
 
     @Override
@@ -35,8 +35,8 @@ public class ChildImagesActivity extends AppCompatActivity {
         files = folder.getChilds();
 
         Randomize obj = new Randomize();
-        data = new ArrayList<>(obj.getRandomized());
-        adapter = new ImagesRvAdapter(this,data);
+        data = obj.getRandomized((ArrayList<FireBaseCount>) files);
+        adapter = new ImagesRvAdapter(this, data);
         binding.folderName.setText(folder.getName());
         binding.backButton.setOnClickListener(new View.OnClickListener() {
             @Override

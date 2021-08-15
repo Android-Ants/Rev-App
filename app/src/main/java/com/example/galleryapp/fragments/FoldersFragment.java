@@ -143,6 +143,10 @@ public class FoldersFragment extends Fragment implements FileRecyclerAdapter.On_
     public void child_list(int a) {
 
 
+        Intent intent = new Intent(context, ChildImagesActivity.class);
+        intent.putExtra("FolderId",parentFireBases.get(a).getParentId());
+        startActivity(intent);
+
 
 //        if ( filesList.get(a).getMimeType().equalsIgnoreCase("application/vnd.google-apps.folder") )
 //        {
@@ -183,6 +187,7 @@ public class FoldersFragment extends Fragment implements FileRecyclerAdapter.On_
 
     @Override
     public void child_list_next(int b) {
+
 
     }
 }
