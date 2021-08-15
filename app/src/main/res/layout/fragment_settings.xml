@@ -50,11 +50,26 @@
 
             <ImageView
                 android:id="@+id/image"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:src="@drawable/ic_baseline_arrow_drop_down_24"
                 android:layout_marginLeft="20dp"
                 android:layout_marginTop="5dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="end">
+
+                <ImageView
+                    android:id="@+id/fetch"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/ic_baseline_refresh_24"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="30dp"/>
+
+            </LinearLayout>
 
         </LinearLayout>
 

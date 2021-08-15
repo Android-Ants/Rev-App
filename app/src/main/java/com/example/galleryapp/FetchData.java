@@ -1,15 +1,10 @@
-package com.example.galleryapp.activities;
+package com.example.galleryapp;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Bundle;
 import android.util.Log;
-import android.view.MenuItem;
 import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -18,24 +13,11 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.galleryapp.ApiCalls;
-import com.example.galleryapp.App;
-import com.example.galleryapp.FetchData;
-import com.example.galleryapp.ImagesViewModel;
-import com.example.galleryapp.R;
 import com.example.galleryapp.classes.FireBaseCount;
 import com.example.galleryapp.classes.ParentFireBase;
-import com.example.galleryapp.databinding.ActivityMainBinding;
-import com.example.galleryapp.fragments.FavoritesFragment;
-import com.example.galleryapp.fragments.FoldersFragment;
-import com.example.galleryapp.fragments.HomeFragment;
-import com.example.galleryapp.fragments.RecentFragment;
-import com.example.galleryapp.fragments.SettingsFragment;
-import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -47,9 +29,8 @@ import java.util.Map;
 
 import io.paperdb.Paper;
 
-public class MainActivity extends AppCompatActivity {
+public class FetchData {
 
-    private ActivityMainBinding binding;
     private DatabaseReference databaseReference, databaseReference2;
     private List<String> parentId = new ArrayList<>();
     private List<FireBaseCount> fireBaseCounts = new ArrayList<>();
@@ -59,122 +40,71 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
     private ProgressDialog progressDialog;
+    private Context context;
 
-    private ApiCalls apiCalls;
-    private ImagesViewModel imagesViewModel;
-
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-
-        App.setContext(MainActivity.this);
-
-        Paper.init(getApplicationContext());
-
-        this.imagesViewModel = new ViewModelProvider(this).get(ImagesViewModel.class);
-
-        apiCalls = new ApiCalls(MainActivity.this);
-        apiCalls.get_bearer_token();
-        sharedPreferences = getSharedPreferences("Drive", MODE_PRIVATE);
+    public FetchData ( Context context )
+    {
+        Paper.init(context);
+        this.context = context;
+        queue = Volley.newRequestQueue(context);
+        databaseReference = FirebaseDatabase.getInstance().getReference("Photos");
+        databaseReference2 = FirebaseDatabase.getInstance().getReference("Parent");
+        sharedPreferences = context.getSharedPreferences("Drive", Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
-
-        if (sharedPreferences.getString("firstLogin", "yes").equalsIgnoreCase("yes")) {
-            editor.putString("firstLogin", "no");
-            FetchData fetchData = new FetchData(this);
-            fetchData.fetchingAllPhotos();
-            editor.commit();
-        }
-
-
-        Log.d("hhhhhhhhhh", sharedPreferences.getString("fetch", ""));
-
-//        if (!sharedPreferences.getString("fetch", "").equalsIgnoreCase("no")) {
-//
-//            fetchingAllPhotos();
-//            Paper.book().write("images", baseCounts);
-//            editor.putString("fetch", "no");
-//        }
-        binding.bottomNavigationView.setSelectedItemId(R.id.navigation_home);
-        binding.bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull @NotNull MenuItem item) {
-                switch (item.getItemId()) {
-
-                    case R.id.navigation_favourite:
-                        getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.fragment_container, new FavoritesFragment(MainActivity.this))
-                                .commit();
-                        editor.putInt("FragmentId", R.id.navigation_favourite).commit();
-                        break;
-                    case R.id.navigation_recent:
-                        getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.fragment_container, new RecentFragment(MainActivity.this))
-                                .commit();
-
-                        editor.putInt("FragmentId", R.id.navigation_recent).commit();
-                        break;
-                    case R.id.navigation_home:
-                        getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.fragment_container, new HomeFragment(MainActivity.this))
-                                .commit();
-                        editor.putInt("FragmentId", R.id.navigation_home).commit();
-                        break;
-                    case R.id.navigation_files:
-                        getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.fragment_container, new FoldersFragment(MainActivity.this, getLayoutInflater(), getApplication()))
-                                .commit();
-                        editor.putInt("FragmentId", R.id.navigation_files).commit();
-                        break;
-                    case R.id.navigation_setting:
-                        getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.fragment_container, new SettingsFragment(MainActivity.this, parentId.size()))
-                                .commit();
-                        editor.putInt("FragmentId", R.id.navigation_setting).commit();
-                        break;
-                }
-                return true;
-            }
-        });
-
     }
 
-    private void fetchingAllPhotos() {
+    public void fetchingAllPhotos(  ) {
 
-        progressDialog = new ProgressDialog(MainActivity.this);
+        progressDialog = new ProgressDialog(context);
         progressDialog.setTitle("Fetching all photos from drive");
         progressDialog.setMessage("This May take some time but will occur only once .");
         progressDialog.show();
-
-        queue = Volley.newRequestQueue(MainActivity.this);
-
-        databaseReference = FirebaseDatabase.getInstance().getReference("Photos");
-        databaseReference2 = FirebaseDatabase.getInstance().getReference("Parent");
-
-        pngFileSearch();
+        databaseReference.removeValue();
+        get_bearer_token();
     }
 
-    private void uploadToFirebase(FireBaseCount fireBaseCount) {
 
-        if (!sharedPreferences.getString("clear", "").equalsIgnoreCase("done")) {
-            databaseReference.removeValue();
-            editor.putString("clear", "done");
-            editor.commit();
-        }
+    private void get_bearer_token ()
+    {
+        StringRequest request = new StringRequest(Request.Method.POST, "https://oauth2.googleapis.com/token", new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    editor.putString("bearer token" ,jsonObject.get("access_token").toString());
+                    editor.commit();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                Log.d(TAG,response);
+                pngFileSearch();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
 
 
-        databaseReference.child(fireBaseCount.getId()).setValue(fireBaseCount);
-        if (!parentId.contains(fireBaseCount.getParentsId()))
-            parentId.add(fireBaseCount.getParentsId());
+            }
+        })
+        {
 
+            @Override
+            public Map<String, String> getParams() throws AuthFailureError {
+
+                Map<String,String> map = new HashMap<String, String>();
+                map.put("client_id",context.getString(R.string.client_id));
+                map.put("grant_type","refresh_token");
+                map.put("refresh_token",sharedPreferences.getString("refresh token",""));
+                return map;
+            }
+        };
+        queue.add(request);
     }
 
     private void pngFileSearch() {
 
         StringRequest request = new StringRequest(Request.Method.GET, "https://www.googleapis.com/drive/v3/files?fields=kind,incompleteSearch,nextPageToken, files(id, name,webContentLink,parents)&q=mimeType='image/png'",
-
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -201,12 +131,10 @@ public class MainActivity extends AppCompatActivity {
                                 }
 
                                 baseCounts.add(fireBaseCount);
-                                Log.d("jjjjjjjjjjj", String.valueOf(0));
-                                Log.d("jjjjjjjjjj", baseCounts.get(0).getId());
-
 
                                 uploadToFirebase(fireBaseCount);
                             }
+
                             jpgFileSearch();
 
                         } catch (JSONException e) {
@@ -261,7 +189,6 @@ public class MainActivity extends AppCompatActivity {
                                 }
 
                                 baseCounts.add(fireBaseCount);
-
 
                                 uploadToFirebase(fireBaseCount);
                             }
@@ -322,18 +249,18 @@ public class MainActivity extends AppCompatActivity {
                                 uploadToFirebase(fireBaseCount);
                             }
                             parents_profile_fetch();
-                            progressDialog.dismiss();
+                            //progressDialog.dismiss();
                             for (FireBaseCount f : baseCounts) {
                                 Paper.book("ImagesAll").write(f.getId(), f);
                             }
-                            //Paper.book("ImagesAll").write("images",baseCounts);
-                            Toast.makeText(MainActivity.this, "Profile fetching completed", Toast.LENGTH_SHORT).show();
-
-                            Thread.sleep(1000);
-                            getSupportFragmentManager().beginTransaction()
-                                    .replace(R.id.fragment_container, new HomeFragment(MainActivity.this))
-                                    .commit();
-                        } catch (JSONException | InterruptedException e) {
+                            Paper.book("ImagesAll").write("images",baseCounts);
+//                            Toast.makeText(MainActivity.this, "Profile fetching completed", Toast.LENGTH_SHORT).show();
+//
+//                            Thread.sleep(1000);
+//                            getSupportFragmentManager().beginTransaction()
+//                                    .replace(R.id.fragment_container, new HomeFragment(MainActivity.this))
+//                                    .commit();
+                        } catch (JSONException e) {
 
                             e.printStackTrace();
                         }
@@ -355,7 +282,15 @@ public class MainActivity extends AppCompatActivity {
         queue.add(request);
     }
 
-    public void parents_profile_fetch() {
+    private void uploadToFirebase(FireBaseCount fireBaseCount) {
+
+        databaseReference.child(fireBaseCount.getId()).setValue(fireBaseCount);
+        if (!parentId.contains(fireBaseCount.getParentsId()))
+            parentId.add(fireBaseCount.getParentsId());
+
+    }
+
+    private void parents_profile_fetch() {
         for (int i = 0; i < parentId.size(); i++) {
             ParentFireBase parentFireBase = new ParentFireBase();
             parentFireBase.setParentId(parentId.get(i));
@@ -365,7 +300,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void get_parent_name(ParentFireBase parentFireBase) {
+    private void get_parent_name(ParentFireBase parentFireBase) {
         String url = "https://www.googleapis.com/drive/v3/files/" + parentFireBase.getParentId();
         StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
@@ -397,14 +332,14 @@ public class MainActivity extends AppCompatActivity {
         queue.add(request);
     }
 
-    public void update_on_firebase(ParentFireBase parentFireBase) {
+    private void update_on_firebase(ParentFireBase parentFireBase) {
         for (int i = 0; i < baseCounts.size(); i++) {
             if (baseCounts.get(i).getParentsId().equalsIgnoreCase(parentFireBase.getParentId())) {
                 fireBaseCounts.add(baseCounts.get(i));
             }
         }
         parentFireBase.setChilds(fireBaseCounts);
-            Paper.book("Folders").write(parentFireBase.getParentId(), parentFireBase);
+        Paper.book("Folders").write(parentFireBase.getParentId(), parentFireBase);
         if (!sharedPreferences.contains(parentFireBase.getParentId())) {
             editor.putBoolean(parentFireBase.getParentId(), parentFireBase.getBlocked());
             editor.commit();
@@ -413,56 +348,9 @@ public class MainActivity extends AppCompatActivity {
         fireBaseCounts.clear();
         if (parentFireBase.getParentId().equalsIgnoreCase(parentId.get(parentId.size() - 1))) {
             progressDialog.dismiss();
-            Toast.makeText(MainActivity.this, "Profile fetching completed", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Profile fetching completed", Toast.LENGTH_SHORT).show();
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        int FragmentId = sharedPreferences.getInt("FragmentId", 0);
-        switch (FragmentId) {
-            case R.id.navigation_favourite:
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, new FavoritesFragment(MainActivity.this))
-                        .commit();
-                binding.bottomNavigationView.setSelectedItemId(FragmentId);
-                break;
-            case R.id.navigation_recent:
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, new RecentFragment(MainActivity.this))
-                        .commit();
-                binding.bottomNavigationView.setSelectedItemId(FragmentId);
-                break;
-            case R.id.navigation_home:
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, new HomeFragment(MainActivity.this))
-                        .commit();
-                binding.bottomNavigationView.setSelectedItemId(FragmentId);
-                break;
-            case R.id.navigation_files:
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, new FoldersFragment(MainActivity.this, getLayoutInflater(), getApplication()))
-                        .commit();
-                binding.bottomNavigationView.setSelectedItemId(FragmentId);
-                break;
-            case R.id.navigation_setting:
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, new SettingsFragment(MainActivity.this, parentId.size()))
-                        .commit();
-                binding.bottomNavigationView.setSelectedItemId(FragmentId);
-                break;
-        }
-    }
 
-    @Override
-    protected void onDestroy() {
-
-        super.onDestroy();
-//        editor.putString("fetch", "yes");
-//        editor.putString("clear", "");
-//        editor.putInt("FragmentId", 0);
-//        editor.commit();
-
-    }
 }

@@ -9,12 +9,15 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.galleryapp.FetchData;
+import com.example.galleryapp.ImagesViewModel;
 import com.example.galleryapp.PaperDb;
 import com.example.galleryapp.R;
 import com.example.galleryapp.adapters.FileRecyclerAdapter;
@@ -44,6 +47,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener, 
     private int folders_number;
     private Boolean open = false;
     private FileRecyclerAdapter fileRecyclerAdapter;
+    private ImagesViewModel imagesViewModel;
 
     public SettingsFragment() {
         // Required empty public constructor
@@ -58,6 +62,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener, 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        imagesViewModel = new ViewModelProvider(this).get(ImagesViewModel.class);
 
         childEventListener = new ChildEventListener() {
             @Override
@@ -121,6 +126,13 @@ public class SettingsFragment extends Fragment implements View.OnClickListener, 
                     binding.recyclerView.setVisibility(View.VISIBLE);
                 }
                 break;
+
+            case R.id.fetch:
+
+                FetchData fetchData = new FetchData(context);
+                fetchData.fetchingAllPhotos();
+
+                break;
         }
 
 
@@ -153,6 +165,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener, 
                         databaseReference.child(parentFireBase.getParentId()).setValue(parentFireBase);
 
                         PaperDb.change_block_status(parentFireBase.getParentId(), context);
+                        imagesViewModel.initializingDb(context);
 
                     }
                 })

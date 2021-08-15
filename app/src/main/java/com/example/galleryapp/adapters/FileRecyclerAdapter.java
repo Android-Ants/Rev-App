@@ -1,6 +1,8 @@
 package com.example.galleryapp.adapters;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +16,8 @@ import com.example.galleryapp.PaperDb;
 import com.example.galleryapp.R;
 import com.example.galleryapp.classes.CheckBlocked;
 import com.example.galleryapp.classes.ParentFireBase;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -25,6 +29,7 @@ public class FileRecyclerAdapter extends RecyclerView.Adapter<FileRecyclerAdapte
     private List<ParentFireBase> parentFireBases = new ArrayList<>();
     private LayoutInflater layoutInflater;
     private On_Click_Listener_getChild onClickListener;
+    private DatabaseReference databaseReference;
     private On_Click_Listener_Radio_Button on_click_listener_radio_button;
     private String fragment;
     private Context context;
@@ -33,6 +38,7 @@ public class FileRecyclerAdapter extends RecyclerView.Adapter<FileRecyclerAdapte
         layoutInflater = LayoutInflater.from(context);
         this.parentFireBases = parentFireBases;
         this.onClickListener = onClickListener;
+        databaseReference = FirebaseDatabase.getInstance().getReference("Parent");
         this.fragment = fragment;
         this.context = context;
     }
@@ -41,6 +47,7 @@ public class FileRecyclerAdapter extends RecyclerView.Adapter<FileRecyclerAdapte
         layoutInflater = LayoutInflater.from(context);
         this.parentFireBases = parentFireBases;
         this.on_click_listener_radio_button = onClickListener;
+        databaseReference = FirebaseDatabase.getInstance().getReference("Parent");
         this.fragment = fragment;
         this.context = context;
     }
@@ -87,7 +94,56 @@ public class FileRecyclerAdapter extends RecyclerView.Adapter<FileRecyclerAdapte
             folderName = itemView.findViewById(R.id.folder_name);
             number_of_photos = itemView.findViewById(R.id.number_of_photos);
             radioButton = itemView.findViewById(R.id.radio);
-            radioButton.setOnClickListener(this::onClick);
+            radioButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    String Message = "";
+                    Boolean block;
+
+                    if (PaperDb.get_block_status(parentFireBases.get(getAdapterPosition()).getParentId(), context)) {
+                        Message = "Are you sure to unblock this folder ?";
+                        block = false;
+                    } else {
+                        Message = "Are you sure to block this folder ?";
+                        block = true;
+                    }
+
+                    AlertDialog.Builder alert = new AlertDialog.Builder(context)
+                            .setTitle("Confirmation Message")
+                            .setMessage(Message)
+                            .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                    ParentFireBase parentFireBase = parentFireBases.get(getAdapterPosition());
+                                    parentFireBase.setBlocked(block);
+                                    databaseReference.child(parentFireBase.getParentId()).setValue(parentFireBase);
+
+                                    PaperDb.change_block_status(parentFireBase.getParentId(), context);
+                                    //imagesViewModel.initializingDb(context);
+
+                                    if (PaperDb.get_block_status(parentFireBases.get(getAdapterPosition()).getParentId(), context))
+                                        radioButton.setChecked(false);
+                                    else
+                                        radioButton.setChecked(true);
+
+                                }
+                            })
+                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                    if (PaperDb.get_block_status(parentFireBases.get(getAdapterPosition()).getParentId(), context))
+                                        radioButton.setChecked(false);
+                                    else
+                                        radioButton.setChecked(true);
+                                }
+                            });
+
+                    alert.show();
+                }
+            });
         }
 
         @Override

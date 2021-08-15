@@ -2,10 +2,8 @@ package com.example.galleryapp;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import com.example.galleryapp.classes.FireBaseCount;
-import com.example.galleryapp.classes.Folder;
 import com.example.galleryapp.classes.ParentFireBase;
 
 import java.util.ArrayList;
@@ -33,7 +31,7 @@ public class PaperDb {
             List<FireBaseCount> imagesByFolder = folderCheck.getChilds();
             for (FireBaseCount f : imagesByFolder) {
                 full.add(Paper.book("ImagesAll").read(f.getId()));
-                if (!sharedPreferences.getBoolean(folderCheck.getParentId(),false)) {
+                if (!sharedPreferences.getBoolean(folderCheck.getParentId(), false)) {
                     imagesList.add(Paper.book("ImagesAll").read(f.getId()));
                 }
             }
@@ -59,10 +57,10 @@ public class PaperDb {
 
         SharedPreferences sharedPreferences = context.getSharedPreferences("Drive", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        if (sharedPreferences.getBoolean(parentId,false))
-        editor.putBoolean(parentId,false);
+        if (sharedPreferences.getBoolean(parentId, false))
+            editor.putBoolean(parentId, false);
         else
-            editor.putBoolean(parentId,true);
+            editor.putBoolean(parentId, true);
         editor.commit();
 
     }
@@ -70,7 +68,7 @@ public class PaperDb {
     public static Boolean get_block_status(String parentId, Context context) {
 
         SharedPreferences sharedPreferences = context.getSharedPreferences("Drive", Context.MODE_PRIVATE);
-        return sharedPreferences.getBoolean(parentId,false);
+        return sharedPreferences.getBoolean(parentId, false);
 
     }
 
