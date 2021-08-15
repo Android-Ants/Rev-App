@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.RecentFragment"
-    android:background="@color/black_primary">
+    android:background="@color/black_variant">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recentRv"

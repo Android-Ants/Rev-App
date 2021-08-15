@@ -25,6 +25,7 @@ public class PaperDb {
     public static List<FireBaseCount> returnAll() {
         imagesList.clear();
         full.clear();
+        System.out.println(foldersId);
         for (int i = 0; i < foldersId.size(); i++) {
             ParentFireBase folderCheck = Paper.book("Folders").read(foldersId.get(i));
             List<FireBaseCount> imagesByFolder = folderCheck.getChilds();

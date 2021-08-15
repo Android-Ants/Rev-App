@@ -2,6 +2,7 @@ package com.example.galleryapp.fragments;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,8 +13,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.example.galleryapp.adapters.FilesChildRecyclerAdapter;
+import com.example.galleryapp.R;
 import com.example.galleryapp.adapters.FileRecyclerAdapter;
+import com.example.galleryapp.adapters.FilesChildRecyclerAdapter;
 import com.example.galleryapp.classes.ParentFireBase;
 import com.example.galleryapp.databinding.FragmentFoldersBinding;
 import com.google.firebase.database.ChildEventListener;
@@ -33,7 +35,8 @@ public class FoldersFragment extends Fragment implements FileRecyclerAdapter.On_
     private Context context;
 //    private Application application;
 //    private FileViewModal fileViewModal;
-//    private SharedPreferences sharedPreferences;
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
     private FileRecyclerAdapter fileRecyclerAdapter;
     private List<ParentFireBase> parentFireBases = new ArrayList<>();
     private DatabaseReference databaseReference;
@@ -50,12 +53,14 @@ public class FoldersFragment extends Fragment implements FileRecyclerAdapter.On_
         binding = FragmentFoldersBinding.inflate(layoutInflater);
         this.context = context;
         databaseReference = FirebaseDatabase.getInstance().getReference("Parent");
+
       //  this.application = application;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
 
 //        ProgressDialog progressDialog = new ProgressDialog(context);
 //        progressDialog.setMessage("Please Wait ....");
@@ -119,6 +124,14 @@ public class FoldersFragment extends Fragment implements FileRecyclerAdapter.On_
         fileRecyclerAdapter = new FileRecyclerAdapter(context,parentFireBases , this,"folder");
         binding.recyclerView.setAdapter(fileRecyclerAdapter);
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        binding.title.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new RecentFragment(context))
+                        .commit();
+            }
+        });
         return binding.getRoot();
     }
 
