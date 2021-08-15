@@ -2,32 +2,29 @@ package com.example.galleryapp.fragments;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.example.galleryapp.R;
+import com.example.galleryapp.activities.ChildImagesActivity;
 import com.example.galleryapp.adapters.FileRecyclerAdapter;
 import com.example.galleryapp.adapters.FilesChildRecyclerAdapter;
 import com.example.galleryapp.classes.ParentFireBase;
 import com.example.galleryapp.databinding.FragmentFoldersBinding;
 import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import io.paperdb.Paper;
 
 public class FoldersFragment extends Fragment implements FileRecyclerAdapter.On_Click_Listener_getChild, FilesChildRecyclerAdapter.Get_child{
 
@@ -35,10 +32,13 @@ public class FoldersFragment extends Fragment implements FileRecyclerAdapter.On_
     private Context context;
 //    private Application application;
 //    private FileViewModal fileViewModal;
+
+    private static final ArrayList<String> foldersId = new ArrayList<>(Paper.book("Folders").getAllKeys());
+
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
     private FileRecyclerAdapter fileRecyclerAdapter;
-    private List<ParentFireBase> parentFireBases = new ArrayList<>();
+    private static final List<ParentFireBase> parentFireBases = new ArrayList<>();
     private DatabaseReference databaseReference;
     private ChildEventListener childEventListener;
 //    private List<ChildFolder> childFolderList = new ArrayList<>();
@@ -62,6 +62,18 @@ public class FoldersFragment extends Fragment implements FileRecyclerAdapter.On_
         super.onCreate(savedInstanceState);
 
 
+        parentFireBases.clear();
+        for (int i = 0; i < foldersId.size(); i++) {
+            ParentFireBase folderCheck = Paper.book("Folders").read(foldersId.get(i));
+            parentFireBases.add(folderCheck);
+        }
+
+
+//        for (FireBaseCount f : imagesByFolder) {
+//        full.add(Paper.book("ImagesAll").read(f.getId()));
+//        if (!sharedPreferences.getBoolean(folderCheck.getParentId(), false)) {
+//            imagesList.add(Paper.book("ImagesAll").read(f.getId()));
+//        }
 //        ProgressDialog progressDialog = new ProgressDialog(context);
 //        progressDialog.setMessage("Please Wait ....");
 //        progressDialog.show();
@@ -85,37 +97,37 @@ public class FoldersFragment extends Fragment implements FileRecyclerAdapter.On_
 //        });
 //        progressDialog.dismiss();
 
-        childEventListener = new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-
-                ParentFireBase parentFireBase = snapshot.getValue(ParentFireBase.class);
-                parentFireBases.add(parentFireBase);
-                fileRecyclerAdapter.notifyDataSetChanged();
-
-            }
-
-            @Override
-            public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
-            }
-        };
-        databaseReference.addChildEventListener(childEventListener);
+//        childEventListener = new ChildEventListener() {
+//            @Override
+//            public void onChildAdded(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+//
+//                ParentFireBase parentFireBase = snapshot.getValue(ParentFireBase.class);
+//                parentFireBases.add(parentFireBase);
+//                fileRecyclerAdapter.notifyDataSetChanged();
+//
+//            }
+//
+//            @Override
+//            public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+//
+//            }
+//
+//            @Override
+//            public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
+//
+//            }
+//
+//            @Override
+//            public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+//
+//            }
+//        };
+//        databaseReference.addChildEventListener(childEventListener);
     }
 
     @Override
@@ -124,19 +136,13 @@ public class FoldersFragment extends Fragment implements FileRecyclerAdapter.On_
         fileRecyclerAdapter = new FileRecyclerAdapter(context,parentFireBases , this,"folder");
         binding.recyclerView.setAdapter(fileRecyclerAdapter);
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        binding.title.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, new RecentFragment(context))
-                        .commit();
-            }
-        });
         return binding.getRoot();
     }
 
     @Override
     public void child_list(int a) {
+
+
 
 //        if ( filesList.get(a).getMimeType().equalsIgnoreCase("application/vnd.google-apps.folder") )
 //        {

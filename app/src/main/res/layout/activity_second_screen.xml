@@ -7,6 +7,7 @@
     android:orientation="vertical"
     android:padding="25dp"
     android:gravity="center_vertical"
+    android:background="@color/black_primary"
     tools:context=".sign_in.SecondScreen">
 
     <TextView
@@ -15,13 +16,14 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:text="Enter the code here"
-        android:textColor="@color/black"
+        android:textColor="@color/grey_200"
         android:textSize="30sp" />
 
     <EditText
         android:id="@+id/editText"
         android:layout_width="match_parent"
         android:layout_height="80dp"
+        android:shadowColor="@color/grey_200"
         android:layout_marginTop="50dp"
         android:textSize="20sp"/>
 
@@ -32,6 +34,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="60dp"
         android:text="Sign In"
+        android:textColor="@color/black_primary"
         android:textSize="30sp"
         android:textAllCaps="false"/>
 
