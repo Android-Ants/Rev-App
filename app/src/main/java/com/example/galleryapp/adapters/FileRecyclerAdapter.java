@@ -11,7 +11,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.galleryapp.PaperDb;
 import com.example.galleryapp.R;
+import com.example.galleryapp.classes.CheckBlocked;
 import com.example.galleryapp.classes.ParentFireBase;
 import com.example.galleryapp.databinding.RecyclerFileListBinding;
 
@@ -27,12 +29,14 @@ public class FileRecyclerAdapter extends RecyclerView.Adapter<FileRecyclerAdapte
     private On_Click_Listener_getChild onClickListener;
     private On_Click_Listener_Radio_Button on_click_listener_radio_button;
     private String fragment;
+    private Context context;
 
     public FileRecyclerAdapter(Context context, List<ParentFireBase> parentFireBases, On_Click_Listener_getChild onClickListener, String fragment) {
         layoutInflater = LayoutInflater.from(context);
         this.parentFireBases = parentFireBases;
         this.onClickListener = onClickListener;
         this.fragment = fragment;
+        this.context = context;
     }
 
     public FileRecyclerAdapter(Context context, List<ParentFireBase> parentFireBases, On_Click_Listener_Radio_Button onClickListener, String fragment) {
@@ -40,13 +44,14 @@ public class FileRecyclerAdapter extends RecyclerView.Adapter<FileRecyclerAdapte
         this.parentFireBases = parentFireBases;
         this.on_click_listener_radio_button = onClickListener;
         this.fragment = fragment;
+        this.context = context;
     }
 
     @NonNull
     @NotNull
     @Override
     public FileViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
-      View view = layoutInflater.inflate(R.layout.recycler_file_list,parent,false);
+        View view = layoutInflater.inflate(R.layout.recycler_file_list, parent, false);
         return new FileViewHolder(view);
     }
 
@@ -61,7 +66,7 @@ public class FileRecyclerAdapter extends RecyclerView.Adapter<FileRecyclerAdapte
 
         if (fragment.equalsIgnoreCase("settings")) {
             holder.radioButton.setVisibility(View.VISIBLE);
-            if (parentFireBases.get(position).getBlocked())
+            if (PaperDb.get_block_status(parentFireBases.get(position).getParentId(), context))
                 holder.radioButton.setChecked(false);
         }
 
@@ -74,7 +79,7 @@ public class FileRecyclerAdapter extends RecyclerView.Adapter<FileRecyclerAdapte
 
     public class FileViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        private TextView folderName,number_of_photos;
+        private TextView folderName, number_of_photos;
         private RadioButton radioButton;
 
         public FileViewHolder(@NonNull @NotNull View itemView) {
@@ -96,12 +101,12 @@ public class FileRecyclerAdapter extends RecyclerView.Adapter<FileRecyclerAdapte
                 }
 
             if (fragment.equalsIgnoreCase("settings"))
-                if (v.getId() == R.id.radio){
-                    if ( radioButton.isChecked() )
-                    radioButton.setChecked(false);
+                if (v.getId() == R.id.radio) {
+                    if (radioButton.isChecked())
+                        radioButton.setChecked(false);
                     else
-                    radioButton.setChecked(true);
-                    on_click_listener_radio_button.radio_button_clicked(getAdapterPosition(),radioButton.isChecked());
+                        radioButton.setChecked(true);
+                    on_click_listener_radio_button.radio_button_clicked(getAdapterPosition(), radioButton.isChecked());
                 }
         }
     }

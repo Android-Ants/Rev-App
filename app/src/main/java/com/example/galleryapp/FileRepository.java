@@ -94,7 +94,7 @@ public class FileRepository {
 
     public MutableLiveData<List<FireBaseCount>> get_images() {
         MutableLiveData<List<FireBaseCount>> images = new MutableLiveData<>();
-        images.setValue(PaperDb.returnAll());
+        images.setValue(PaperDb.returnAll(context));
         return images;
     }
 
