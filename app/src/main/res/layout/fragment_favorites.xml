@@ -6,20 +6,8 @@
     android:background="@color/black_variant"
     tools:context=".fragments.FavoritesFragment">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/fui_min_height_target"
-        android:text="@string/title_favourite"
-        android:textColor="@color/grey_200"
-        android:padding="8sp"
-        android:textSize="24sp"
-        android:drawablePadding="6sp"
-        android:drawableStart="@drawable/ic_baseline_favorite_24"
-        android:background="@color/black_primary"/>
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/favouritesRv"
-        android:layout_marginTop="@dimen/fui_min_height_target"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:listitem="@layout/rv_images"/>

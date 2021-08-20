@@ -91,12 +91,6 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d("hhhhhhhhhh", sharedPreferences.getString("fetch", ""));
 
-//        if (!sharedPreferences.getString("fetch", "").equalsIgnoreCase("no")) {
-//
-//            fetchingAllPhotos();
-//            Paper.book().write("images", baseCounts);
-//            editor.putString("fetch", "no");
-//        }
         binding.bottomNavigationView.setSelectedItemId(R.id.navigation_home);
         binding.bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override

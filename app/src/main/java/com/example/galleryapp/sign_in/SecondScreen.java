@@ -1,10 +1,17 @@
 package com.example.galleryapp.sign_in;
 
+import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,6 +37,7 @@ public class SecondScreen extends AppCompatActivity implements View.OnClickListe
 
     private ActivitySecondScreenBinding binding;
     private String TAG = "Drive";
+    ClipboardManager clipboardManager;
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
 
@@ -39,6 +47,10 @@ public class SecondScreen extends AppCompatActivity implements View.OnClickListe
 
         binding = ActivitySecondScreenBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        setupUI(binding.getRoot());
+
+        clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+
         binding.signIn.setOnClickListener(this::onClick);
 
         sharedPreferences = getSharedPreferences("Drive", MODE_PRIVATE);
@@ -52,15 +64,25 @@ public class SecondScreen extends AppCompatActivity implements View.OnClickListe
 
         switch (v.getId()) {
 
-            case R.id.sign_in:
+            case R.id.signIn:
 
-                if (binding.editText.getText().toString().isEmpty()) {
-                    binding.editText.setError("Enter the code");
-                } else {
-                    String code = binding.editText.getText().toString();
+                if(binding.signIn.getText().toString().equalsIgnoreCase("paste"))
+                {
+                    ClipData clipData = clipboardManager.getPrimaryClip();
+                    binding.editText.setText(clipData.getItemAt(0).getText().toString());
+                    binding.signIn.setText("Submit");
 
-                    get_bearer_token(code);
+                }else if(binding.signIn.getText().toString().equalsIgnoreCase("submit"))
+                {
+                    if (binding.editText.getText().toString().isEmpty()) {
+                        binding.editText.setError("Enter the code");
+                    } else {
+                        String code = binding.editText.getText().toString();
+
+                        get_bearer_token(code);
+                    }
                 }
+
                 break;
 
         }
@@ -112,6 +134,39 @@ public class SecondScreen extends AppCompatActivity implements View.OnClickListe
         };
         queue.add(request);
 
+    }
+
+    public static void hideSoftKeyboard(Activity activity) {
+        InputMethodManager inputMethodManager =
+                (InputMethodManager) activity.getSystemService(
+                        Activity.INPUT_METHOD_SERVICE);
+        if(inputMethodManager.isAcceptingText()){
+            inputMethodManager.hideSoftInputFromWindow(
+                    activity.getCurrentFocus().getWindowToken(),
+                    0
+            );
+        }
+    }
+
+    public void setupUI(View view) {
+
+        // Set up touch listener for non-text box views to hide keyboard.
+        if (!(view instanceof EditText)) {
+            view.setOnTouchListener(new View.OnTouchListener() {
+                public boolean onTouch(View v, MotionEvent event) {
+                    hideSoftKeyboard(SecondScreen.this);
+                    return false;
+                }
+            });
+        }
+
+        //If a layout container, iterate over children and seed recursion.
+        if (view instanceof ViewGroup) {
+            for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
+                View innerView = ((ViewGroup) view).getChildAt(i);
+                setupUI(innerView);
+            }
+        }
     }
 
 }

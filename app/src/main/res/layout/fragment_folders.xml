@@ -12,11 +12,12 @@
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="@dimen/fui_min_height_target"
+
         android:text="@string/title_handpicked_folders"
         android:textColor="@color/grey_200"
-        android:padding="8sp"
-        android:textSize="24sp"
-        android:drawablePadding="6sp"
+        android:padding="10sp"
+        android:textSize="20sp"
+        android:drawablePadding="4sp"
         android:drawableStart="@drawable/ic_chevron_left"
         android:background="@color/black_primary"/>
 
@@ -24,8 +25,7 @@
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingLeft="6sp"
-        android:paddingRight="6sp"
+        android:paddingTop="6sp"
         android:layout_marginTop="@dimen/fui_min_height_target" />
 
 </FrameLayout>

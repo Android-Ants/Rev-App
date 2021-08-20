@@ -36,7 +36,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener, 
     private DatabaseReference databaseReference;
     private ChildEventListener childEventListener;
     private int folders_number;
-    private Boolean open = false;
+    private Boolean open = true;
     private FileRecyclerAdapter fileRecyclerAdapter;
     private ImagesViewModel imagesViewModel;
 

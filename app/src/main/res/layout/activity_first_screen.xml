@@ -4,18 +4,75 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/first_screen"
     android:background="@color/black_variant"
     tools:context=".sign_in.FirstScreen">
 
-    <com.google.android.gms.common.SignInButton
-        android:id="@+id/sign_in_button"
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/imageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/black_primary"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="24dp"
+        app:srcCompat="@drawable/acclink"
+        android:backgroundTint="@color/black_variant"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/welcome"
+        android:textColor="@color/secondary_yellow"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="21dp"
+        android:text="Link your Google account to"
+        android:textAlignment="center"
+        android:textColor="@color/grey_200"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView3"
+        tools:ignore="HardcodedText" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:text="access your drive photos"
+        android:textAlignment="center"
+        android:textColor="@color/grey_200"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView4"
+        tools:ignore="HardcodedText" />
+
+
+    <Button
+        android:id="@+id/sign_in_button"
+        android:layout_width="wrap_content"
+        android:layout_height="55dp"
+        android:layout_marginTop="64dp"
+        android:backgroundTint="@color/black_primary"
+        android:drawableLeft="@drawable/ic_google_line"
+        android:drawableTint="@color/secondary_yellow"
+        android:text="@string/link_acc"
+        android:textColor="@color/grey_200"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -12,7 +12,8 @@
     <color name="black_primary">#222222</color>
     <color name="black_variant">#0E0E0E</color>
     <color name="black_underlined">#494949</color>
-    <color name="BNavSel_yellow">#E2CC58</color>
+    <color name="secondary_yellow">#E2CC58</color>
     <color name="grey_200">#C2C2C2</color>
+    <color name="stroke_shade">#222222</color>
 
 </resources>

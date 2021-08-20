@@ -158,6 +158,11 @@ public class ImageViewActivity extends AppCompatActivity {
                 viewModel.updateCount(data.get(x),count+"");
                 data.get(x).setCount(count+"");
                 binding.seenCount.setText(count+"");
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         });
         binding.likeButton.setOnClickListener(new View.OnClickListener() {
