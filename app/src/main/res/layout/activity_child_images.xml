@@ -11,7 +11,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
-        android:layout_height="0sp"
+        android:layout_height="54dp"
         android:translationZ="12sp"
         android:background="@color/black_primary"
         app:layout_constraintEnd_toEndOf="parent"
@@ -20,27 +20,29 @@
 
         <ImageView
             android:id="@+id/backButton"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:src="@drawable/ic_chevron_left"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/folder_name"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5"
+            android:contentDescription="BackButton" />
 
         <TextView
             android:id="@+id/folder_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="9sp"
             android:text="Folder Name"
             android:textColor="@color/grey_200"
-            android:textSize="24sp"
+            android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintHorizontal_bias="0.2" />
+            app:layout_constraintVertical_bias="0.5"
+            app:layout_constraintHorizontal_bias="0.12" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

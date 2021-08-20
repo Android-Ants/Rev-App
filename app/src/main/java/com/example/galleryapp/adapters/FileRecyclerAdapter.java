@@ -92,7 +92,7 @@ public class FileRecyclerAdapter extends RecyclerView.Adapter<FileRecyclerAdapte
 
             if (fragment.equalsIgnoreCase("folder"))
             {
-                folderName.setOnClickListener(this::onClick);
+                itemView.setOnClickListener(this::onClick);
             }
 
             number_of_photos = itemView.findViewById(R.id.number_of_photos);
@@ -155,7 +155,6 @@ public class FileRecyclerAdapter extends RecyclerView.Adapter<FileRecyclerAdapte
             if (fragment.equalsIgnoreCase("folder")) {
                 onClickListener.child_list(getAdapterPosition());
             }
-
 
             if (fragment.equalsIgnoreCase("settings"))
                 if (v.getId() == R.id.radio) {

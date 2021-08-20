@@ -21,6 +21,8 @@ import com.example.galleryapp.databinding.FragmentHomeBinding;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.paperdb.Paper;
+
 
 public class HomeFragment extends Fragment {
 
@@ -50,6 +52,8 @@ public class HomeFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Paper.init(context);
 
         this.imagesViewModel = new ViewModelProvider(this).get(ImagesViewModel.class);
         imagesViewModel.initializingDb(context);

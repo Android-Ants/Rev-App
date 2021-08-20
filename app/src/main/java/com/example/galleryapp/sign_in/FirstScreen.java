@@ -8,6 +8,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.galleryapp.R;
 import com.example.galleryapp.activities.MainActivity;
@@ -55,6 +57,10 @@ public class FirstScreen extends AppCompatActivity implements View.OnClickListen
 
         switch (v.getId())
         {
+            case R.id.first_screen:
+                InputMethodManager im = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                im.hideSoftInputFromWindow(v.getWindowToken(), 0 );
+
             case R.id.sign_in_button:
 
                 String url = "https://accounts.google.com/o/oauth2/auth?response_type=code&client_id=841525552075-lmtdplark7r3m4t69pocukvjs6bgeeau.apps.googleusercontent.com&redirect_uri=urn:ietf:wg:oauth:2.0:oob&state=foobar&scope=https://www.googleapis.com/auth/drive";

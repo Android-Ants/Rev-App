@@ -1,11 +1,15 @@
 <resources>
-    <string name="app_name">GalleryApp</string>
+    <string name="app_name">Rev</string>
     <string name="title_home">Home</string>
     <string name="title_favourite">Favourites</string>
     <string name="title_settings">Drive Settings</string>
+    <string name="drive_preferences">Drive preferences</string>
     <string name="title_handpicked_folders">Handpicked Folders</string>
     <string name="title_seen">Seen List</string>
     <string name="toast">HHAHHAHAHAHAHA</string>
+    <string name="link_acc_title">Link your Google account to access your drive photos</string>
     <string name="client_id">841525552075-lmtdplark7r3m4t69pocukvjs6bgeeau.apps.googleusercontent.com</string>
     <string name="redirect_uri">urn:ietf:wg:oauth:2.0:oob</string>
+    <string name="welcome">Welcome!</string>
+    <string name="link_acc">Link account</string>
 </resources>

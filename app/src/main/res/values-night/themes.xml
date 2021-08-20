@@ -2,7 +2,7 @@
     <!-- Base application theme. -->
     <style name="Theme.GalleryApp" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/BNavSel_yellow</item>
+        <item name="colorPrimary">@color/secondary_yellow</item>
         <item name="colorPrimaryVariant">@color/black_primary</item>
         <item name="colorOnPrimary">@color/black_variant</item>
         <!-- Secondary brand color. -->

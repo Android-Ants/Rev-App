@@ -3,18 +3,14 @@ package com.example.galleryapp;
 import android.content.Context;
 import android.os.Build;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.galleryapp.classes.FireBaseCount;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,33 +67,9 @@ public class ImagesViewModel extends ViewModel {
         return imagesLikedId;
     }
 
-    public void call(String id)
-    {
-        reference.child(id);
-        reference.addListenerForSingleValueEvent(new ValueEventListener() {
-
-
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                System.out.println(exist+"");
-                if(snapshot.exists()) exist = true;
-                System.out.println(exist+"");
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
-    public boolean isExist(){
-        System.out.println(exist+"");
-        return exist;
-    }
 
     public void updateCount(FireBaseCount f, String count) {
         Paper.book("Counts").write(f.getId(),count);
-        images.get(images.indexOf(f)).setCount(count);
         ImagesViewModel.count = count;
     }
 

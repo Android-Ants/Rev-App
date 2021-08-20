@@ -4,6 +4,8 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/tarun/AndroidStudioProjects/New-App/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.1707236842105263" />
+        <entry key="..\:/Users/tarun/AndroidStudioProjects/New-App/app/src/main/res/drawable/b_nav_colors.xml" value="0.1707236842105263" />
+        <entry key="..\:/Users/tarun/AndroidStudioProjects/New-App/app/src/main/res/drawable/ic_app_icon.xml" value="0.1707236842105263" />
         <entry key="..\:/Users/tarun/AndroidStudioProjects/New-App/app/src/main/res/drawable/ic_baseline_favorite_24.xml" value="0.1707236842105263" />
         <entry key="..\:/Users/tarun/AndroidStudioProjects/New-App/app/src/main/res/drawable/ic_baseline_favorite_border_24.xml" value="0.1707236842105263" />
         <entry key="..\:/Users/tarun/AndroidStudioProjects/New-App/app/src/main/res/drawable/ic_baseline_handpicked_folders_24.xml" value="0.1707236842105263" />
@@ -13,12 +15,14 @@
         <entry key="..\:/Users/tarun/AndroidStudioProjects/New-App/app/src/main/res/drawable/ic_outline_seen_24.xml" value="0.1707236842105263" />
         <entry key="..\:/Users/tarun/AndroidStudioProjects/New-App/app/src/main/res/drawable/ic_outline_settings_24.xml" value="0.1707236842105263" />
         <entry key="..\:/Users/tarun/AndroidStudioProjects/New-App/app/src/main/res/drawable/nav_selector.xml" value="0.1707236842105263" />
+        <entry key="..\:/Users/tarun/AndroidStudioProjects/New-App/app/src/main/res/drawable/outline.xml" value="0.1707236842105263" />
+        <entry key="..\:/Users/tarun/AndroidStudioProjects/New-App/app/src/main/res/drawable/seperator_lines.xml" value="0.1707236842105263" />
         <entry key="..\:/Users/tarun/AndroidStudioProjects/New-App/app/src/main/res/layout-v21/activity_image_view.xml" value="0.24909420289855072" />
         <entry key="..\:/Users/tarun/AndroidStudioProjects/New-App/app/src/main/res/layout/activity_child_images.xml" value="0.2" />
-        <entry key="..\:/Users/tarun/AndroidStudioProjects/New-App/app/src/main/res/layout/activity_first_screen.xml" value="0.16052631578947368" />
-        <entry key="..\:/Users/tarun/AndroidStudioProjects/New-App/app/src/main/res/layout/activity_image_view.xml" value="0.176" />
+        <entry key="..\:/Users/tarun/AndroidStudioProjects/New-App/app/src/main/res/layout/activity_first_screen.xml" value="0.2" />
+        <entry key="..\:/Users/tarun/AndroidStudioProjects/New-App/app/src/main/res/layout/activity_image_view.xml" value="0.152" />
         <entry key="..\:/Users/tarun/AndroidStudioProjects/New-App/app/src/main/res/layout/activity_main.xml" value="0.12192622950819672" />
-        <entry key="..\:/Users/tarun/AndroidStudioProjects/New-App/app/src/main/res/layout/activity_second_screen.xml" value="0.16052631578947368" />
+        <entry key="..\:/Users/tarun/AndroidStudioProjects/New-App/app/src/main/res/layout/activity_second_screen.xml" value="0.2" />
         <entry key="..\:/Users/tarun/AndroidStudioProjects/New-App/app/src/main/res/layout/activity_sign_in.xml" value="0.16052631578947368" />
         <entry key="..\:/Users/tarun/AndroidStudioProjects/New-App/app/src/main/res/layout/activity_sign_in_activity.xml" value="0.16052631578947368" />
         <entry key="..\:/Users/tarun/AndroidStudioProjects/New-App/app/src/main/res/layout/activity_trialsd.xml" value="0.16052631578947368" />
