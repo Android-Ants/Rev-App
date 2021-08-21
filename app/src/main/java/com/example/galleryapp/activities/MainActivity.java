@@ -86,11 +86,17 @@ public class MainActivity extends AppCompatActivity {
             FetchData fetchData = new FetchData(this);
             fetchData.fetchingAllPhotos();
             editor.commit();
+        }else{
+            databaseReference = FirebaseDatabase.getInstance().getReference("Photos");
+            databaseReference2 = FirebaseDatabase.getInstance().getReference("Parent");
+
+            databaseReference.removeValue();
+            databaseReference2.removeValue();
+
         }
 
 
         Log.d("hhhhhhhhhh", sharedPreferences.getString("fetch", ""));
-
         binding.bottomNavigationView.setSelectedItemId(R.id.navigation_home);
         binding.bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
