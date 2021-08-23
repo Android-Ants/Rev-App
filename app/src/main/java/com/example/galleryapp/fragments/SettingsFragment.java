@@ -75,6 +75,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener, 
         binding = FragmentSettingsBinding.inflate(inflater);
         binding.nFolders.setText(parentFireBases.size() + " folders");
         binding.image.setOnClickListener(this::onClick);
+        binding.fetch.setOnClickListener(this::onClick);
 
         fileRecyclerAdapter = new FileRecyclerAdapter(context, parentFireBases, this, "settings");
         binding.recyclerView.setAdapter(fileRecyclerAdapter);
