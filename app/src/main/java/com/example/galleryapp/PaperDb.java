@@ -72,4 +72,20 @@ public class PaperDb {
 
     }
 
+    public static void set_status_true( String parentId , Context context )
+    {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("Drive", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(parentId,true);
+        editor.commit();
+    }
+
+    public static void set_status_false( String parentId , Context context )
+    {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("Drive", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(parentId,false);
+        editor.commit();
+    }
+
 }

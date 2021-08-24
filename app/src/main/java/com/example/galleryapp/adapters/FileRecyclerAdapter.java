@@ -3,6 +3,7 @@ package com.example.galleryapp.adapters;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -72,7 +73,11 @@ public class FileRecyclerAdapter extends RecyclerView.Adapter<FileRecyclerAdapte
             holder.radioButton.setVisibility(View.VISIBLE);
             if (PaperDb.get_block_status(parentFireBases.get(position).getParentId(), context))
                 holder.radioButton.setChecked(false);
+            else
+                holder.radioButton.setChecked(true);
         }
+
+        Log.d("hhhhhhhhhhhhh",PaperDb.get_block_status(parentFireBases.get(position).getParentId(),context).toString());
 
     }
 
