@@ -9,6 +9,8 @@
         android:id="@+id/trial_image"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"
         android:layout_marginTop="@android:dimen/notification_large_icon_height"
         android:layout_marginBottom="@android:dimen/notification_large_icon_height"
         app:layout_constraintBottom_toBottomOf="parent"
