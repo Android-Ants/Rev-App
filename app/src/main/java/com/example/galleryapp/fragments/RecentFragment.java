@@ -46,6 +46,8 @@ public class RecentFragment extends Fragment {
         viewModel.initializeArrangement((ArrayList<FireBaseCount>) viewModel.getImagesList());
         data = (ArrayList<FireBaseCount>) viewModel.getArrangedCount();
 
+
+
         imagesRvAdapter = new ImagesRvAdapter(context,data);
 
     }
@@ -57,6 +59,11 @@ public class RecentFragment extends Fragment {
         fragmentRecentBinding = FragmentRecentBinding.inflate(inflater,container,false);
         fragmentRecentBinding.recentRv.setLayoutManager(new LinearLayoutManager(context));
         fragmentRecentBinding.recentRv.setAdapter(imagesRvAdapter);
+        if(data==null){
+            fragmentRecentBinding.imageView.setVisibility(View.VISIBLE);
+            fragmentRecentBinding.text.setVisibility(View.VISIBLE);
+            fragmentRecentBinding.recentRv.setVisibility(View.GONE);
+        }
 
         viewModel.initializeArrangement((ArrayList<FireBaseCount>) viewModel.getImagesList());
         data = (ArrayList<FireBaseCount>) viewModel.getArrangedCount();
