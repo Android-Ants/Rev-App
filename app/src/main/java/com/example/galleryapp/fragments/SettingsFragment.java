@@ -39,6 +39,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener, 
     private ChildEventListener childEventListener;
     private int folders_number;
     private Boolean open = true;
+    private Boolean check_ = false;
     private FileRecyclerAdapter fileRecyclerAdapter;
     private ImagesViewModel imagesViewModel;
 
@@ -78,6 +79,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener, 
         binding.nFolders.setText(parentFireBases.size() + " folders");
         binding.image.setOnClickListener(this::onClick);
         binding.fetch.setOnClickListener(this::onClick);
+        binding.radio.setOnClickListener(this::onClick);
 
         fileRecyclerAdapter = new FileRecyclerAdapter(context, parentFireBases, this, "settings");
         binding.recyclerView.setAdapter(fileRecyclerAdapter);
@@ -126,9 +128,67 @@ public class SettingsFragment extends Fragment implements View.OnClickListener, 
                 progressDialog.dismiss();
 
                 break;
+
+            case R.id.radio:
+
+                String Message = "";
+
+                if (!check_) {
+                    Message = "Are you sure to unblock all folders ?";
+                } else {
+                    Message = "Are you sure to block all folders ?";
+                }
+
+                AlertDialog.Builder alert = new AlertDialog.Builder(context)
+                        .setTitle("Confirmation Message")
+                        .setMessage(Message)
+                        .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                if (!check_)
+                                {
+                                    check_ = true;
+                                    for ( int i=0 ; i< parentFireBases.size() ;i++ )
+                                    {
+                                        PaperDb.set_status_false(parentFireBases.get(i).getParentId(),context);
+                                    }
+                                    binding.radio.setChecked(true);
+                                    binding.recyclerView.setAdapter(fileRecyclerAdapter);
+                                    binding.recyclerView.setLayoutManager(new LinearLayoutManager(context));
+                                }
+                                else {
+                                    check_ = false;
+                                    for ( int i=0 ; i< parentFireBases.size() ;i++ )
+                                    {
+                                        PaperDb.set_status_true(parentFireBases.get(i).getParentId(),context);
+                                    }
+                                    binding.radio.setChecked(false);
+                                    binding.recyclerView.setAdapter(fileRecyclerAdapter);
+                                    binding.recyclerView.setLayoutManager(new LinearLayoutManager(context));
+                                }
+
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                if (binding.radio.isChecked())
+                                {
+                                    binding.radio.setChecked(false);
+                                }
+                                else {
+                                    binding.radio.setChecked(true);
+                                }
+
+                            }
+                        });
+
+                alert.show();
+
+                break;
         }
-
-
     }
 
 
