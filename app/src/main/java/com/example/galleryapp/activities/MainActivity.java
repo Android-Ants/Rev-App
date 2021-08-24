@@ -1,30 +1,17 @@
 package com.example.galleryapp.activities;
 
-import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-import com.example.galleryapp.ApiCalls;
 import com.example.galleryapp.App;
 import com.example.galleryapp.FetchData;
 import com.example.galleryapp.ImagesViewModel;
 import com.example.galleryapp.R;
-import com.example.galleryapp.classes.FireBaseCount;
-import com.example.galleryapp.classes.ParentFireBase;
 import com.example.galleryapp.databinding.ActivityMainBinding;
 import com.example.galleryapp.fragments.FavoritesFragment;
 import com.example.galleryapp.fragments.FoldersFragment;
@@ -32,21 +19,14 @@ import com.example.galleryapp.fragments.HomeFragment;
 import com.example.galleryapp.fragments.RecentFragment;
 import com.example.galleryapp.fragments.SettingsFragment;
 import com.google.android.material.navigation.NavigationBarView;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import io.paperdb.Paper;
 
@@ -90,10 +70,6 @@ public class MainActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new HomeFragment(MainActivity.this))
                     .commit();
             editor.putInt("Fragment Id",R.id.navigation_home).commit();
-            databaseReference = FirebaseDatabase.getInstance().getReference("Photos");
-            databaseReference2 = FirebaseDatabase.getInstance().getReference("Parent");
-            databaseReference.removeValue();
-            databaseReference2.removeValue();
         }
 
         binding.bottomNavigationView.setSelectedItemId(R.id.navigation_home);
