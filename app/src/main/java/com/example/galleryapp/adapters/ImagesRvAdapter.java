@@ -18,7 +18,6 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.galleryapp.R;
 import com.example.galleryapp.activities.ImageViewActivity;
 import com.example.galleryapp.classes.FireBaseCount;
-import com.example.galleryapp.databinding.RvImagesBinding;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -51,9 +50,9 @@ public class ImagesRvAdapter extends RecyclerView.Adapter<ImagesRvAdapter.ImageH
     public void onBindViewHolder(@NonNull @NotNull ImagesRvAdapter.ImageHolder holder, @SuppressLint("RecyclerView") int position) {
         resumePosition = position * 3 + 1;
         RequestOptions options = new RequestOptions()
-                .placeholder(R.drawable.ic_launcher_background)
+                .placeholder(R.drawable.ic_baseline_image_24)
                 .centerCrop()
-                .error(R.drawable.ic_launcher_background);
+                .error(R.drawable.ic_baseline_image_24);
 
 
 

@@ -1,6 +1,7 @@
 package com.example.galleryapp.fragments;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.bumptech.glide.Glide;
 import com.example.galleryapp.FetchData;
 import com.example.galleryapp.ImagesViewModel;
 import com.example.galleryapp.PaperDb;
@@ -104,8 +106,26 @@ public class SettingsFragment extends Fragment implements View.OnClickListener, 
 
             case R.id.fetch:
 
+                Thread t1 = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        Glide.get(context).clearDiskCache();
+                    }
+                });
+                t1.start();
+                try {
+                    t1.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                ProgressDialog progressDialog = new ProgressDialog(context);
+                progressDialog.setTitle("Updating photos from drive");
+                progressDialog.setMessage("This May take some time.");
+                progressDialog.show();
                 FetchData fetchData = new FetchData(context);
                 fetchData.fetchingAllPhotos();
+                progressDialog.dismiss();
 
                 break;
 

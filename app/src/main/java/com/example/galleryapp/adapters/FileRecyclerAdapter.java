@@ -73,8 +73,9 @@ public class FileRecyclerAdapter extends RecyclerView.Adapter<FileRecyclerAdapte
             holder.radioButton.setVisibility(View.VISIBLE);
             if (PaperDb.get_block_status(parentFireBases.get(position).getParentId(), context))
                 holder.radioButton.setChecked(false);
-            else
+            else 
                 holder.radioButton.setChecked(true);
+
         }
 
         Log.d("hhhhhhhhhhhhh",PaperDb.get_block_status(parentFireBases.get(position).getParentId(),context).toString());
