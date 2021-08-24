@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -30,9 +31,11 @@ public class ImageViewActivity extends AppCompatActivity {
     ArrayList<FireBaseCount> data;
     ActivityImageViewBinding binding;
     SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
     private ImagesViewModel viewModel;
     public static int x;
     public static String liked = "false";
+    public static String date = "false";
     public static int count = 0;
 
     @Override
@@ -43,6 +46,10 @@ public class ImageViewActivity extends AppCompatActivity {
         Paper.init(this);
 
         sharedPreferences = getSharedPreferences("Drive", Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        date = MainActivity.getCurrentDateAndTime();
+        Log.d("Date check", "onCreate: "+date);
+
 
         int position = getIntent().getIntExtra("position",0);
 
@@ -54,6 +61,15 @@ public class ImageViewActivity extends AppCompatActivity {
             data = viewModel.getArrangedCount();
         }else{
             data = Randomize.getPrevRandomized();
+        }
+
+        if(!sharedPreferences.getString("date","").equalsIgnoreCase(date)){
+            editor.putString("date",date);
+            Log.d("Date check", "onCreate: "+date);
+            editor.commit();
+            for (FireBaseCount f: data) {
+                f.setClickable("true");
+            }
         }
 
 
@@ -72,7 +88,7 @@ public class ImageViewActivity extends AppCompatActivity {
 
         if(data.get(x).getId()!=null)
         {
-            liked = data.get(x).getLiked();
+            //liked = data.get(x).getClickable();
             String scount =viewModel.getCount(data.get(x).getId());
             if(scount!=null)
             count = Integer.parseInt(scount);
@@ -101,7 +117,7 @@ public class ImageViewActivity extends AppCompatActivity {
                 x = position;
                 binding.textView2.setText(data.get(x).getName());
                 if(data.get(x).getId()!=null) {
-                    liked = data.get(x).getLiked();
+                    //liked = data.get(x).getClickable();
                     String scount =viewModel.getCount(data.get(x).getId());
                     if(scount!=null)
                         count = Integer.parseInt(scount);
@@ -153,38 +169,38 @@ public class ImageViewActivity extends AppCompatActivity {
         binding.seenCount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                count = Integer.parseInt(data.get(x).getCount());
+                if(data.get(x).getClickable().equalsIgnoreCase("false")){
+                    Toast.makeText(ImageViewActivity.this, "You read this today", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                count = Integer.parseInt(binding.seenCount.getText().toString());
                 count++;
                 viewModel.updateCount(data.get(x),count+"");
+                data.get(x).setClickable("false");
                 data.get(x).setCount(count+"");
                 binding.seenCount.setText(count+"");
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
             }
         });
         binding.likeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 System.out.println(x+"dddd");
-                liked = data.get(x).getLiked();
+                //liked = data.get(x).getClickable();
                 System.out.println(liked);
                 if(s.contains(data.get(x).getId()))
                 {
                     //viewModel.setLikedStatus(data.get(x).getId(),"false");
-                    data.get(x).setLiked("false");
+                    //data.get(x).setClickable("false");
                     binding.likeButton.setImageDrawable(getDrawable(R.drawable.ic_baseline_favorite_border_24));
                     viewModel.removeLiked(data.get(x));
                 }
                 else{
                     binding.likeButton.setImageDrawable(getDrawable(R.drawable.ic_baseline_favorite_24));
-                    //iewModel.setLikedStatus(data.get(x).getId(),"true");
-                    data.get(x).setLiked("true");
+                    //viewModel.setLikedStatus(data.get(x).getId(),"true");
+                    //data.get(x).setClickable("true");
                     viewModel.addLiked(data.get(x));
                 }
-                liked = data.get(x).getLiked();
+                //liked = data.get(x).getClickable();
                 System.out.println(liked);
             }
         });
