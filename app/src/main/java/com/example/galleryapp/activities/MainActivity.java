@@ -53,17 +53,11 @@ import io.paperdb.Paper;
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
-    private DatabaseReference databaseReference, databaseReference2;
     private List<String> parentId = new ArrayList<>();
-    private List<FireBaseCount> fireBaseCounts = new ArrayList<>();
-    private ArrayList<FireBaseCount> baseCounts = new ArrayList<>();
-    private RequestQueue queue;
     private final String TAG = "Drive";
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
-    private ProgressDialog progressDialog;
 
-    private ApiCalls apiCalls;
     private ImagesViewModel imagesViewModel;
 
 
@@ -84,8 +78,6 @@ public class MainActivity extends AppCompatActivity {
 
         this.imagesViewModel = new ViewModelProvider(this).get(ImagesViewModel.class);
 
-        apiCalls = new ApiCalls(MainActivity.this);
-        apiCalls.get_bearer_token();
         sharedPreferences = getSharedPreferences("Drive", MODE_PRIVATE);
         editor = sharedPreferences.edit();
 
@@ -104,8 +96,6 @@ public class MainActivity extends AppCompatActivity {
             databaseReference2.removeValue();
         }
 
-
-        Log.d("hhhhhhhhhh", sharedPreferences.getString("fetch", ""));
         binding.bottomNavigationView.setSelectedItemId(R.id.navigation_home);
         binding.bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
@@ -150,282 +140,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void fetchingAllPhotos() {
-
-        progressDialog = new ProgressDialog(MainActivity.this);
-        progressDialog.setTitle("Fetching all photos from drive");
-        progressDialog.setMessage("This May take some time but will occur only once .");
-        progressDialog.show();
-
-        queue = Volley.newRequestQueue(MainActivity.this);
-
-        databaseReference = FirebaseDatabase.getInstance().getReference("Photos");
-        databaseReference2 = FirebaseDatabase.getInstance().getReference("Parent");
-
-        pngFileSearch();
-    }
-
-    private void uploadToFirebase(FireBaseCount fireBaseCount) {
-
-        if (!sharedPreferences.getString("clear", "").equalsIgnoreCase("done")) {
-            databaseReference.removeValue();
-            editor.putString("clear", "done");
-            editor.commit();
-        }
-
-
-        databaseReference.child(fireBaseCount.getId()).setValue(fireBaseCount);
-        if (!parentId.contains(fireBaseCount.getParentsId()))
-            parentId.add(fireBaseCount.getParentsId());
-
-    }
-
-    private void pngFileSearch() {
-
-        StringRequest request = new StringRequest(Request.Method.GET, "https://www.googleapis.com/drive/v3/files?fields=kind,incompleteSearch,nextPageToken, files(id, name,webContentLink,parents)&q=mimeType='image/png'",
-
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.d(TAG, response);
-                        try {
-                            JSONObject jsonObject = new JSONObject(response);
-                            JSONArray jsonArray = jsonObject.getJSONArray("files");
-
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                FireBaseCount fireBaseCount = new FireBaseCount();
-                                fireBaseCount.setId(jsonArray.getJSONObject(i).get("id").toString());
-                                fireBaseCount.setName(jsonArray.getJSONObject(i).get("name").toString());
-
-                                fireBaseCount.setUrl(jsonArray.getJSONObject(i).get("webContentLink").toString());
-                                try {
-                                    String str = jsonArray.getJSONObject(i).get("parents").toString();
-                                    str = str.replace("[", "");
-                                    str = str.replace("]", "");
-                                    str = str.replace("\\", "");
-                                    str = str.replace("\"", "");
-                                    fireBaseCount.setParentsId(str);
-                                } catch (JSONException e) {
-                                    fireBaseCount.setParentsId("drive");
-                                }
-
-                                baseCounts.add(fireBaseCount);
-                                Log.d("jjjjjjjjjjj", String.valueOf(0));
-                                Log.d("jjjjjjjjjj", baseCounts.get(0).getId());
-
-
-                                uploadToFirebase(fireBaseCount);
-                            }
-                            jpgFileSearch();
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d(TAG, "Error : " + error.toString());
-            }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-
-                Map<String, String> map = new HashMap<String, String>();
-                map.put("Authorization", "Bearer " + sharedPreferences.getString("bearer token", ""));
-                return map;
-            }
-        };
-        queue.add(request);
-    }
-
-    private void jpgFileSearch() {
-
-        StringRequest request = new StringRequest(Request.Method.GET, "https://www.googleapis.com/drive/v3/files?fields=kind,incompleteSearch,nextPageToken, files(id, name,webContentLink,parents)&q=mimeType='image/jpg'",
-
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-
-                        Log.d(TAG, response);
-                        try {
-                            JSONObject jsonObject = new JSONObject(response);
-                            JSONArray jsonArray = jsonObject.getJSONArray("files");
-
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                FireBaseCount fireBaseCount = new FireBaseCount();
-                                fireBaseCount.setId(jsonArray.getJSONObject(i).get("id").toString());
-                                fireBaseCount.setName(jsonArray.getJSONObject(i).get("name").toString());
-
-                                fireBaseCount.setUrl(jsonArray.getJSONObject(i).get("webContentLink").toString());
-                                try {
-                                    String str = jsonArray.getJSONObject(i).get("parents").toString();
-                                    str = str.replace("[", "");
-                                    str = str.replace("]", "");
-                                    str = str.replace("\\", "");
-                                    str = str.replace("\"", "");
-                                    fireBaseCount.setParentsId(str);
-                                } catch (JSONException e) {
-                                    fireBaseCount.setParentsId("drive");
-                                }
-
-                                baseCounts.add(fireBaseCount);
-
-
-                                uploadToFirebase(fireBaseCount);
-                            }
-                            jpegFileSearch();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d(TAG, "Error : " + error.toString());
-            }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-
-                Map<String, String> map = new HashMap<String, String>();
-                map.put("Authorization", "Bearer " + sharedPreferences.getString("bearer token", ""));
-                return map;
-            }
-        };
-        queue.add(request);
-    }
-
-    private void jpegFileSearch() {
-
-        StringRequest request = new StringRequest(Request.Method.GET, "https://www.googleapis.com/drive/v3/files?fields=kind,incompleteSearch,nextPageToken, files(id, name,webContentLink,parents)&q=mimeType='image/jpeg'",
-
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-
-                        Log.d(TAG, response);
-                        try {
-                            JSONObject jsonObject = new JSONObject(response);
-                            JSONArray jsonArray = jsonObject.getJSONArray("files");
-
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                FireBaseCount fireBaseCount = new FireBaseCount();
-                                fireBaseCount.setId(jsonArray.getJSONObject(i).get("id").toString());
-                                fireBaseCount.setName(jsonArray.getJSONObject(i).get("name").toString());
-
-                                fireBaseCount.setUrl(jsonArray.getJSONObject(i).get("webContentLink").toString());
-                                try {
-                                    String str = jsonArray.getJSONObject(i).get("parents").toString();
-                                    str = str.replace("[", "");
-                                    str = str.replace("]", "");
-                                    str = str.replace("\\", "");
-                                    str = str.replace("\"", "");
-                                    fireBaseCount.setParentsId(str);
-                                } catch (JSONException e) {
-                                    fireBaseCount.setParentsId("drive");
-                                }
-                                baseCounts.add(fireBaseCount);
-                                Log.d("jjjjjjjjjjj", String.valueOf(0));
-                                Log.d("jjjjjjjjjj", baseCounts.get(0).getId());
-                                uploadToFirebase(fireBaseCount);
-                            }
-                            parents_profile_fetch();
-                            progressDialog.dismiss();
-                            for (FireBaseCount f : baseCounts) {
-                                Paper.book("ImagesAll").write(f.getId(), f);
-                            }
-                            //Paper.book("ImagesAll").write("images",baseCounts);
-                            Toast.makeText(MainActivity.this, "Profile fetching completed", Toast.LENGTH_SHORT).show();
-
-                            Thread.sleep(1000);
-                            getSupportFragmentManager().beginTransaction()
-                                    .replace(R.id.fragment_container, new HomeFragment(MainActivity.this))
-                                    .commit();
-                        } catch (JSONException | InterruptedException e) {
-
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d(TAG, "Error : " + error.toString());
-            }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-
-                Map<String, String> map = new HashMap<String, String>();
-                map.put("Authorization", "Bearer " + sharedPreferences.getString("bearer token", ""));
-                return map;
-            }
-        };
-        queue.add(request);
-    }
-
-    public void parents_profile_fetch() {
-        for (int i = 0; i < parentId.size(); i++) {
-            ParentFireBase parentFireBase = new ParentFireBase();
-            parentFireBase.setParentId(parentId.get(i));
-            get_parent_name(parentFireBase);
-            Log.d("jjjjjjjjjjj", String.valueOf(i));
-            Log.d("jjjjjjjjjj", baseCounts.get(i).getName());
-        }
-    }
-
-    public void get_parent_name(ParentFireBase parentFireBase) {
-        String url = "https://www.googleapis.com/drive/v3/files/" + parentFireBase.getParentId();
-        StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-
-                try {
-                    JSONObject jsonObject = new JSONObject(response);
-                    parentFireBase.setName(jsonObject.get("name").toString());
-                    update_on_firebase(parentFireBase);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d(TAG, "Error : " + error.toString());
-            }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-
-                Map<String, String> map = new HashMap<String, String>();
-                map.put("Authorization", "Bearer " + sharedPreferences.getString("bearer token", ""));
-                return map;
-            }
-        };
-        queue.add(request);
-    }
-
-    public void update_on_firebase(ParentFireBase parentFireBase) {
-        for (int i = 0; i < baseCounts.size(); i++) {
-            if (baseCounts.get(i).getParentsId().equalsIgnoreCase(parentFireBase.getParentId())) {
-                fireBaseCounts.add(baseCounts.get(i));
-            }
-        }
-        parentFireBase.setChilds(fireBaseCounts);
-            Paper.book("Folders").write(parentFireBase.getParentId(), parentFireBase);
-        if (!sharedPreferences.contains(parentFireBase.getParentId())) {
-            editor.putBoolean(parentFireBase.getParentId(), parentFireBase.getBlocked());
-            editor.commit();
-        }
-        databaseReference2.child(parentFireBase.getParentId()).setValue(parentFireBase);
-        fireBaseCounts.clear();
-        if (parentFireBase.getParentId().equalsIgnoreCase(parentId.get(parentId.size() - 1))) {
-            progressDialog.dismiss();
-            Toast.makeText(MainActivity.this, "Profile fetching completed", Toast.LENGTH_SHORT).show();
-        }
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -463,7 +177,6 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
     }
-
     public static String getCurrentDateAndTime(){
         Date c = Calendar.getInstance().getTime();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");

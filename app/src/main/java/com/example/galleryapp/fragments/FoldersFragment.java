@@ -53,7 +53,7 @@ public class FoldersFragment extends Fragment implements FileRecyclerAdapter.On_
         binding = FragmentFoldersBinding.inflate(layoutInflater);
         this.context = context;
         databaseReference = FirebaseDatabase.getInstance().getReference("Parent");
-
+        sharedPreferences = context.getSharedPreferences("Drive", Context.MODE_PRIVATE);
       //  this.application = application;
     }
 
@@ -65,7 +65,12 @@ public class FoldersFragment extends Fragment implements FileRecyclerAdapter.On_
         parentFireBases.clear();
         for (int i = 0; i < foldersId.size(); i++) {
             ParentFireBase folderCheck = Paper.book("Folders").read(foldersId.get(i));
-            parentFireBases.add(folderCheck);
+            if (sharedPreferences.contains(folderCheck.getParentId())) {
+                if (!sharedPreferences.getBoolean(folderCheck.getParentId(), false))
+                    parentFireBases.add(folderCheck);
+            }
+            else
+                parentFireBases.add(folderCheck);
         }
 
 
