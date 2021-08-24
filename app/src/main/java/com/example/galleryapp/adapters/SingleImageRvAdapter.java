@@ -44,8 +44,8 @@ public class SingleImageRvAdapter extends RecyclerView.Adapter<SingleImageRvAdap
     public void onBindViewHolder(@NonNull ImageHolder holder, int position) {
         RequestOptions options = new RequestOptions()
                 .fitCenter()
-                .placeholder(R.mipmap.ic_launcher)
-                .error(R.mipmap.ic_launcher);
+                .placeholder(R.drawable.ic_baseline_image_24)
+                .error(R.drawable.ic_baseline_image_24);
         Glide.with(context).load(data.get(position).getUrl()).apply(options).into(holder.imageView);
     }
 

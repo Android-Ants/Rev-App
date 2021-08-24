@@ -249,6 +249,9 @@ public class FetchData {
                                 uploadToFirebase(fireBaseCount);
                             }
                             parents_profile_fetch();
+
+                            progressDialog.dismiss();
+
                             for (FireBaseCount f : baseCounts) {
                                 Paper.book("ImagesAll").write(f.getId(), f);
                             }

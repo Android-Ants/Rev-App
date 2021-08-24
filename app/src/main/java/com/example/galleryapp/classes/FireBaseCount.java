@@ -6,15 +6,15 @@ public class FireBaseCount {
     private String parentsId;
     private String url = "";
     private String name = "";
-    private String liked = "false";
+    private String clickable = "true";
     private String count = "0";
     private String lastSeen = "";
 
-    public FireBaseCount(String id, String url, String name, String liked, String count, String lastSeen) {
+    public FireBaseCount(String id, String url, String name, String clickable, String count, String lastSeen) {
         this.id = id;
         this.url = url;
         this.name = name;
-        this.liked = liked;
+        this.clickable = clickable;
         this.count = count;
         this.lastSeen = lastSeen;
     }
@@ -67,12 +67,12 @@ public class FireBaseCount {
         this.url = url;
     }
 
-    public String getLiked() {
-        return liked;
+    public String getClickable() {
+        return clickable;
     }
 
-    public void setLiked(String liked) {
-        this.liked = liked;
+    public void setClickable(String clickable) {
+        this.clickable = clickable;
     }
 
     public String getCount() {

@@ -40,7 +40,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -68,16 +71,29 @@ public class MainActivity extends AppCompatActivity {
 
         Paper.init(getApplicationContext());
 
+
+        String date = getCurrentDateAndTime();
+
+
+
         this.imagesViewModel = new ViewModelProvider(this).get(ImagesViewModel.class);
 
         sharedPreferences = getSharedPreferences("Drive", MODE_PRIVATE);
         editor = sharedPreferences.edit();
 
         if (sharedPreferences.getString("firstLogin", "yes").equalsIgnoreCase("yes")) {
-            editor.putString("firstLogin", "no");
+            editor.putString("firstLogin", "no").commit();
+            editor.putString("date",date).commit();
             FetchData fetchData = new FetchData(this);
             fetchData.fetchingAllPhotos();
-            editor.commit();
+        }else if(sharedPreferences.getString("firstLogin", "yes").equalsIgnoreCase("no")){
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new HomeFragment(MainActivity.this))
+                    .commit();
+            editor.putInt("Fragment Id",R.id.navigation_home).commit();
+            databaseReference = FirebaseDatabase.getInstance().getReference("Photos");
+            databaseReference2 = FirebaseDatabase.getInstance().getReference("Parent");
+            databaseReference.removeValue();
+            databaseReference2.removeValue();
         }
 
         binding.bottomNavigationView.setSelectedItemId(R.id.navigation_home);
@@ -160,5 +176,22 @@ public class MainActivity extends AppCompatActivity {
                 binding.bottomNavigationView.setSelectedItemId(FragmentId);
                 break;
         }
+    }
+    public static String getCurrentDateAndTime(){
+        Date c = Calendar.getInstance().getTime();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        String formattedDate = simpleDateFormat.format(c);
+        return formattedDate;
+    }
+
+    @Override
+    protected void onDestroy() {
+
+        super.onDestroy();
+//        editor.putString("fetch", "yes");
+//        editor.putString("clear", "");
+//        editor.putInt("FragmentId", 0);
+//        editor.commit();
+
     }
 }
