@@ -1,14 +1,13 @@
 package com.example.galleryapp.activities;
 
+import static android.content.ContentValues.TAG;
+
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
@@ -36,6 +35,7 @@ public class ImageViewActivity extends AppCompatActivity {
     public static int x;
     public static String liked = "false";
     public static String date = "false";
+    public static boolean controller = true;
     public static int count = 0;
 
     @Override
@@ -43,6 +43,8 @@ public class ImageViewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityImageViewBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+
         Paper.init(this);
 
         sharedPreferences = getSharedPreferences("Drive", Context.MODE_PRIVATE);
@@ -74,8 +76,10 @@ public class ImageViewActivity extends AppCompatActivity {
 
 
         adapter = new SingleImageRvAdapter(ImageViewActivity.this,data);
+
         binding.singleImgViewPager.setAdapter(adapter);
         binding.singleImgViewPager.setCurrentItem(position);
+
         binding.backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -96,6 +100,9 @@ public class ImageViewActivity extends AppCompatActivity {
         }
 
         binding.seenCount.setText(count+"");
+        if(data.get(x).getName().length()>15){
+            data.get(x).setName(data.get(x).getName().substring(0,14)+"...");
+        }
         binding.textView2.setText(data.get(x).getName());
 
         if(s.contains(data.get(x).getId()))
@@ -115,6 +122,9 @@ public class ImageViewActivity extends AppCompatActivity {
                 super.onPageSelected(position);
 
                 x = position;
+                if(data.get(x).getName().length()>15){
+                    data.get(x).setName(data.get(x).getName().substring(0,14)+"...");
+                }
                 binding.textView2.setText(data.get(x).getName());
                 if(data.get(x).getId()!=null) {
                     //liked = data.get(x).getClickable();
@@ -136,49 +146,55 @@ public class ImageViewActivity extends AppCompatActivity {
                 super.onPageScrollStateChanged(state);
             }
         });
-        binding.seenCount.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                String msg = "";
-                if(count>0){
-                    msg = "Do you want to reset count?";
 
-                    AlertDialog.Builder alert = new AlertDialog.Builder(ImageViewActivity.this)
-                            .setTitle("Confirmation Message")
-                            .setMessage(msg)
-                            .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    count = 0;
-                                    viewModel.updateCount(data.get(x),count+"");
-                                    data.get(x).setCount(count+"");
-                                    binding.seenCount.setText(count+"");
-                                }
-                            }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    Toast.makeText(ImageViewActivity.this, "Count on this image : "+count
-                                            , Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                    alert.show();
+
+
+
+        binding.getRoot().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "onClick: checking for the on click listener");
+                if(controller) {
+                    binding.actionBar.setVisibility(View.GONE);
+                    View decorView = getWindow().getDecorView();
+                    // Hide the status bar.
+                    int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
+                    decorView.setSystemUiVisibility(uiOptions);
+                }else{
+                    binding.actionBar.setVisibility(View.VISIBLE);
+                    View decorView = getWindow().getDecorView();
+                    // Hide the status bar.
+                    int uiOptions = View.SYSTEM_UI_FLAG_VISIBLE;
+                    decorView.setSystemUiVisibility(uiOptions);
                 }
-                return true;
+                controller=!controller;
+
             }
         });
+
+
+
         binding.seenCount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(data.get(x).getClickable().equalsIgnoreCase("false")){
-                    Toast.makeText(ImageViewActivity.this, "You read this today", Toast.LENGTH_SHORT).show();
-                    return;
+                    count--;
+                    viewModel.updateCount(data.get(x),count+"");
+                    data.get(x).setCount(count+"");
+                    binding.seenCount.setText(count+"");
+                    data.get(x).setClickable("true");
+                }else if(data.get(x).getClickable().equalsIgnoreCase("true")){
+                    if(count==0) return;
+                    count = Integer.parseInt(binding.seenCount.getText().toString());
+                    count++;
+                    viewModel.updateCount(data.get(x),count+"");
+                    data.get(x).setClickable("false");
+                    data.get(x).setCount(count+"");
+                    binding.seenCount.setText(count+"");
                 }
-                count = Integer.parseInt(binding.seenCount.getText().toString());
-                count++;
-                viewModel.updateCount(data.get(x),count+"");
-                data.get(x).setClickable("false");
-                data.get(x).setCount(count+"");
-                binding.seenCount.setText(count+"");
+
+
+
             }
         });
         binding.likeButton.setOnClickListener(new View.OnClickListener() {
@@ -189,18 +205,13 @@ public class ImageViewActivity extends AppCompatActivity {
                 System.out.println(liked);
                 if(s.contains(data.get(x).getId()))
                 {
-                    //viewModel.setLikedStatus(data.get(x).getId(),"false");
-                    //data.get(x).setClickable("false");
                     binding.likeButton.setImageDrawable(getDrawable(R.drawable.ic_baseline_favorite_border_24));
                     viewModel.removeLiked(data.get(x));
                 }
                 else{
                     binding.likeButton.setImageDrawable(getDrawable(R.drawable.ic_baseline_favorite_24));
-                    //viewModel.setLikedStatus(data.get(x).getId(),"true");
-                    //data.get(x).setClickable("true");
                     viewModel.addLiked(data.get(x));
                 }
-                //liked = data.get(x).getClickable();
                 System.out.println(liked);
             }
         });
@@ -214,13 +225,5 @@ public class ImageViewActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
 
-//        SharedPreferences sharedPreferences = getSharedPreferences("Drive", Context.MODE_PRIVATE);
-//        switch (sharedPreferences.getInt("FragmentId",0))
-//        {
-//            case R.id.navigation_favourite:
-//                getSupportFragmentManager().beginTransaction()
-//                        .replace(R.id.fragment_container, new FavoritesFragment(App.getContext()))
-//                        .commit();
-//        }
     }
 }
