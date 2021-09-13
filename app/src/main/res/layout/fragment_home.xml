@@ -14,4 +14,23 @@
         android:layout_gravity="center_horizontal"
         tools:listitem="@layout/rv_images" />
 
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_app_icon"
+        android:layout_gravity="center"
+        android:visibility="invisible"/>
+
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Rev"
+        android:layout_gravity="center"
+        android:layout_marginTop="50dp"
+        android:textColor="@color/grey_200"
+        android:textSize="24sp"
+        android:visibility="invisible"/>
+
 </FrameLayout>

@@ -74,65 +74,7 @@ public class FoldersFragment extends Fragment implements FileRecyclerAdapter.On_
         }
 
 
-//        for (FireBaseCount f : imagesByFolder) {
-//        full.add(Paper.book("ImagesAll").read(f.getId()));
-//        if (!sharedPreferences.getBoolean(folderCheck.getParentId(), false)) {
-//            imagesList.add(Paper.book("ImagesAll").read(f.getId()));
-//        }
-//        ProgressDialog progressDialog = new ProgressDialog(context);
-//        progressDialog.setMessage("Please Wait ....");
-//        progressDialog.show();
 
-//        this.fileViewModal = new ViewModelProvider(this , new FileViewModal.MyViewModalFactory(application, context)).get(FileViewModal.class);
-//        fileViewModal.init_folder();
-//        sharedPreferences = context.getSharedPreferences("Drive", Context.MODE_PRIVATE);
-       // fileRecyclerAdapter = new FileRecyclerAdapter(context,filesList, this::child_list);
-//
-//        fileViewModal.get_files_list("Bearer " + sharedPreferences.getString("bearer token",""));
-//
-//        fileViewModal.getListLiveData().observe(this, new Observer<FolderResponse>() {
-//            @Override
-//            public void onChanged(FolderResponse files) {
-//                if (files.getFileList().size() > 0) {
-//                    filesList.clear();
-//                    filesList.addAll(files.getFileList());
-//                    fileRecyclerAdapter.notifyDataSetChanged();
-//                }
-//            }
-//        });
-//        progressDialog.dismiss();
-
-//        childEventListener = new ChildEventListener() {
-//            @Override
-//            public void onChildAdded(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-//
-//                ParentFireBase parentFireBase = snapshot.getValue(ParentFireBase.class);
-//                parentFireBases.add(parentFireBase);
-//                fileRecyclerAdapter.notifyDataSetChanged();
-//
-//            }
-//
-//            @Override
-//            public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-//
-//            }
-//
-//            @Override
-//            public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
-//
-//            }
-//
-//            @Override
-//            public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-//
-//            }
-//        };
-//        databaseReference.addChildEventListener(childEventListener);
     }
 
     @Override
@@ -140,6 +82,13 @@ public class FoldersFragment extends Fragment implements FileRecyclerAdapter.On_
 
         fileRecyclerAdapter = new FileRecyclerAdapter(context,parentFireBases , this,"folder");
         binding.recyclerView.setAdapter(fileRecyclerAdapter);
+        if(parentFireBases==null){
+
+            binding.imageView.setVisibility(View.VISIBLE);
+            binding.text.setVisibility(View.VISIBLE);
+            binding.recyclerView.setVisibility(View.GONE);
+
+        }
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(context));
         return binding.getRoot();
     }

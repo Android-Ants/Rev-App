@@ -47,10 +47,11 @@ public class FavoritesFragment extends Fragment {
         Ids = new ArrayList<>(viewModel.getLikedListIds());
         if(raw!=null)
         raw.clear();
-        if(data!=null)
-        for (FireBaseCount f: data) {
-            if(Ids.contains(f.getId()))
-                raw.add(f);
+        if(data!=null) {
+            for (FireBaseCount f : data) {
+                if (Ids.contains(f.getId()))
+                    raw.add(f);
+            }
         }
         if(raw!=null){
             Randomize obj = new Randomize();
@@ -67,6 +68,11 @@ public class FavoritesFragment extends Fragment {
         binding = FragmentFavoritesBinding.inflate(inflater,container,false);
         binding.favouritesRv.setLayoutManager(new LinearLayoutManager(context));
         binding.favouritesRv.setAdapter(imagesRvAdapter);
+        if(raw==null){
+            binding.imageView.setVisibility(View.VISIBLE);
+            binding.text.setVisibility(View.VISIBLE);
+            binding.favouritesRv.setVisibility(View.GONE);
+        }
         return binding.getRoot();
     }
 

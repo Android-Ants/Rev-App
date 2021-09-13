@@ -179,6 +179,5 @@ public class FileRecyclerAdapter extends RecyclerView.Adapter<FileRecyclerAdapte
 
     public interface On_Click_Listener_Radio_Button {
         void radio_button_clicked(int a, Boolean checked);
-
     }
 }

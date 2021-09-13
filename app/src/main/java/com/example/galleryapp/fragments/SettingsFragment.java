@@ -68,6 +68,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener, 
             parentFireBases.add(folderCheck);
         }
 
+        check_ = Paper.book("checkFol").read("check",true);
 
 
     }
@@ -80,6 +81,8 @@ public class SettingsFragment extends Fragment implements View.OnClickListener, 
         binding.image.setOnClickListener(this::onClick);
         binding.fetch.setOnClickListener(this::onClick);
         binding.radio.setOnClickListener(this::onClick);
+
+        binding.radio.setChecked(check_);
 
         fileRecyclerAdapter = new FileRecyclerAdapter(context, parentFireBases, this, "settings");
         binding.recyclerView.setAdapter(fileRecyclerAdapter);
@@ -154,6 +157,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener, 
                                         PaperDb.set_status_false(parentFireBases.get(i).getParentId(),context);
                                     }
                                     binding.radio.setChecked(true);
+                                    Paper.book("checkFol").write("check",true);
                                     binding.recyclerView.setAdapter(fileRecyclerAdapter);
                                     binding.recyclerView.setLayoutManager(new LinearLayoutManager(context));
                                 }
@@ -164,6 +168,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener, 
                                         PaperDb.set_status_true(parentFireBases.get(i).getParentId(),context);
                                     }
                                     binding.radio.setChecked(false);
+                                    Paper.book("checkFol").write("check",false);
                                     binding.recyclerView.setAdapter(fileRecyclerAdapter);
                                     binding.recyclerView.setLayoutManager(new LinearLayoutManager(context));
                                 }

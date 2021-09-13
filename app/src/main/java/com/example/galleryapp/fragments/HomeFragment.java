@@ -78,6 +78,11 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater,container,false);
         binding.imageRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.imageRecycler.setAdapter(adapter);
+        if(data==null){
+            binding.imageView.setVisibility(View.VISIBLE);
+            binding.text.setVisibility(View.VISIBLE);
+            binding.imageRecycler.setVisibility(View.GONE);
+        }
         return binding.getRoot();
     }
 
