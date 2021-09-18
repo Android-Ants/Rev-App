@@ -220,7 +220,7 @@ public class ImageViewActivity extends AppCompatActivity {
                     checker = true;
 
                 }
-            }, 600);
+            }, 300);
 
         }
 
@@ -230,13 +230,13 @@ public class ImageViewActivity extends AppCompatActivity {
     private void updateCountOnClick() {
         binding.onLiked.setVisibility(View.VISIBLE);
         if(data.get(x).getClickable().equalsIgnoreCase("false")){
+            if(count==0) return;
             count--;
             viewModel.updateCount(data.get(x),count+"");
             data.get(x).setCount(count+"");
             binding.seenCount.setText(count+"");
             data.get(x).setClickable("true");
         }else if(data.get(x).getClickable().equalsIgnoreCase("true")){
-            if(count==0) return;
             count = Integer.parseInt(binding.seenCount.getText().toString());
             count++;
             viewModel.updateCount(data.get(x),count+"");
@@ -250,7 +250,7 @@ public class ImageViewActivity extends AppCompatActivity {
             public void run() {
                 binding.onLiked.setVisibility(View.GONE);
             }
-        },100);
+        },500);
     }
 
     @Override
