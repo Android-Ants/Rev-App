@@ -250,7 +250,7 @@ public class FetchData {
                             }
                             parents_profile_fetch();
 
-                            progressDialog.dismiss();
+                            //progressDialog.dismiss();
 
                             for (FireBaseCount f : baseCounts) {
                                 Paper.book("ImagesAll").write(f.getId(), f);
