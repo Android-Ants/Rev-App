@@ -122,13 +122,9 @@ public class SettingsFragment extends Fragment implements View.OnClickListener, 
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                ProgressDialog progressDialog = new ProgressDialog(context);
-                progressDialog.setTitle("Updating photos from drive");
-                progressDialog.setMessage("This May take some time.");
-                progressDialog.show();
+
                 FetchData fetchData = new FetchData(context);
                 fetchData.fetchingAllPhotos();
-                progressDialog.dismiss();
 
                 break;
 

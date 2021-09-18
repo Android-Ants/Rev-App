@@ -5,8 +5,10 @@ import static android.content.ContentValues.TAG;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -37,6 +39,8 @@ public class ImageViewActivity extends AppCompatActivity {
     public static String date = "false";
     public static boolean controller = true;
     public static int count = 0;
+    private static boolean dCLick = false;
+    private static boolean checker = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -150,51 +154,14 @@ public class ImageViewActivity extends AppCompatActivity {
 
 
 
-        binding.getRoot().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "onClick: checking for the on click listener");
-                if(controller) {
-                    binding.actionBar.setVisibility(View.GONE);
-                    View decorView = getWindow().getDecorView();
-                    // Hide the status bar.
-                    int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
-                    decorView.setSystemUiVisibility(uiOptions);
-                }else{
-                    binding.actionBar.setVisibility(View.VISIBLE);
-                    View decorView = getWindow().getDecorView();
-                    // Hide the status bar.
-                    int uiOptions = View.SYSTEM_UI_FLAG_VISIBLE;
-                    decorView.setSystemUiVisibility(uiOptions);
-                }
-                controller=!controller;
 
-            }
-        });
 
 
 
         binding.seenCount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(data.get(x).getClickable().equalsIgnoreCase("false")){
-                    count--;
-                    viewModel.updateCount(data.get(x),count+"");
-                    data.get(x).setCount(count+"");
-                    binding.seenCount.setText(count+"");
-                    data.get(x).setClickable("true");
-                }else if(data.get(x).getClickable().equalsIgnoreCase("true")){
-                    if(count==0) return;
-                    count = Integer.parseInt(binding.seenCount.getText().toString());
-                    count++;
-                    viewModel.updateCount(data.get(x),count+"");
-                    data.get(x).setClickable("false");
-                    data.get(x).setCount(count+"");
-                    binding.seenCount.setText(count+"");
-                }
-
-
-
+                updateCountOnClick();
             }
         });
         binding.likeButton.setOnClickListener(new View.OnClickListener() {
@@ -221,9 +188,76 @@ public class ImageViewActivity extends AppCompatActivity {
 
     }
 
+
+    public void fullScreen(View view) {
+        if(dCLick){
+            checker = false;
+            updateCountOnClick();
+            dCLick = !dCLick;
+            return;
+        }else{
+            dCLick = true;
+            final Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    dCLick = false;
+
+                    Log.d(TAG, "onClick: checking for the on click listener");
+                    if(controller&&checker) {
+                        binding.actionBar.setVisibility(View.GONE);
+                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+                        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                        //getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                    }else if(!controller&&checker){
+                        binding.actionBar.setVisibility(View.VISIBLE);
+                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+                        //getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+                    }
+                    controller=!controller;
+                    checker = true;
+
+                }
+            }, 600);
+
+        }
+
+
+    }
+
+    private void updateCountOnClick() {
+        binding.onLiked.setVisibility(View.VISIBLE);
+        if(data.get(x).getClickable().equalsIgnoreCase("false")){
+            count--;
+            viewModel.updateCount(data.get(x),count+"");
+            data.get(x).setCount(count+"");
+            binding.seenCount.setText(count+"");
+            data.get(x).setClickable("true");
+        }else if(data.get(x).getClickable().equalsIgnoreCase("true")){
+            if(count==0) return;
+            count = Integer.parseInt(binding.seenCount.getText().toString());
+            count++;
+            viewModel.updateCount(data.get(x),count+"");
+            data.get(x).setClickable("false");
+            data.get(x).setCount(count+"");
+            binding.seenCount.setText(count+"");
+        }
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                binding.onLiked.setVisibility(View.GONE);
+            }
+        },100);
+    }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
 
     }
+
+
 }
