@@ -16,8 +16,7 @@ An android application that fetches all your photos from Google Drive and diplay
 <img src="https://github.com/AppDevelopers00/Gallery-App/blob/master/Images/hfold.jpg" width=30% height=30%> <img src="https://github.com/AppDevelopers00/Gallery-App/blob/master/Images/settings.jpg" width=30% height=30%>
 
 ### Folder File hierarchy view
-<img src="https://github.com/AppDevelopers00/Gallery-App/blob/master/Images/dedicated.jpg" width=30% height=30%>
-<img src="https://github.com/AppDevelopers00/Gallery-App/blob/master/Images/single.jpg" width=30% height=30%>
+<img src="https://github.com/AppDevelopers00/Gallery-App/blob/master/Images/dedicated.jpg" width=30% height=30%> <img src="https://github.com/AppDevelopers00/Gallery-App/blob/master/Images/single.jpg" width=30% height=30%>
 
 ## Tech Stack
 
