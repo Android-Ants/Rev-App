@@ -6,15 +6,18 @@ An android application that fetches all your photos from Google Drive and diplay
 
 ## Application UI
 
-![link_account.jpg](https://github.com/AppDevelopers00/Gallery-App/blob/master/Images/link_account.jpg) ![enter_key.jpg](https://github.com/AppDevelopers00/Gallery-App/blob/master/Images/enter_key.jpg)
+### Authentication
+<img src="https://github.com/AppDevelopers00/Gallery-App/blob/master/Images/link_account.jpg" width=30% height=30%> <img src="https://github.com/AppDevelopers00/Gallery-App/blob/master/Images/enter_key.jpg" width=30% height=30%>
 
-![link_account.jpg](https://github.com/AppDevelopers00/Gallery-App/blob/master/Images/home.jpg)
-![link_account.jpg](https://github.com/AppDevelopers00/Gallery-App/blob/master/Images/fav.jpg)
-![link_account.jpg](https://github.com/AppDevelopers00/Gallery-App/blob/master/Images/recent.jpg)
-![link_account.jpg](https://github.com/AppDevelopers00/Gallery-App/blob/master/Images/hfold.jpg)
-![link_account.jpg](https://github.com/AppDevelopers00/Gallery-App/blob/master/Images/settings.jpg)
-![link_account.jpg](https://github.com/AppDevelopers00/Gallery-App/blob/master/Images/dedicated.jpg)
-![link_account.jpg](https://github.com/AppDevelopers00/Gallery-App/blob/master/Images/single.jpg)
+### Dashboard
+<img src="https://github.com/AppDevelopers00/Gallery-App/blob/master/Images/home.jpg" width=30% height=30%> <img src="https://github.com/AppDevelopers00/Gallery-App/blob/master/Images/fav.jpg" width=30% height=30%> <img src="https://github.com/AppDevelopers00/Gallery-App/blob/master/Images/recent.jpg" width=30% height=30%>
+
+### Files Management and Settings
+<img src="https://github.com/AppDevelopers00/Gallery-App/blob/master/Images/hfold.jpg" width=30% height=30%> <img src="https://github.com/AppDevelopers00/Gallery-App/blob/master/Images/settings.jpg" width=30% height=30%>
+
+### Folder File hierarchy view
+<img src="https://github.com/AppDevelopers00/Gallery-App/blob/master/Images/dedicated.jpg" width=30% height=30%>
+<img src="https://github.com/AppDevelopers00/Gallery-App/blob/master/Images/single.jpg" width=30% height=30%>
 
 ## Tech Stack
 
