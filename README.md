@@ -1,4 +1,4 @@
-# Gallery-App
+# Rev-App
 
 An android application that fetches all your photos from Google Drive and diplay them in random fashion.This Application is fully customizable with feature to block and unblock folders and user can also view photos folder wise.
 Application has a dedicated favourite section along with recent section in which photos are shown in decending order of their seen count.
