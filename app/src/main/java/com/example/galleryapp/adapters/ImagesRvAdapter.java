@@ -161,6 +161,7 @@ public class ImagesRvAdapter extends RecyclerView.Adapter<ImagesRvAdapter.ImageH
     public class ImageHolder extends RecyclerView.ViewHolder {
 
         private ImageView imageView0, imageView1, imageView2;
+        private ProgressBar progressBar0,progressBar1,progressBar2;
 
         public ImageHolder(@NonNull View itemView) {
             super(itemView);
@@ -168,6 +169,9 @@ public class ImagesRvAdapter extends RecyclerView.Adapter<ImagesRvAdapter.ImageH
             imageView0 = itemView.findViewById(R.id.imageView0);
             imageView1 = itemView.findViewById(R.id.imageView1);
             imageView2 = itemView.findViewById(R.id.imageView2);
+            progressBar0=itemView.findViewById(R.id.progress_barImageView0);
+            progressBar1=itemView.findViewById(R.id.progress_barImageView1);
+            progressBar2=itemView.findViewById(R.id.progress_barImageView2);
 
         }
     }
