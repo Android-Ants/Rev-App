@@ -56,25 +56,65 @@ public class ImagesRvAdapter extends RecyclerView.Adapter<ImagesRvAdapter.ImageH
 
 
 
+        holder.progressBar0.setVisibility(View.VISIBLE);
         Glide.with(context)
                 .asBitmap()
-                .load(data.get(resumePosition - 1).getUrl())
+                .load(data.get(resumePosition - 1).getUrl()).listener(new RequestListener<Bitmap>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Bitmap> target, boolean isFirstResource) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Bitmap resource, Object model, Target<Bitmap> target, DataSource dataSource, boolean isFirstResource) {
+                        holder.progressBar0.setVisibility(View.INVISIBLE);
+                        return false;
+                    }
+                })
                 .apply(options)
                 .into(holder.imageView0);
+
+
         Log.d("imagesssssssssssssss", "" + LoadImageFromWebOperations(data.get(resumePosition - 1).getUrl()));
         if (!(resumePosition >= data.size())) {
+
+            holder.progressBar1.setVisibility(View.VISIBLE);
             Glide.with(context)
                     .asBitmap()
-                    .load(data.get(resumePosition).getUrl())
+                    .load(data.get(resumePosition).getUrl()).listener(new RequestListener<Bitmap>() {
+                        @Override
+                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Bitmap> target, boolean isFirstResource) {
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(Bitmap resource, Object model, Target<Bitmap> target, DataSource dataSource, boolean isFirstResource) {
+                            holder.progressBar1.setVisibility(View.INVISIBLE);
+                            return false;
+                        }
+                    })
                     .apply(options)
                     .into(holder.imageView1);
             Log.d("ImageUrl", data.get(resumePosition).getUrl());
 
         }
         if (!(resumePosition + 1 >= data.size())) {
+
+            holder.progressBar2.setVisibility(View.VISIBLE);
             Glide.with(context)
                     .asBitmap()
-                    .load(data.get(resumePosition + 1).getUrl())
+                    .load(data.get(resumePosition + 1).getUrl()).listener(new RequestListener<Bitmap>() {
+                        @Override
+                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Bitmap> target, boolean isFirstResource) {
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(Bitmap resource, Object model, Target<Bitmap> target, DataSource dataSource, boolean isFirstResource) {
+                            holder.progressBar2.setVisibility(View.INVISIBLE);
+                            return false;
+                        }
+                    })
                     .apply(options)
                     .into(holder.imageView2);
         }
