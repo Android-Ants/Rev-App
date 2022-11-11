@@ -6,7 +6,7 @@
     android:layout_height="wrap_content">
 
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/linearLayout0"
         android:layout_width="match_parent"
         android:layout_height="125sp"
@@ -20,32 +20,55 @@
 
         <ImageView
             android:id="@+id/imageView0"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
             tools:srcCompat="@tools:sample/avatars" />
+
+        <ProgressBar
+            android:id="@+id/progress_barImageView0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            />
 
         <ImageView
             android:id="@+id/imageView1"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:layout_toRightOf="@id/imageView0"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
             tools:srcCompat="@tools:sample/avatars" />
+        <ProgressBar
+            android:id="@+id/progress_barImageView1"
+            android:layout_width="wrap_content"
+            android:layout_toRightOf="@id/imageView0"
+            android:visibility="invisible"
+            android:layout_height="wrap_content"
+            />
 
         <ImageView
             android:id="@+id/imageView2"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:layout_toRightOf="@id/imageView1"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
             tools:srcCompat="@tools:sample/avatars" />
+        <ProgressBar
+            android:id="@+id/progress_barImageView2"
+            android:layout_width="wrap_content"
+            android:layout_toRightOf="@id/imageView1"
+            android:visibility="invisible"
+            android:layout_height="wrap_content"
+            />
 
-    </LinearLayout>
+    </RelativeLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
